@@ -5,7 +5,7 @@ export function middleware(request: NextRequest) {
   const devAccess = request.cookies.get('devAccess')?.value
 
   if (!isDevMode) return NextResponse.next()
-  if (devAccess === process.env.NEXT_PUBLIC_LAUNCH_PW) return NextResponse.next()
+  if (devAccess === process.env.NEXT_PUBLIC_CLIENT_KEY) return NextResponse.next()
   if (request.nextUrl.pathname === '/dev-gate') return NextResponse.next()
 
   return NextResponse.redirect(new URL('/dev-gate', request.url))
