@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -8,14 +8,14 @@
 html { scroll-behavior: smooth; }
 
 body {
-  background: #000;
+  background: #000308;
   color: #F0F0FF;
   font-family: 'DM Sans', sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
 }
 
-/* Scanlines — always on, 3% opacity */
+/* Scanlines */
 body::after {
   content: '';
   position: fixed;
@@ -23,29 +23,21 @@ body::after {
   background: repeating-linear-gradient(
     to bottom,
     transparent 0px,
-    transparent 2px,
-    rgba(0,0,0,0.03) 2px,
-    rgba(0,0,0,0.03) 4px
+    transparent 3px,
+    rgba(0,229,255,0.005) 3px,
+    rgba(0,229,255,0.005) 4px
   );
   pointer-events: none;
   z-index: 9999;
 }
 
 ::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: #000; }
-::-webkit-scrollbar-thumb { background: #00FF41; }
-::selection { background: rgba(0,255,65,0.2); color: #00FF41; }
-
-@keyframes glitch {
-  0%, 100% { transform: translate(0); filter: none; }
-  20% { transform: translate(-2px, 1px); filter: hue-rotate(90deg) saturate(2); }
-  40% { transform: translate(2px, -1px); filter: hue-rotate(-90deg) saturate(2); }
-  60% { transform: translate(-1px, 2px); filter: hue-rotate(45deg); }
-  80% { transform: translate(1px, -2px); filter: hue-rotate(-45deg); }
-}
+::-webkit-scrollbar-track { background: #000308; }
+::-webkit-scrollbar-thumb { background: rgba(0,229,255,0.3); }
+::selection { background: rgba(0,229,255,0.15); color: #00E5FF; }
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(16px); }
+  from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -54,7 +46,11 @@ body::after {
   to   { opacity: 1; }
 }
 
-@keyframes scanIn {
-  from { opacity: 0; transform: translateY(-4px); }
-  to   { opacity: 1; transform: translateY(0); }
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
 }
