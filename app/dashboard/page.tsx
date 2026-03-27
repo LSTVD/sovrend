@@ -93,6 +93,36 @@ const STEPS = [
   ['Applying styles and polish...','making it look professional'],
 ]
 
+const QUOTES = [
+  {q:'As a man thinketh in his heart, so is he.',a:'JAMES ALLEN'},
+  {q:'The soul attracts that which it secretly harbors.',a:'JAMES ALLEN'},
+  {q:'You are today where your thoughts have brought you.',a:'JAMES ALLEN'},
+  {q:'Assume the feeling of the wish fulfilled.',a:'NEVILLE GODDARD'},
+  {q:'An assumption, though false, if persisted in, will harden into fact.',a:'NEVILLE GODDARD'},
+  {q:'Change your conception of yourself and you will automatically change the world in which you live.',a:'NEVILLE GODDARD'},
+  {q:'Whatever the mind can conceive and believe, it can achieve.',a:'NAPOLEON HILL'},
+  {q:'Strength and growth come only through continuous effort and struggle.',a:'NAPOLEON HILL'},
+  {q:'The starting point of all achievement is desire.',a:'NAPOLEON HILL'},
+  {q:'The soul becomes dyed with the color of its thoughts.',a:'MARCUS AURELIUS'},
+  {q:'You have power over your mind, not outside events. Realize this, and you will find strength.',a:'MARCUS AURELIUS'},
+  {q:'What we do now echoes in eternity.',a:'MARCUS AURELIUS'},
+  {q:'As you think, so shall you become.',a:'BRUCE LEE'},
+  {q:'Do not pray for an easy life. Pray for the strength to endure a difficult one.',a:'BRUCE LEE'},
+  {q:'Knowing is not enough, we must apply. Willing is not enough, we must do.',a:'BRUCE LEE'},
+  {q:'It is not what happens to you, but how you react to it that matters.',a:'EPICTETUS'},
+  {q:'First say to yourself what you would be, and then do what you have to do.',a:'EPICTETUS'},
+  {q:'No great thing is created suddenly.',a:'EPICTETUS'},
+  {q:'Luck is what happens when preparation meets opportunity.',a:'SENECA'},
+  {q:'It is not that we have a short time to live, but that we waste a great deal of it.',a:'SENECA'},
+  {q:'Difficulties strengthen the mind, as labor does the body.',a:'SENECA'},
+  {q:'The only way to make sense out of change is to plunge into it, move with it, and join the dance.',a:'ALAN WATTS'},
+  {q:'This is the real secret of life — to be completely engaged with what you are doing in the here and now.',a:'ALAN WATTS'},
+  {q:'You are the universe experiencing itself.',a:'ALAN WATTS'},
+  {q:'Think lightly of yourself and deeply of the world.',a:'MIYAMOTO MUSASHI'},
+  {q:'Everything is within. There is nothing outside of yourself that can ever enable you to get better.',a:'MIYAMOTO MUSASHI'},
+  {q:'Today is victory over yourself of yesterday.',a:'MIYAMOTO MUSASHI'},
+]
+
 function GI({s=20}:{s?:number}) {
   const g=s*.05,sq=(s-g*2)/3
   return <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`}>{[0,1,2].map(r=>[0,1,2].map(c=>{
@@ -156,9 +186,9 @@ function GridBg({state,rainSpeed}:{state:string,rainSpeed:number}) {
 function Msg({role,text,children}:{role:'cipher'|'user';text?:string;children?:React.ReactNode}) {
   const ic=role==='coach'
   return <div className={`flex gap-2 items-start ${!ic?'flex-row-reverse':''}`} style={{animation:'fu .3s ease both'}}>
-    <div className="flex items-center justify-center flex-shrink-0" style={{width:26,height:26,fontFamily:UI,fontSize:8,
+    <div className="flex items-center justify-center flex-shrink-0" style={{width:ic?42:26,height:26,fontFamily:UI,fontSize:ic?6:8,
       border:`1px solid ${ic?'rgba(255,107,0,.3)':'rgba(0,229,255,.15)'}`,color:ic?'#FF6B00':'#00E5FF',
-      background:ic?'rgba(255,107,0,.04)':'rgba(0,229,255,.04)'}}>{ic?'C':'S'}</div>
+      background:ic?'rgba(255,107,0,.04)':'rgba(0,229,255,.04)'}}>{ic?'CIPHER':'YOU'}</div>
     <div style={{padding:'10px 12px',fontSize:13,lineHeight:1.7,maxWidth:'92%',
       background:ic?'rgba(240,240,255,.04)':'rgba(0,229,255,.04)',
       border:`1px solid ${ic?'rgba(240,240,255,.10)':'rgba(0,229,255,.15)'}`,
@@ -357,6 +387,8 @@ export default function DashboardPage() {
   const [planOpen,setPlanOpen]=useState(false)
   const [publishCelebration,setPublishCelebration]=useState(false)
   const [handoffLoading,setHandoffLoading]=useState(false)
+  const [handoffData,setHandoffData]=useState<any>(null)
+  const [handoffOpen,setHandoffOpen]=useState(false)
   const [projectsOpen,setProjectsOpen]=useState(false)
   const [journalEntries,setJournalEntries]=useState<{id:string,entry_type:string,title:string,narration:string,prompt:string,created_at:string}[]>([])
   const [panelTab,setPanelTab]=useState<'cipher'|'journal'|'tools'>('cipher')
@@ -403,11 +435,13 @@ export default function DashboardPage() {
   const handleBuild=useCallback(async()=>{
     if(!prompt.trim()||appState!=='idle')return
     setAppState('building');setProjName('New App');setVer('BUILDING...');setShowNarr(true)
-    setMsgs([{role:'cipher',text:'I see your vision. Let me bring it to life.'},{role:'user',text:prompt},{role:'cipher',text:'Creating now — I\'ll walk you through each step.',type:'building'}])
+    setMsgs([{role:'cipher',text:'I see your vision. Let me bring it to life.'},{role:'user',text:prompt},{role:'cipher',text:'Enhancing your idea first...',type:'building'}])
+    let buildPrompt=prompt
+    try{const eRes=await fetch('/api/enhance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});const eData=await eRes.json();if(eData.success&&eData.enhanced){buildPrompt=eData.enhanced;setMsgs(prev=>[...prev.slice(0,-1),{role:'cipher',text:'Creating now — I\'ll walk you through each step.',type:'building'}])}}catch(e){}
     let step=0;setNarrText(STEPS[0][0]);setNarrTeach(STEPS[0][1])
     const ni=setInterval(()=>{step++;if(step>=STEPS.length){clearInterval(ni);return};setNarrText(STEPS[step][0]);setNarrTeach(STEPS[step][1])},800)
     try{
-      const res=await fetch('/api/build',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,persona:'operator',appId:null})})
+      const res=await fetch('/api/build',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:buildPrompt,persona:'operator',appId:null})})
       const data=await res.json()
       clearInterval(ni)
       if(data.success){
@@ -416,7 +450,7 @@ export default function DashboardPage() {
         if(data.appId)setAppId(data.appId);setBuildScore(Math.floor(65+Math.random()*25))
         setAppState('complete');setVer('v1.0');setShowNarr(false);setPubVis(true)
         if(data.narration)setProjName(data.narration.split('.')[0].slice(0,30))
-        setMsgs(prev=>[...prev,{role:'cipher',text:data.narration||'Your app is live. Here\'s what I\'d suggest next:',type:'summary'},{role:'cipher',text:'Coach is here — what needs work? Tip: Switch to PLAN mode to draft ideas without using actions.',type:'suggestion'}])
+        setMsgs(prev=>[...prev,{role:'cipher',text:data.narration||'Your app is live. Here\'s what I\'d suggest next:',type:'summary'},{role:'cipher',text:'Cipher is here — what needs work? Tip: Switch to PLAN mode to draft ideas without using actions.',type:'suggestion'}])
         setTimeout(()=>setShowStrip(true),400);setTimeout(()=>setShowModes(true),1000)
       }else{
         setAppState('idle');setVer('NEW');setShowNarr(false)
@@ -429,7 +463,7 @@ export default function DashboardPage() {
   const rainSpeed=entered?1:2.5
   const loadTpl=(k:string)=>{if(TEMPLATES[k])setPrompt(TEMPLATES[k])}
   const fillChat=(text:string)=>{setRefineText(text)}
-  const generateHandoff=()=>{setHandoffLoading(true);setTimeout(()=>setHandoffLoading(false),2000)}
+  const generateHandoff=async()=>{setHandoffLoading(true);try{const res=await fetch('/api/handoff',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:generatedCode,appName:projName,suggestions,score:buildScore})});const data=await res.json();if(data.success){setHandoffData(data);setHandoffOpen(true)}}catch(e){}finally{setHandoffLoading(false)}}
   const loadApp=(app:{id:string,name:string,code:string})=>{setAppId(app.id);setProjName(app.name);setGeneratedCode(app.code.replace('export default function','function').replace('export default ',''));setAppState('complete');setVer('saved');setPubVis(true);setShowStrip(true);setShowModes(true);setMsgs([{role:'cipher',text:'Loaded '+app.name+'. What would you like to change?',type:'summary'}]);setShowRevCalc(true);setBuildScore(Math.floor(65+Math.random()*25))}
   return <main className="relative min-h-screen overflow-hidden">
     <GridBg state={appState} rainSpeed={rainSpeed}/>
@@ -438,7 +472,7 @@ export default function DashboardPage() {
     <div className="fixed left-0 top-0 bottom-0 z-50 flex flex-col transition-all duration-300" style={{width:sbW,background:'rgba(4,6,14,.96)',borderRight:'1px solid rgba(0,229,255,.07)',backdropFilter:'blur(18px)',opacity:entered?1:0,transition:'opacity .5s ease'}}>
       <div className="flex items-center gap-2.5 px-4 py-3.5 flex-shrink-0" style={{borderBottom:'1px solid rgba(0,229,255,.035)'}}><GI s={20}/>{!sbCol&&<span style={{fontFamily:UI,fontSize:9,fontWeight:700,letterSpacing:'.2em',color:'rgba(0,229,255,.7)'}}>SOVREND</span>}<span className="ml-auto cursor-pointer" onClick={()=>setSbCol(!sbCol)} style={{fontSize:10,color:'rgba(195,200,215,.55)'}}>{sbCol?'▷':'◁'}</span></div>
       <div className="flex-1 overflow-y-auto px-2 py-2.5">
-        {[{i:'⌂',l:'Home',a:true},{i:'⌕',l:'Search',r:'⌘K'}].map(x=><div key={x.l} className="flex items-center gap-2.5 cursor-pointer mb-px" onClick={()=>{if((x as any).click)(x as any).click()}} style={{padding:sbCol?0:'8px 10px',width:sbCol?36:undefined,height:sbCol?36:undefined,margin:sbCol?'0 auto 2px':undefined,justifyContent:sbCol?'center':undefined,display:'flex',fontSize:12,color:x.a?'#00E5FF':'rgba(195,200,215,.75)',background:x.a?'rgba(0,229,255,.04)':'transparent',border:`1px solid ${x.a?'rgba(0,229,255,.15)':'transparent'}`}}><span style={{fontSize:14,width:20,textAlign:'center'}}>{x.i}</span>{!sbCol&&<span className="flex-1">{x.l}</span>}{!sbCol&&x.r&&<span style={{fontSize:8,color:'rgba(195,200,215,.55)',fontFamily:MONO}}>{x.r}</span>}</div>)}
+        {[{i:'⌂',l:'Home',a:appState==='idle',click:()=>{setAppState('idle');setPrompt('');setProjName('New Build');setVer('NEW');setPubVis(false);setShowStrip(false);setShowModes(false);setMsgs([]);setGeneratedCode('');setSuggestions([]);setBuildScore(0);setShowRevCalc(false)}},{i:'⌕',l:'Search',r:'⌘K'}].map(x=><div key={x.l} className="flex items-center gap-2.5 cursor-pointer mb-px" onClick={()=>{if((x as any).click)(x as any).click()}} style={{padding:sbCol?0:'8px 10px',width:sbCol?36:undefined,height:sbCol?36:undefined,margin:sbCol?'0 auto 2px':undefined,justifyContent:sbCol?'center':undefined,display:'flex',fontSize:12,color:(x as any).a?'#00E5FF':'rgba(195,200,215,.75)',background:x.a?'rgba(0,229,255,.04)':'transparent',border:`1px solid ${x.a?'rgba(0,229,255,.15)':'transparent'}`}}><span style={{fontSize:14,width:20,textAlign:'center'}}>{x.i}</span>{!sbCol&&<span className="flex-1">{x.l}</span>}{!sbCol&&x.r&&<span style={{fontSize:8,color:'rgba(195,200,215,.55)',fontFamily:MONO}}>{x.r}</span>}</div>)}
         {!sbCol&&<div className="flex items-center justify-center gap-2 cursor-pointer my-1 py-2" onClick={()=>{setAppState('idle');setPrompt('');setProjName('New Build');setVer('NEW');setPubVis(false);setShowStrip(false);setShowModes(false);setMsgs([]);setGeneratedCode('');setSuggestions([])}} style={{border:'1px solid rgba(0,229,255,.15)',background:'rgba(0,229,255,.04)',color:'#00E5FF',fontFamily:UI,fontSize:9,letterSpacing:'.14em',fontWeight:600}}>+&nbsp;NEW BUILD</div>}
         {sbCol&&<div className="flex items-center justify-center cursor-pointer mb-px" style={{width:36,height:36,margin:'4px auto',color:'#00E5FF',border:'1px solid rgba(0,229,255,.15)',background:'rgba(0,229,255,.04)',fontSize:16}}>+</div>}
         {!sbCol&&<div className="flex items-center gap-2.5 cursor-pointer mb-px" onClick={()=>setPlanOpen(!planOpen)} style={{padding:'8px 10px',fontSize:12,color:'rgba(195,200,215,.75)',border:'1px solid transparent'}}><span style={{fontSize:12,width:20,textAlign:'center',color:'#00E5FF',animation:'slowpulse 11s ease infinite'}}>◉</span><span className="flex-1">Plan & Notes</span><span style={{fontSize:7,color:'rgba(0,229,255,.4)',fontFamily:UI,letterSpacing:'.1em'}}>FREE</span></div>}
@@ -470,20 +504,24 @@ export default function DashboardPage() {
       </div>
       <div className="flex-1 flex overflow-hidden relative">
         {appState==='idle'&&<div className="absolute inset-0 flex items-center justify-center px-6 z-20"><div className="flex flex-col items-center max-w-xl w-full text-center">
+          <div className="mb-4 text-center" style={{opacity:.7}}>
+            <p style={{fontSize:12,color:'rgba(0,229,255,.6)',fontStyle:'italic'}}>&ldquo;{QUOTES[Math.floor((Date.now()/86400000)%QUOTES.length)].q}&rdquo;</p>
+            <p style={{fontFamily:UI,fontSize:7,letterSpacing:'.3em',color:'rgba(0,229,255,.35)',marginTop:4}}>&mdash; {QUOTES[Math.floor((Date.now()/86400000)%QUOTES.length)].a}</p>
+          </div>
           <div className="flex gap-2.5 items-start mb-6 text-left w-full max-w-lg" style={{padding:'12px 14px',background:'rgba(240,240,255,.03)',border:'1px solid rgba(240,240,255,.06)',borderLeft:'2px solid rgba(255,107,0,.4)'}}>
-            <div className="flex items-center justify-center flex-shrink-0" style={{width:28,height:28,fontFamily:UI,fontSize:8,border:'1px solid rgba(255,107,0,.3)',color:'#FF6B00',background:'rgba(255,107,0,.04)'}}>C</div>
+            <div className="flex items-center justify-center flex-shrink-0" style={{width:46,height:28,fontFamily:UI,fontSize:6,border:'1px solid rgba(255,107,0,.3)',color:'#FF6B00',background:'rgba(255,107,0,.04)'}}>CIPHER</div>
             <div style={{fontSize:14,color:'rgba(240,240,255,.75)',lineHeight:1.6}}>Tell me what you want to build — in your own words. I&apos;ll handle the rest.</div>
           </div>
-          <h2 style={{fontFamily:UI,fontSize:'clamp(18px,3vw,30px)',fontWeight:700,color:'#F0F0FF',marginBottom:8}}>What are you ready to create?</h2>
+          <h2 style={{fontFamily:UI,fontSize:'clamp(18px,3vw,30px)',fontWeight:900,letterSpacing:'.08em',background:'linear-gradient(135deg,#FF6A00,#00E5FF)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',marginBottom:8,textShadow:'none'}}>What are you ready to create?</h2>
           <p style={{fontSize:13.5,color:'rgba(195,200,215,.55)',marginBottom:26}}>No code needed. Takes about 60 seconds.</p>
           <div className="w-full max-w-lg" style={{background:'rgba(4,6,14,.96)',border:'1px solid rgba(0,229,255,.15)',borderBottom:'2px solid rgba(0,229,255,.3)',padding:16,backdropFilter:'blur(18px)'}}>
             <div style={{position:'relative'}}><canvas ref={buildCanvasRef} style={{position:'absolute',inset:0,pointerEvents:'none',zIndex:1}}/><textarea value={prompt} onChange={e=>{setPrompt(e.target.value);const ls=e.target.value.split('\n');const la=ls[ls.length-1];const cx=Math.min(14+la.length*8.5,480);const cy=Math.min(14+(ls.length-1)*24+12,50);for(let j=0;j<2;j++)buildParticlesRef.current.push({x:cx+(Math.random()-.5)*14,y:cy,vx:(Math.random()-.5)*.3,vy:-(0.3+Math.random()*0.6),life:1,decay:0.006+Math.random()*0.004,size:0.8+Math.random()*1.5})}} placeholder={PLACEHOLDERS[phIdx]} className="w-full bg-transparent outline-none resize-none" style={{color:'#F0F0FF',fontSize:17,height:60,lineHeight:'1.55',position:'relative',zIndex:2,background:'transparent'}}/></div>
             <div className="flex items-center justify-between mt-3">
               <div className="flex gap-1.5 items-center">
                 {['\ud83d\udcce','\ud83c\udfa4','\u25c7'].map(i=><div key={i} className="flex items-center justify-center cursor-pointer" style={{width:28,height:28,border:'1px solid rgba(0,229,255,.07)',color:'rgba(195,200,215,.55)',fontSize:12}}>{i}</div>)}
-                <div className="cursor-pointer" title="Coach improves your description before building" style={{fontFamily:UI,fontSize:8,letterSpacing:'.12em',color:'#00E5FF',border:'1px solid rgba(0,229,255,.15)',background:'rgba(0,229,255,.04)',padding:'5px 10px',height:28,display:'flex',alignItems:'center'}}>✦ ENHANCE</div>
+
               </div>
-              <button onClick={handleBuild} style={{fontFamily:UI,fontSize:10,fontWeight:700,letterSpacing:'.22em',color:'#000308',background:'#00E5FF',border:'none',padding:'9px 24px',cursor:'pointer',boxShadow:'0 0 8px rgba(0,229,255,.15)'}}>CREATE →</button>
+              <button onClick={handleBuild} style={{fontFamily:UI,fontSize:10,fontWeight:700,letterSpacing:'.22em',color:'#000308',background:'linear-gradient(135deg,#FF6A00,#00E5FF)',border:'none',padding:'12px 32px',cursor:'pointer',boxShadow:'0 0 20px rgba(0,229,255,.2),0 0 40px rgba(255,106,0,.1)',transition:'all .3s'}}>CREATE →</button>
             </div>
           </div>
         </div></div>}
@@ -538,7 +576,7 @@ export default function DashboardPage() {
               </div>
               :activeMode==='CHAT'?<div><textarea className="w-full bg-transparent outline-none resize-none" placeholder="Ask Coach anything — how to prompt better, what something means, or get advice." value={refineText} onChange={e=>setRefineText(e.target.value)} style={{background:'rgba(8,11,22,.7)',border:'1px solid rgba(0,229,255,.07)',borderBottom:'2px solid rgba(255,107,0,.15)',borderLeft:'2px solid rgba(255,107,0,.3)',color:'#F0F0FF',fontSize:14,padding:'12px 14px',height:56,lineHeight:'1.5'}}/></div>
               :<textarea className="w-full bg-transparent outline-none resize-none" placeholder="What would make this better?" value={refineText} onChange={e=>setRefineText(e.target.value)} style={{background:'rgba(8,11,22,.7)',border:'1px solid rgba(0,229,255,.07)',borderBottom:'2px solid rgba(0,229,255,.15)',color:'#F0F0FF',fontSize:15,padding:'12px 14px',height:56,lineHeight:'1.5'}}/>}
-              <div className="flex items-center justify-between mt-2"><div className="flex gap-1 items-center">{['\ud83d\udcce','\ud83c\udfa4','\ud83d\udcf7','\u25c7'].map(i=><div key={i} className="flex items-center justify-center cursor-pointer" style={{width:22,height:22,border:'1px solid rgba(0,229,255,.07)',color:'rgba(195,200,215,.55)',fontSize:10}}>{i}</div>)}</div><button onClick={async()=>{if(!refineText.trim())return;setAppState('building');setShowNarr(true);setNarrText('Refining your app...');setNarrTeach('applying your changes');setMsgs(prev=>[...prev,{role:'user',text:refineText},{role:'cipher',text:'On it. Applying your changes now.',type:'building'}]);const res=await fetch('/api/build',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:refineText+' \n\nPrevious code to modify: '+generatedCode.slice(0,2000),persona:'operator',appId:appId})});const data=await res.json();if(data.success){setGeneratedCode((data.code||'').replace('export default function','function').replace('export default ',''));setSuggestions(data.suggestions||[]);if(data.appId)setAppId(data.appId);setBuildScore(Math.floor(65+Math.random()*25));setAppState('complete');setShowNarr(false);setRefineText('');setMsgs(prev=>[...prev,{role:'cipher',text:data.narration||'Changes applied.',type:'summary'},{role:'cipher',text:'Coach is here — what needs work?',type:'suggestion'}])}else{setAppState('complete');setShowNarr(false);setMsgs(prev=>[...prev,{role:'cipher',text:data.message||'Something went wrong. Try again.'}])}}} style={{fontFamily:UI,fontSize:9,fontWeight:700,letterSpacing:'.16em',color:'#000308',background:'#00E5FF',border:'none',padding:'6px 14px',cursor:'pointer'}}>{activeMode==='PLAN'?'SAVE NOTE':'SEND →'}</button></div>
+              <div className="flex items-center justify-between mt-2"><div className="flex gap-1 items-center">{['\ud83d\udcce','\ud83c\udfa4','\ud83d\udcf7','\u25c7'].map(i=><div key={i} className="flex items-center justify-center cursor-pointer" style={{width:22,height:22,border:'1px solid rgba(0,229,255,.07)',color:'rgba(195,200,215,.55)',fontSize:10}}>{i}</div>)}</div><button onClick={async()=>{if(!refineText.trim())return;setAppState('building');setShowNarr(true);setNarrText('Refining your app...');setNarrTeach('applying your changes');setMsgs(prev=>[...prev,{role:'user',text:refineText},{role:'cipher',text:'On it. Applying your changes now.',type:'building'}]);const res=await fetch('/api/build',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:refineText+' \n\nPrevious code to modify: '+generatedCode.slice(0,2000),persona:'operator',appId:appId})});const data=await res.json();if(data.success){setGeneratedCode((data.code||'').replace('export default function','function').replace('export default ',''));setSuggestions(data.suggestions||[]);if(data.appId)setAppId(data.appId);setBuildScore(Math.floor(65+Math.random()*25));setAppState('complete');setShowNarr(false);setRefineText('');setMsgs(prev=>[...prev,{role:'cipher',text:data.narration||'Changes applied.',type:'summary'},{role:'cipher',text:'Cipher is here — what needs work?',type:'suggestion'}])}else{setAppState('complete');setShowNarr(false);setMsgs(prev=>[...prev,{role:'cipher',text:data.message||'Something went wrong. Try again.'}])}}} style={{fontFamily:UI,fontSize:9,fontWeight:700,letterSpacing:'.16em',color:'#000308',background:'#00E5FF',border:'none',padding:'6px 14px',cursor:'pointer'}}>{activeMode==='PLAN'?'SAVE NOTE':'SEND →'}</button></div>
             </div>
           </div>
           <div className="flex-1 flex flex-col overflow-hidden">
@@ -598,6 +636,31 @@ export default function DashboardPage() {
               <div style={{fontSize:9,color:'rgba(195,200,215,.4)'}}>{new Date(app.updated_at).toLocaleDateString()}</div>
             </div>
           </div>)}
+        </div>
+      </div>
+    </div>}
+    {handoffOpen&&handoffData&&<div className="fixed inset-0 z-[80] flex items-center justify-center" style={{background:'rgba(0,3,8,.92)',backdropFilter:'blur(8px)'}}>
+      <div style={{width:'90%',maxWidth:800,maxHeight:'85vh',background:'rgba(4,6,14,.98)',border:'1px solid rgba(0,229,255,.15)',overflow:'hidden',display:'flex',flexDirection:'column'}}>
+        <div className="flex items-center justify-between px-5 py-3" style={{borderBottom:'1px solid rgba(0,229,255,.07)'}}>
+          <div className="flex items-center gap-3"><GI s={18}/><div><div style={{fontFamily:UI,fontSize:10,letterSpacing:'.2em',color:'#F0F0FF'}}>{handoffData.appName}</div><div style={{fontFamily:UI,fontSize:7,letterSpacing:'.15em',color:'rgba(0,229,255,.4)'}}>DEVELOPER HANDOFF BRIEF</div></div></div>
+          <div className="flex items-center gap-3">
+            <span className="cursor-pointer" onClick={()=>navigator.clipboard.writeText(JSON.stringify(handoffData.handoff,null,2))} style={{fontFamily:UI,fontSize:8,letterSpacing:'.12em',color:'#00E5FF',padding:'4px 10px',border:'1px solid rgba(0,229,255,.15)'}}>COPY</span>
+            <span className="cursor-pointer" onClick={()=>{const w=window.open('','_blank');if(w){w.document.write('<html><head><title>'+handoffData.appName+'</title><style>body{background:#000308;color:#F0F0FF;font-family:system-ui;padding:40px;max-width:800px;margin:0 auto}h1{font-size:24px;letter-spacing:.1em}h2{font-size:11px;letter-spacing:.2em;color:#00E5FF;margin:24px 0 8px}p{font-size:13px;color:rgba(195,200,215,.75);line-height:1.6;margin-bottom:8px}.s{font-size:36px;font-weight:900;color:#FFE600}.b{border:1px solid rgba(0,229,255,.1);padding:16px;margin-bottom:12px}</style></head><body><h1>'+handoffData.appName+'</h1><p>SOVREND Handoff Brief</p><div class=b><div class=s>'+handoffData.score+'/100</div></div><h2>SUMMARY</h2><p>'+(handoffData.handoff?.summary||'')+'</p><h2>NEXT STEPS</h2>'+(handoffData.handoff?.nextSteps?handoffData.handoff.nextSteps.map((s:any)=>'<p>'+s.priority+': '+s.task+'</p>').join(''):'')+'<br><p style=color:gray>Generated by SOVREND</p></body></html>');w.document.close()}}} style={{fontFamily:UI,fontSize:8,letterSpacing:'.12em',color:'#F0F0FF',padding:'4px 10px',border:'1px solid rgba(240,240,255,.15)'}}>OPEN REPORT</span>
+            <span className="cursor-pointer" onClick={()=>setHandoffOpen(false)} style={{fontSize:14,color:'rgba(0,229,255,.3)'}}>✕</span>
+          </div>
+        </div>
+        <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-4">
+          <div className="flex gap-3">
+            <div style={{padding:14,border:'1px solid rgba(255,230,0,.15)',background:'rgba(255,230,0,.03)'}}><div style={{fontFamily:UI,fontSize:7,letterSpacing:'.2em',color:'rgba(255,230,0,.5)',marginBottom:6}}>BUILD SCORE</div><div style={{fontSize:28,fontWeight:900,color:'#FFE600'}}>{handoffData.score}/100</div></div>
+            <div style={{flex:1,padding:14,border:'1px solid rgba(0,229,255,.1)'}}><div style={{fontFamily:UI,fontSize:7,letterSpacing:'.2em',color:'rgba(0,229,255,.4)',marginBottom:6}}>SUMMARY</div><div style={{fontSize:13,color:'rgba(240,240,255,.75)',lineHeight:1.6}}>{handoffData.handoff?.summary}</div></div>
+          </div>
+          {handoffData.handoff?.architecture&&<div style={{padding:14,border:'1px solid rgba(0,229,255,.1)'}}><div style={{fontFamily:UI,fontSize:7,letterSpacing:'.2em',color:'rgba(0,229,255,.4)',marginBottom:8}}>ARCHITECTURE</div><div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}}>{Object.entries(handoffData.handoff.architecture).map(([k,v])=><div key={k}><div style={{fontSize:9,color:'rgba(195,200,215,.4)',textTransform:'uppercase'}}>{k}</div><div style={{fontSize:12,color:'rgba(240,240,255,.7)',marginTop:2}}>{String(v)}</div></div>)}</div></div>}
+          {handoffData.handoff?.pages&&<div style={{padding:14,border:'1px solid rgba(0,229,255,.1)'}}><div style={{fontFamily:UI,fontSize:7,letterSpacing:'.2em',color:'rgba(0,229,255,.4)',marginBottom:8}}>PAGES</div>{handoffData.handoff.pages.map((p:any,i:number)=><div key={i} style={{marginBottom:8}}><div style={{fontSize:12,color:'#00E5FF',fontWeight:500}}>{p.name}</div><div style={{fontSize:11,color:'rgba(195,200,215,.6)',marginTop:2}}>{p.purpose}</div></div>)}</div>}
+          <div className="flex gap-3">
+            {handoffData.handoff?.wired&&<div style={{flex:1,padding:14,border:'1px solid rgba(0,255,65,.1)'}}><div style={{fontFamily:UI,fontSize:7,letterSpacing:'.2em',color:'rgba(0,255,65,.4)',marginBottom:8}}>WIRED</div>{handoffData.handoff.wired.map((w:string,i:number)=><div key={i} style={{fontSize:11,color:'rgba(0,255,65,.6)',marginBottom:3}}>{w}</div>)}</div>}
+            {handoffData.handoff?.notWired&&<div style={{flex:1,padding:14,border:'1px solid rgba(255,106,0,.1)'}}><div style={{fontFamily:UI,fontSize:7,letterSpacing:'.2em',color:'rgba(255,106,0,.4)',marginBottom:8}}>NOT WIRED</div>{handoffData.handoff.notWired.map((n:string,i:number)=><div key={i} style={{fontSize:11,color:'rgba(255,106,0,.6)',marginBottom:3}}>{n}</div>)}</div>}
+          </div>
+          {handoffData.handoff?.nextSteps&&<div style={{padding:14,border:'1px solid rgba(240,240,255,.1)'}}><div style={{fontFamily:UI,fontSize:7,letterSpacing:'.2em',color:'rgba(240,240,255,.3)',marginBottom:8}}>NEXT STEPS</div>{handoffData.handoff.nextSteps.map((s:any,i:number)=><div key={i} className="flex items-start gap-3" style={{marginBottom:8}}><span style={{fontFamily:UI,fontSize:7,padding:'2px 6px',color:s.priority==='HIGH'?'#FF6A00':s.priority==='MEDIUM'?'#FFE600':'rgba(195,200,215,.5)',border:'1px solid',borderColor:s.priority==='HIGH'?'rgba(255,106,0,.3)':'rgba(255,230,0,.3)',flexShrink:0}}>{s.priority}</span><div><div style={{fontSize:12,color:'rgba(240,240,255,.75)'}}>{s.task}</div><div style={{fontSize:10,color:'rgba(195,200,215,.4)',marginTop:2}}>{s.effort}</div></div></div>)}</div>}
         </div>
       </div>
     </div>}
