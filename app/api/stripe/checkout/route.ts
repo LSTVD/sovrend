@@ -31,6 +31,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ url: session.url })
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 })
+    console.error("[STRIPE CHECKOUT]", err.message, err);return NextResponse.json({ error: err.message }, { status: 500 })
   }
 }
