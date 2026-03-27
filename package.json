@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.24.0",
+    "@codesandbox/sandpack-react": "^2.20.0",
     "@google/generative-ai": "^0.15.0",
     "@stripe/stripe-js": "^4.0.0",
     "@supabase/ssr": "^0.5.0",

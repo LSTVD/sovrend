@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
+import Link from 'next/link'
 
 export default function HomePage() {
   const [email, setEmail] = useState('')
@@ -68,6 +69,7 @@ export default function HomePage() {
               <p style={{fontSize:'13px',color:'rgba(200,204,215,0.6)'}}>We will let you know when the Grid opens.</p>
             </div>
           )}
+          <Link href="/auth" className="mt-10 inline-block px-8 py-3 cursor-pointer" style={{fontFamily:"Orbitron,sans-serif",fontSize:"9px",fontWeight:700,letterSpacing:"0.2em",color:"#F0F0FF",border:"1px solid rgba(255,107,0,0.25)",background:"linear-gradient(135deg,rgba(255,107,0,0.1),rgba(0,229,255,0.06))",transition:"all 0.3s ease",textDecoration:"none"}}>SIGN IN</Link>
           <div className="mt-12 flex items-center gap-3" style={{opacity:0.5}}>
             <span style={{fontFamily:'Orbitron,sans-serif',fontSize:'7px',letterSpacing:'0.2em',color:'#FF6B00',border:'1px solid rgba(255,107,0,0.2)',padding:'3px 8px',background:'rgba(255,107,0,0.04)'}}>BUILT WITH CLAUDE</span>
             <span style={{fontFamily:'Orbitron,sans-serif',fontSize:'7px',letterSpacing:'0.2em',color:'rgba(0,229,255,0.5)',border:'1px solid rgba(0,229,255,0.1)',padding:'3px 8px'}}>POWERED BY ANTHROPIC</span>
