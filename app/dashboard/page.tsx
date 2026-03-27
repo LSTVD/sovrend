@@ -459,18 +459,38 @@ export default function DashboardPage() {
     <style jsx global>{`@keyframes fu{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}@keyframes spin{to{transform:rotate(360deg)}}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(45,50,68,.14);border-radius:2px}body::after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 1px,rgba(0,229,255,.012) 1px,rgba(0,229,255,.012) 2px)}`}</style>
     {!entered&&<EntryScreen onDone={()=>setEntered(true)}/>}
     {publishCelebration&&<PublishCelebration appName={projName} onClose={()=>setPublishCelebration(false)}/>}
+    {projectsOpen&&<div className="fixed inset-0 z-[80] flex" onClick={()=>setProjectsOpen(false)}>
+      <div style={{width:sbW}} className="flex-shrink-0"/>
+      <div className="flex-1 flex items-start justify-center pt-12 px-6" style={{background:'rgba(0,3,8,.85)',backdropFilter:'blur(12px)'}}>
+        <div className="w-full max-w-2xl" onClick={e=>e.stopPropagation()} style={{background:'rgba(4,6,14,.98)',border:'1px solid rgba(0,229,255,.15)',animation:'fu .2s ease',maxHeight:'80vh',display:'flex',flexDirection:'column'}}>
+          <div className="flex items-center justify-between px-4 py-3" style={{borderBottom:'1px solid rgba(0,229,255,.07)'}}>
+            <span style={{fontFamily:UI,fontSize:9,letterSpacing:'.2em',color:'#00E5FF'}}>ALL PROJECTS ({savedApps.length})</span>
+            <span className="cursor-pointer" onClick={()=>setProjectsOpen(false)} style={{fontSize:12,color:'rgba(78,84,105,.3)'}}>✕</span>
+          </div>
+          <div className="flex-1 overflow-y-auto">
+            {savedApps.length===0&&<div style={{padding:24,textAlign:'center',fontSize:12,color:'rgba(115,122,142,.35)'}}>No projects yet. Build your first one.</div>}
+            {savedApps.map(app=><div key={app.id} className="flex items-center gap-3 px-4 py-3 cursor-pointer" onClick={()=>{loadApp(app);setProjectsOpen(false)}} style={{borderBottom:'1px solid rgba(0,229,255,.035)',transition:'all .2s'}} onMouseEnter={e=>e.currentTarget.style.background='rgba(0,229,255,.04)'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
+              <div className="flex items-center justify-center" style={{width:32,height:32,border:'1px solid rgba(0,229,255,.15)',fontFamily:UI,fontSize:8,color:'#00E5FF',background:'rgba(0,229,255,.04)',flexShrink:0}}>◫</div>
+              <div className="flex-1 min-w-0">
+                <div style={{fontSize:13,color:'#F0F0FF',fontWeight:500}}>{app.name}</div>
+                <div style={{fontSize:10,color:'rgba(115,122,142,.35)',marginTop:2}}>{new Date(app.updated_at).toLocaleDateString()} · {app.id===appId?'Active':'Saved'}</div>
+              </div>
+              {app.id===appId&&<span style={{fontFamily:UI,fontSize:7,letterSpacing:'.15em',color:'#00E5FF',padding:'2px 8px',border:'1px solid rgba(0,229,255,.2)',background:'rgba(0,229,255,.04)'}}>ACTIVE</span>}
+            </div>)}
+          </div>
+        </div>
+      </div>
+    </div>}
     <div className="fixed left-0 top-0 bottom-0 z-50 flex flex-col transition-all duration-300" style={{width:sbW,background:'rgba(4,6,14,.96)',borderRight:'1px solid rgba(0,229,255,.07)',backdropFilter:'blur(18px)',opacity:entered?1:0,transition:'opacity .5s ease'}}>
       <div className="flex items-center gap-2.5 px-4 py-3.5 flex-shrink-0" style={{borderBottom:'1px solid rgba(0,229,255,.035)'}}><GI s={20}/>{!sbCol&&<span style={{fontFamily:UI,fontSize:9,fontWeight:700,letterSpacing:'.2em',color:'rgba(0,229,255,.7)'}}>SOVREND</span>}<span className="ml-auto cursor-pointer" onClick={()=>setSbCol(!sbCol)} style={{fontSize:10,color:'rgba(115,122,142,.35)'}}>{sbCol?'▷':'◁'}</span></div>
       <div className="flex-1 overflow-y-auto px-2 py-2.5">
         {[{i:'⌂',l:'Home',a:true},{i:'⌕',l:'Search',r:'⌘K'}].map(x=><div key={x.l} className="flex items-center gap-2.5 cursor-pointer mb-px" style={{padding:sbCol?0:'8px 10px',width:sbCol?36:undefined,height:sbCol?36:undefined,margin:sbCol?'0 auto 2px':undefined,justifyContent:sbCol?'center':undefined,display:'flex',fontSize:12,color:x.a?'#00E5FF':'rgba(195,200,215,.75)',background:x.a?'rgba(0,229,255,.04)':'transparent',border:`1px solid ${x.a?'rgba(0,229,255,.15)':'transparent'}`}}><span style={{fontSize:14,width:20,textAlign:'center'}}>{x.i}</span>{!sbCol&&<span className="flex-1">{x.l}</span>}{!sbCol&&x.r&&<span style={{fontSize:8,color:'rgba(78,84,105,.22)',fontFamily:MONO}}>{x.r}</span>}</div>)}
         {!sbCol&&<div className="flex items-center justify-center gap-2 cursor-pointer my-1 py-2" onClick={newBuild} style={{border:'1px solid rgba(0,229,255,.15)',background:'rgba(0,229,255,.04)',color:'#00E5FF',fontFamily:UI,fontSize:9,letterSpacing:'.14em',fontWeight:600}}>+&nbsp;NEW BUILD</div>}
         {sbCol&&<div className="flex items-center justify-center cursor-pointer mb-px" onClick={newBuild} style={{width:36,height:36,margin:'4px auto',color:'#00E5FF',border:'1px solid rgba(0,229,255,.15)',background:'rgba(0,229,255,.04)',fontSize:16}}>+</div>}
-        {!sbCol&&<div className="flex items-center justify-between cursor-pointer" onClick={()=>setProjectsOpen(!projectsOpen)} style={{fontFamily:UI,fontSize:8,letterSpacing:'.2em',color:'rgba(0,229,255,.4)',padding:'10px 10px 4px'}}>
-          <span>PROJECTS ({savedApps.length})</span>
+        {!sbCol&&<div className="flex items-center justify-between cursor-pointer" onClick={()=>setProjectsOpen(!projectsOpen)} style={{fontFamily:UI,fontSize:8,letterSpacing:'.2em',color:projectsOpen?'#00E5FF':'rgba(0,229,255,.4)',padding:'10px 10px 4px',background:projectsOpen?'rgba(0,229,255,.04)':'transparent',border:`1px solid ${projectsOpen?'rgba(0,229,255,.15)':'transparent'}`,transition:'all .2s'}}>
+          <span>ALL PROJECTS ({savedApps.length})</span>
           <span style={{fontSize:10,color:'rgba(0,229,255,.3)',transition:'transform .2s',transform:projectsOpen?'rotate(90deg)':'rotate(0deg)'}}>▸</span>
         </div>}
-        {!sbCol&&projectsOpen&&savedApps.map(app=><div key={app.id} className="flex items-center gap-2.5 cursor-pointer mb-px" onClick={()=>loadApp(app)} style={{padding:'8px 10px',fontSize:12,color:appId===app.id?'#00E5FF':'rgba(195,200,215,.75)',background:appId===app.id?'rgba(0,229,255,.04)':'transparent',border:`1px solid ${appId===app.id?'rgba(0,229,255,.15)':'transparent'}`,animation:'fu .2s ease'}}><span style={{fontSize:14,width:20,textAlign:'center'}}>◫</span><span className="flex-1 truncate">{app.name}</span></div>)}
-        {!sbCol&&projectsOpen&&savedApps.length===0&&<div style={{padding:'8px 10px',fontSize:11,color:'rgba(115,122,142,.35)',animation:'fu .2s ease'}}>No projects yet</div>}
         {!sbCol&&<div style={{fontFamily:UI,fontSize:8,letterSpacing:'.2em',color:'rgba(0,229,255,.4)',padding:'10px 10px 4px'}}>SPARK · TEMPLATES</div>}
         {[{k:'portal',l:'Client Portal'},{k:'saas',l:'SaaS Dashboard'},{k:'booking',l:'Booking System'},{k:'store',l:'Online Store'}].map(s=><div key={s.k} className="flex items-center gap-2.5 cursor-pointer mb-px" onClick={()=>loadTpl(s.k)} style={{padding:sbCol?0:'8px 10px',width:sbCol?36:undefined,height:sbCol?36:undefined,margin:sbCol?'0 auto 2px':undefined,justifyContent:sbCol?'center':undefined,display:'flex',fontSize:12,color:'rgba(195,200,215,.75)(155,162,180,.55)',border:'1px solid transparent'}}><span style={{fontSize:14,width:20,textAlign:'center'}}>◈</span>{!sbCol&&<span>{s.l}</span>}</div>)}
         {!sbCol&&<div style={{height:1,background:'rgba(0,229,255,.035)',margin:'6px 10px'}}/>}
@@ -500,7 +520,7 @@ export default function DashboardPage() {
             <div style={{fontFamily:UI,fontSize:8,letterSpacing:'.2em',color:'rgba(0,229,255,.3)',marginTop:6}}>— {dq.a.toUpperCase()}</div>
           </div>})()}
           <div className="flex gap-2.5 items-start mb-6 text-left w-full max-w-lg" style={{padding:'12px 14px',background:'rgba(240,240,255,.03)',border:'1px solid rgba(240,240,255,.06)',borderLeft:'2px solid rgba(255,107,0,.4)'}}>
-            <div className="flex items-center justify-center flex-shrink-0" style={{width:28,height:28,fontFamily:UI,fontSize:8,border:'1px solid rgba(255,107,0,.3)',color:'#FF6B00',background:'rgba(255,107,0,.04)'}}>◇</div>
+            <div className="flex items-center justify-center flex-shrink-0" style={{padding:'4px 10px',fontFamily:UI,fontSize:8,letterSpacing:'.15em',border:'1px solid rgba(255,107,0,.3)',color:'#FF6B00',background:'rgba(255,107,0,.04)'}}>CIPHER</div>
             <div style={{fontSize:14,color:'rgba(240,240,255,.75)',lineHeight:1.6}}>Tell me what you want to build — in your own words. I&apos;ll handle the rest.</div>
           </div>
           <h2 style={{fontFamily:UI,fontSize:'clamp(18px,3vw,30px)',fontWeight:700,background:'linear-gradient(135deg,#FF6A00 20%,#00E5FF 80%)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',filter:'drop-shadow(0 0 12px rgba(255,106,0,0.15))',marginBottom:8}}>Are you ready to create?</h2>
@@ -510,9 +530,9 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between mt-3">
               <div className="flex gap-1.5 items-center">
                 {['📎','🎤','◇'].map(i=><div key={i} className="flex items-center justify-center cursor-pointer" style={{width:28,height:28,border:'1px solid rgba(0,229,255,.07)',color:'rgba(78,84,105,.22)',fontSize:12}}>{i}</div>)}
-                <div className="cursor-pointer" title="Coach improves your description before building" style={{fontFamily:UI,fontSize:8,letterSpacing:'.12em',color:'#00E5FF',border:'1px solid rgba(0,229,255,.15)',background:'rgba(0,229,255,.04)',padding:'5px 10px',height:28,display:'flex',alignItems:'center'}}>✦ ENHANCE</div>
+                <span style={{fontFamily:UI,fontSize:7,letterSpacing:'.12em',color:'rgba(0,229,255,.25)',display:'flex',alignItems:'center',height:28}}>⌘+ENTER TO CREATE</span>
               </div>
-              <button onClick={handleBuild} style={{fontFamily:UI,fontSize:10,fontWeight:700,letterSpacing:'.22em',color:'#F0F0FF',background:'linear-gradient(135deg,rgba(0,229,255,0.1),rgba(255,106,0,0.06))',border:'1px solid rgba(0,229,255,0.25)',padding:'9px 24px',cursor:'pointer',transition:'all 0.4s ease'}} onMouseEnter={e=>{const t=e.target as HTMLElement;t.style.background='linear-gradient(135deg,rgba(0,229,255,0.2),rgba(255,106,0,0.1))';t.style.borderColor='rgba(0,229,255,0.5)';t.style.boxShadow='0 0 30px rgba(0,229,255,0.15),0 0 60px rgba(255,106,0,0.06)'}} onMouseLeave={e=>{const t=e.target as HTMLElement;t.style.background='linear-gradient(135deg,rgba(0,229,255,0.1),rgba(255,106,0,0.06))';t.style.borderColor='rgba(0,229,255,0.25)';t.style.boxShadow='none'}}>CREATE →</button>
+              <button onClick={handleBuild} style={{fontFamily:UI,fontSize:12,fontWeight:900,letterSpacing:'.22em',color:'#000308',background:'linear-gradient(135deg,#00E5FF 20%,#FF6A00 80%)',border:'none',padding:'12px 32px',cursor:'pointer',transition:'all 0.4s ease',boxShadow:'0 0 16px rgba(0,229,255,0.2),0 0 40px rgba(255,106,0,0.1)'}} onMouseEnter={e=>{const t=e.target as HTMLElement;t.style.boxShadow='0 0 30px rgba(0,229,255,0.3),0 0 60px rgba(255,106,0,0.15)';t.style.transform='scale(1.02)'}} onMouseLeave={e=>{const t=e.target as HTMLElement;t.style.boxShadow='0 0 16px rgba(0,229,255,0.2),0 0 40px rgba(255,106,0,0.1)';t.style.transform='scale(1)'}}>CREATE →</button>
             </div>
           </div>
         </div></div>}
