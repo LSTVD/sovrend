@@ -522,21 +522,30 @@ export default function DashboardPage() {
     {projectsOpen&&<div className="fixed inset-0 z-[80] flex" onClick={()=>setProjectsOpen(false)}>
       <div style={{width:sbW}} className="flex-shrink-0"/>
       <div className="flex-1 flex items-start justify-center pt-12 px-6" style={{background:'rgba(0,3,8,.85)',backdropFilter:'blur(12px)'}}>
-        <div className="w-full max-w-2xl" onClick={e=>e.stopPropagation()} style={{background:'rgba(4,6,14,.98)',border:'1px solid rgba(0,229,255,.15)',animation:'fu .2s ease',maxHeight:'80vh',display:'flex',flexDirection:'column'}}>
-          <div className="flex items-center justify-between px-4 py-3" style={{borderBottom:'1px solid rgba(0,229,255,.07)'}}>
+        <div className="w-full max-w-5xl" onClick={e=>e.stopPropagation()} style={{background:'rgba(4,6,14,.98)',border:'1px solid rgba(0,229,255,.15)',animation:'fu .2s ease',maxHeight:'85vh',display:'flex',flexDirection:'column'}}>
+          <div className="flex items-center justify-between px-5 py-3" style={{borderBottom:'1px solid rgba(0,229,255,.07)'}}>
             <span style={{fontFamily:UI,fontSize:9,letterSpacing:'.2em',color:'#00E5FF'}}>ALL PROJECTS ({savedApps.length})</span>
             <span className="cursor-pointer" onClick={()=>setProjectsOpen(false)} style={{fontSize:12,color:'rgba(78,84,105,.3)'}}>✕</span>
           </div>
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto p-5">
             {savedApps.length===0&&<div style={{padding:24,textAlign:'center',fontSize:12,color:'rgba(115,122,142,.35)'}}>No projects yet. Build your first one.</div>}
-            {savedApps.map(app=><div key={app.id} className="flex items-center gap-3 px-4 py-3 cursor-pointer" onClick={()=>{loadApp(app);setProjectsOpen(false)}} style={{borderBottom:'1px solid rgba(0,229,255,.035)',transition:'all .2s'}} onMouseEnter={e=>e.currentTarget.style.background='rgba(0,229,255,.04)'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
-              <div className="flex items-center justify-center" style={{width:32,height:32,border:'1px solid rgba(0,229,255,.15)',fontFamily:UI,fontSize:8,color:'#00E5FF',background:'rgba(0,229,255,.04)',flexShrink:0}}>◫</div>
-              <div className="flex-1 min-w-0">
-                <div style={{fontSize:13,color:'#F0F0FF',fontWeight:500}}>{app.name}</div>
-                <div style={{fontSize:10,color:'rgba(115,122,142,.35)',marginTop:2}}>{new Date(app.updated_at).toLocaleDateString()} · {app.id===appId?'Active':'Saved'}</div>
-              </div>
-              {app.id===appId&&<span style={{fontFamily:UI,fontSize:7,letterSpacing:'.15em',color:'#00E5FF',padding:'2px 8px',border:'1px solid rgba(0,229,255,.2)',background:'rgba(0,229,255,.04)'}}>ACTIVE</span>}
-            </div>)}
+            <div className="grid gap-4" style={{gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))'}}>
+              {savedApps.map(app=>{
+                const cleanCode=(()=>{let c=app.code;const jm=c.match(/"code"\s*:\s*"([\s\S]*?)(?:"\s*[,}])/);if(jm)c=jm[1].replace(/\\n/g,'\n').replace(/\\"/g,'"').replace(/\\\\/g,'\\');const cb=c.match(/```(?:json|jsx?|tsx?)?\s*\n?([\s\S]*?)```/);if(cb)c=cb[1];return c.replace(/^import\s.*?[\r\n]+/gm,'').replace(/export\s+default\s+function/g,'function').replace(/export\s+default\s+/g,'')})()
+                const previewHtml=`<!DOCTYPE html><html><head><meta charset="utf-8"/><script src="https://unpkg.com/react@18/umd/react.production.min.js"><\/script><script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"><\/script><script src="https://cdn.tailwindcss.com"><\/script><style>body{margin:0;background:#0a0e18;color:#F0F0FF;font-family:system-ui,sans-serif;transform:scale(0.5);transform-origin:top left;width:200%;height:200%}</style></head><body><div id="root"></div><script>try{const{useState,useEffect,useRef,useCallback,useMemo}=React;${cleanCode.replace(/`/g,'\\`').replace(/<\/script/g,'<\\/script')};ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App))}catch(e){document.getElementById('root').innerHTML='<div style="padding:20px;color:#FF6A00;font-size:11px">'+e.message+'</div>'}<\/script></body></html>`
+                return <div key={app.id} className="cursor-pointer flex flex-col" onClick={()=>{loadApp(app);setProjectsOpen(false)}} style={{border:`1px solid ${app.id===appId?'rgba(0,229,255,.3)':'rgba(0,229,255,.08)'}`,background:app.id===appId?'rgba(0,229,255,.03)':'rgba(8,11,22,.5)',transition:'all .2s',overflow:'hidden'}} onMouseEnter={e=>e.currentTarget.style.borderColor='rgba(0,229,255,.3)'} onMouseLeave={e=>{if(app.id!==appId)e.currentTarget.style.borderColor='rgba(0,229,255,.08)'}}>
+                  <div style={{height:180,overflow:'hidden',position:'relative',background:'#0a0e18'}}>
+                    <iframe srcDoc={previewHtml} sandbox="allow-scripts" style={{width:'100%',height:'100%',border:'none',pointerEvents:'none'}}/>
+                  </div>
+                  <div className="flex items-center justify-between px-3 py-2.5" style={{borderTop:'1px solid rgba(0,229,255,.05)'}}>
+                    <div>
+                      <div style={{fontSize:12,color:'#F0F0FF',fontWeight:500}}>{app.name}</div>
+                      <div style={{fontSize:9,color:'rgba(115,122,142,.35)',marginTop:2}}>{new Date(app.updated_at).toLocaleDateString()}</div>
+                    </div>
+                    {app.id===appId&&<span style={{fontFamily:UI,fontSize:7,letterSpacing:'.15em',color:'#00E5FF',padding:'2px 8px',border:'1px solid rgba(0,229,255,.2)',background:'rgba(0,229,255,.04)'}}>ACTIVE</span>}
+                  </div>
+                </div>})}
+            </div>
           </div>
         </div>
       </div>
