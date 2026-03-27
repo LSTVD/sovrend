@@ -14,23 +14,83 @@ const TEMPLATES: Record<string,string> = {
 }
 const GLOSSARY = [
   {t:'API',d:'How apps talk to each other. Your app uses APIs to connect to payments, databases, and services.'},
+  {t:'App',d:'A program that runs in a browser or on a phone. What you are building right now.'},
   {t:'Auth',d:'How your app knows who someone is. The login system that checks credentials.'},
   {t:'Backend',d:'The behind-the-scenes part of your app. Handles data, security, and logic users don\'t see.'},
+  {t:'Bug',d:'Something in your app that doesn\'t work as expected. Every builder encounters them.'},
+  {t:'Build',d:'Turning your description into a working app. Claude reads your prompt and writes the code.'},
+  {t:'Cache',d:'A saved copy of data so your app doesn\'t have to fetch it again. Makes things faster.'},
+  {t:'Client',d:'The user\'s browser or device. Client-side means code that runs on their machine.'},
+  {t:'Cloud',d:'Someone else\'s computer that runs your app 24/7. Vercel, Supabase, AWS — all cloud services.'},
   {t:'Component',d:'A reusable piece of your app\'s interface. A button, a card, a form — building blocks.'},
+  {t:'CORS',d:'A security rule that controls which websites can talk to your backend.'},
+  {t:'CRUD',d:'Create, Read, Update, Delete — the four basic things you do with data.'},
+  {t:'CSS',d:'The styling language that controls how your app looks. Colors, fonts, spacing, layout.'},
   {t:'Database',d:'Where your app stores information. Like a giant organized spreadsheet on the internet.'},
+  {t:'Dependencies',d:'Other people\'s code your app uses. Libraries that add features without writing from scratch.'},
   {t:'Deploy',d:'Making your app live on the internet so anyone with the link can visit it.'},
   {t:'Domain',d:'Your app\'s address on the internet. Like myapp.com — what people type to find you.'},
+  {t:'Endpoint',d:'A specific URL your backend listens on. Send a request there, get a response back.'},
   {t:'Environment Variables',d:'Secret settings your app needs — like passwords for services. Users never see them.'},
+  {t:'Error Handling',d:'Code that catches problems gracefully instead of crashing.'},
+  {t:'Event',d:'Something that happens in your app — a click, a keystroke, a page load. Your code responds to events.'},
+  {t:'Fetch',d:'How your app asks for data from an API or server. Like placing an order and waiting for delivery.'},
+  {t:'Form',d:'Input fields where users type information. Name, email, password — forms collect data.'},
   {t:'Frontend',d:'The part people see and touch. Buttons, pages, forms, images — everything visual.'},
+  {t:'Function',d:'A reusable block of code that does one specific job. Like a recipe you can use over and over.'},
+  {t:'Git',d:'A system that tracks every change to your code. Like unlimited undo with a history of everything.'},
+  {t:'Hook',d:'A React feature that adds behavior to components. useState remembers things, useEffect runs actions.'},
+  {t:'Hosting',d:'The service that keeps your app running on the internet. Vercel hosts SOVREND apps.'},
+  {t:'HTML',d:'The skeleton of every web page. Defines what content exists — headings, paragraphs, buttons.'},
+  {t:'HTTP',d:'The language browsers and servers use to talk. GET fetches data, POST sends data.'},
+  {t:'Import',d:'Bringing code from another file into the current one. Like grabbing a tool from another toolbox.'},
+  {t:'JSON',d:'A format for sending data between apps. Looks like organized text with curly braces and colons.'},
+  {t:'Key',d:'A unique identifier for data or a secret password for services. API keys unlock access.'},
+  {t:'Layout',d:'The structure that wraps your pages. Navigation, footer, sidebar — shared across the app.'},
+  {t:'Library',d:'Pre-built code someone else wrote that you can use. Saves you from reinventing the wheel.'},
+  {t:'Loading State',d:'What your app shows while waiting for data. Spinners, skeletons, or progress bars.'},
+  {t:'Localhost',d:'Your app running on your own computer during development. Only you can see it.'},
+  {t:'Middleware',d:'Code that runs between a request and response. Like a bouncer checking IDs at the door.'},
+  {t:'Migration',d:'A change to your database structure. Adding a column, creating a table — tracked and reversible.'},
+  {t:'Modal',d:'A popup window inside your app. Confirmation dialogs, forms, and alerts use modals.'},
+  {t:'Navigation',d:'How users move between pages. Menus, links, tabs, and buttons that change what is on screen.'},
+  {t:'Next.js',d:'The framework your app is built on. Handles pages, routing, and server-side features automatically.'},
+  {t:'npm',d:'A tool that downloads and manages code packages. Like an app store for developers.'},
+  {t:'OAuth',d:'A way to log in using Google, GitHub, or other accounts instead of creating a new password.'},
+  {t:'Package',d:'A bundle of code you can install and use. Same as a library or dependency.'},
+  {t:'Pagination',d:'Splitting long lists into pages. Shows 10 items at a time instead of 10,000.'},
+  {t:'Production',d:'Your live app that real users see. The opposite of development and localhost.'},
+  {t:'Promise',d:'Code that will finish later. Fetching data is a promise — you wait for it to come back.'},
   {t:'Props',d:'Information passed between parts of your app. Like handing a note from one component to another.'},
+  {t:'Query',d:'A question you ask a database. Give me all users who signed up this week is a query.'},
+  {t:'React',d:'The library that builds your app\'s interface. Everything you see is a React component.'},
+  {t:'Redirect',d:'Automatically sending a user to a different page. After login, you redirect to the dashboard.'},
+  {t:'Refine',d:'Improving your app after the first build. Change the look, fix logic, add features.'},
+  {t:'Render',d:'Drawing your app on screen. When data changes, React re-renders the affected components.'},
   {t:'Responsive',d:'Your app looks good on any screen size — phone, tablet, desktop.'},
+  {t:'REST',d:'A pattern for building APIs. Uses standard HTTP methods like GET, POST, PUT, DELETE.'},
+  {t:'RLS',d:'Row Level Security — Supabase rules that control who can see which rows of data.'},
   {t:'Route',d:'A page in your app. /dashboard is one route, /invoices is another. Each has its own URL.'},
+  {t:'Sandbox',d:'An isolated environment for testing. Changes in a sandbox don\'t affect your live app.'},
   {t:'Schema',d:'The blueprint for your data. Like deciding what columns go in a spreadsheet before filling it.'},
+  {t:'Server',d:'A computer that responds to requests. When someone visits your app, a server sends them the page.'},
+  {t:'Session',d:'A user\'s active visit to your app. Starts at login, ends at logout or timeout.'},
+  {t:'SQL',d:'The language databases understand. SELECT, INSERT, UPDATE, DELETE — how you talk to your data.'},
+  {t:'State',d:'Data your app remembers right now. A toggle being on, items in a cart — all state.'},
   {t:'Stripe',d:'A payment system. Handles credit cards, subscriptions, and sends money to your bank.'},
-  {t:'Supabase',d:'Your app\'s database + login system in one. Stores data and controls who can see what.'},
+  {t:'Supabase',d:'Your app\'s database plus login system in one. Stores data and controls who can see what.'},
   {t:'Tailwind',d:'The styling system that makes your app look good. Controls colors, spacing, fonts, and layout.'},
+  {t:'Template',d:'A pre-built starting point. Start with a template and customize instead of from scratch.'},
+  {t:'Token',d:'A digital pass that proves identity. After login, your app uses a token to stay authenticated.'},
   {t:'TypeScript',d:'The programming language your app is written in. Like JavaScript but with safety guardrails.'},
+  {t:'UI',d:'User Interface — everything a person sees and interacts with. Buttons, text, images, forms.'},
+  {t:'URL',d:'The address of a page on the internet. Every page in your app has a unique URL.'},
+  {t:'UX',d:'User Experience — how it feels to use your app. Good UX means intuitive, fast, and satisfying.'},
+  {t:'Validation',d:'Checking that user input is correct. Making sure an email has an @ or a password is long enough.'},
+  {t:'Variable',d:'A named container that holds a value. Like a labeled box — you can put things in and take them out.'},
+  {t:'Vercel',d:'The platform that hosts your app and makes it live on the internet. One click to deploy.'},
   {t:'Webhook',d:'An automatic message between apps. When something happens in one, it instantly tells another.'},
+  {t:'WebSocket',d:'A live connection between your app and a server. Enables real-time features like chat.'},
 ]
 const QUOTES = [
   {q:'As a man thinketh, so is he.',a:'James Allen'},
@@ -487,10 +547,9 @@ export default function DashboardPage() {
         {[{i:'⌂',l:'Home',a:true},{i:'⌕',l:'Search',r:'⌘K'}].map(x=><div key={x.l} className="flex items-center gap-2.5 cursor-pointer mb-px" style={{padding:sbCol?0:'8px 10px',width:sbCol?36:undefined,height:sbCol?36:undefined,margin:sbCol?'0 auto 2px':undefined,justifyContent:sbCol?'center':undefined,display:'flex',fontSize:12,color:x.a?'#00E5FF':'rgba(195,200,215,.75)',background:x.a?'rgba(0,229,255,.04)':'transparent',border:`1px solid ${x.a?'rgba(0,229,255,.15)':'transparent'}`}}><span style={{fontSize:14,width:20,textAlign:'center'}}>{x.i}</span>{!sbCol&&<span className="flex-1">{x.l}</span>}{!sbCol&&x.r&&<span style={{fontSize:8,color:'rgba(78,84,105,.22)',fontFamily:MONO}}>{x.r}</span>}</div>)}
         {!sbCol&&<div className="flex items-center justify-center gap-2 cursor-pointer my-1 py-2" onClick={newBuild} style={{border:'1px solid rgba(0,229,255,.15)',background:'rgba(0,229,255,.04)',color:'#00E5FF',fontFamily:UI,fontSize:9,letterSpacing:'.14em',fontWeight:600}}>+&nbsp;NEW BUILD</div>}
         {sbCol&&<div className="flex items-center justify-center cursor-pointer mb-px" onClick={newBuild} style={{width:36,height:36,margin:'4px auto',color:'#00E5FF',border:'1px solid rgba(0,229,255,.15)',background:'rgba(0,229,255,.04)',fontSize:16}}>+</div>}
-        {!sbCol&&<div className="flex items-center justify-between cursor-pointer" onClick={()=>setProjectsOpen(!projectsOpen)} style={{fontFamily:UI,fontSize:8,letterSpacing:'.2em',color:projectsOpen?'#00E5FF':'rgba(0,229,255,.4)',padding:'10px 10px 4px',background:projectsOpen?'rgba(0,229,255,.04)':'transparent',border:`1px solid ${projectsOpen?'rgba(0,229,255,.15)':'transparent'}`,transition:'all .2s'}}>
-          <span>ALL PROJECTS ({savedApps.length})</span>
-          <span style={{fontSize:10,color:'rgba(0,229,255,.3)',transition:'transform .2s',transform:projectsOpen?'rotate(90deg)':'rotate(0deg)'}}>▸</span>
-        </div>}
+        {!sbCol&&<div style={{fontFamily:UI,fontSize:8,letterSpacing:'.2em',color:'rgba(0,229,255,.4)',padding:'10px 10px 4px'}}>RECENT</div>}
+        {!sbCol&&savedApps.slice(0,5).map(app=><div key={app.id} className="flex items-center gap-2.5 cursor-pointer mb-px" onClick={()=>loadApp(app)} style={{padding:'8px 10px',fontSize:12,color:appId===app.id?'#00E5FF':'rgba(195,200,215,.75)',background:appId===app.id?'rgba(0,229,255,.04)':'transparent',border:`1px solid ${appId===app.id?'rgba(0,229,255,.15)':'transparent'}`}}><span style={{fontSize:14,width:20,textAlign:'center'}}>◫</span><span className="flex-1 truncate">{app.name}</span></div>)}
+        {!sbCol&&<div className="flex items-center justify-center cursor-pointer my-1 py-1.5" onClick={()=>setProjectsOpen(true)} style={{fontSize:9,color:'rgba(0,229,255,.5)',border:'1px solid rgba(0,229,255,.07)'}}>ALL PROJECTS ({savedApps.length}) →</div>}
         {!sbCol&&<div style={{fontFamily:UI,fontSize:8,letterSpacing:'.2em',color:'rgba(0,229,255,.4)',padding:'10px 10px 4px'}}>SPARK · TEMPLATES</div>}
         {[{k:'portal',l:'Client Portal'},{k:'saas',l:'SaaS Dashboard'},{k:'booking',l:'Booking System'},{k:'store',l:'Online Store'}].map(s=><div key={s.k} className="flex items-center gap-2.5 cursor-pointer mb-px" onClick={()=>loadTpl(s.k)} style={{padding:sbCol?0:'8px 10px',width:sbCol?36:undefined,height:sbCol?36:undefined,margin:sbCol?'0 auto 2px':undefined,justifyContent:sbCol?'center':undefined,display:'flex',fontSize:12,color:'rgba(195,200,215,.75)(155,162,180,.55)',border:'1px solid transparent'}}><span style={{fontSize:14,width:20,textAlign:'center'}}>◈</span>{!sbCol&&<span>{s.l}</span>}</div>)}
         {!sbCol&&<div style={{height:1,background:'rgba(0,229,255,.035)',margin:'6px 10px'}}/>}
