@@ -133,9 +133,9 @@ function GridBg({state,rainSpeed}:{state:string,rainSpeed:number}) {
 function Msg({role,text,children}:{role:'cipher'|'user';text?:string;children?:React.ReactNode}) {
   const ic=role==='cipher'
   return <div className={`flex gap-2 items-start ${!ic?'flex-row-reverse':''}`} style={{animation:'fu .3s ease both'}}>
-    <div className="flex items-center justify-center flex-shrink-0" style={{width:26,height:26,fontFamily:UI,fontSize:8,
+    <div className="flex items-center justify-center flex-shrink-0" style={{padding:ic?'4px 8px':'4px 6px',fontFamily:UI,fontSize:7,letterSpacing:'.1em',
       border:`1px solid ${ic?'rgba(255,107,0,.3)':'rgba(0,229,255,.15)'}`,color:ic?'#FF6B00':'#00E5FF',
-      background:ic?'rgba(255,107,0,.04)':'rgba(0,229,255,.04)'}}>{ic?'◇':'S'}</div>
+      background:ic?'rgba(255,107,0,.04)':'rgba(0,229,255,.04)'}}>{ic?'CIPHER':'YOU'}</div>
     <div style={{padding:'10px 12px',fontSize:13,lineHeight:1.7,maxWidth:'92%',
       background:ic?'rgba(240,240,255,.04)':'rgba(0,229,255,.04)',
       border:`1px solid ${ic?'rgba(240,240,255,.10)':'rgba(0,229,255,.15)'}`,
@@ -355,8 +355,10 @@ export default function DashboardPage() {
   },[])
   // Render generated code in iframe
   useEffect(()=>{
-    if(!generatedCode||!iframeRef.current)return
-    let c=generatedCode
+    if(!generatedCode)return
+    const render=()=>{
+      if(!iframeRef.current){setTimeout(render,100);return}
+      let c=generatedCode
     // Strip JSON wrapper if code was saved with it
     const jm=c.match(/"code"\s*:\s*"([\s\S]*?)(?:"\s*[,}])/);if(jm)c=jm[1].replace(/\\n/g,'\n').replace(/\\"/g,'"').replace(/\\\\/g,'\\')
     const cb=c.match(/```(?:json|jsx?|tsx?)?\s*\n?([\s\S]*?)```/);if(cb)c=cb[1]
@@ -366,6 +368,8 @@ export default function DashboardPage() {
     const url=URL.createObjectURL(blob)
     iframeRef.current.src=url
     return()=>URL.revokeObjectURL(url)
+    }
+    render()
   },[generatedCode])
   useEffect(()=>{if(appState!=='idle')return;const iv=setInterval(()=>setPhIdx(p=>(p+1)%PLACEHOLDERS.length),4000);return()=>clearInterval(iv)},[appState])
   useEffect(()=>{const h=(e:KeyboardEvent)=>{if((e.metaKey||e.ctrlKey)&&e.key==='Enter'&&appState==='idle'&&prompt.trim()){e.preventDefault();handleBuild()}};document.addEventListener('keydown',h);return()=>document.removeEventListener('keydown',h)},[appState,prompt])
