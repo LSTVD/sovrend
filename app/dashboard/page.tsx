@@ -336,6 +336,25 @@ function PublishCelebration({appName,onClose}:{appName:string;onClose:()=>void})
   </div>
 }
 
+function ProjectPreview({code}:{code:string}) {
+  const ref=useRef<HTMLIFrameElement>(null)
+  useEffect(()=>{
+    if(!ref.current)return
+    let c=code
+    const jm=c.match(/"code"\s*:\s*"([\s\S]*?)(?:"\s*[,}])/)
+    if(jm)c=jm[1].replace(/\\n/g,'\n').replace(/\\"/g,'"').replace(/\\\\/g,'\\')
+    const cb=c.match(/```(?:json|jsx?|tsx?)?\s*\n?([\s\S]*?)```/)
+    if(cb)c=cb[1]
+    c=c.replace(/^import\s.*?[\r\n]+/gm,'').replace(/export\s+default\s+function/g,'function').replace(/export\s+default\s+/g,'')
+    const html='<!DOCTYPE html><html><head><meta charset="utf-8"/><script src="https://unpkg.com/react@18/umd/react.production.min.js"></script><script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script><script src="https://cdn.tailwindcss.com"></script><style>body{margin:0;background:#0a0e18;color:#F0F0FF;font-family:system-ui,sans-serif;transform:scale(0.5);transform-origin:top left;width:200%;height:200%}</style></head><body><div id="root"></div><script>try{const{useState,useEffect,useRef,useCallback,useMemo}=React;'+c+';ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App))}catch(e){document.getElementById("root").innerHTML="<div style=\\"padding:20px;color:#FF6A00\\">"+e.message+"</div>"}</script></body></html>'
+    const blob=new Blob([html],{type:'text/html'})
+    const url=URL.createObjectURL(blob)
+    ref.current.src=url
+    return()=>URL.revokeObjectURL(url)
+  },[code])
+  return <iframe ref={ref} sandbox="allow-scripts" style={{width:'100%',height:'100%',border:'none',pointerEvents:'none'}}/>
+}
+
 function EntryScreen({onDone}:{onDone:()=>void}) {
   const ref=useRef<HTMLCanvasElement>(null)
   const [show,setShow]=useState(true)
@@ -531,11 +550,9 @@ export default function DashboardPage() {
             {savedApps.length===0&&<div style={{padding:24,textAlign:'center',fontSize:12,color:'rgba(115,122,142,.35)'}}>No projects yet. Build your first one.</div>}
             <div className="grid gap-4" style={{gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))'}}>
               {savedApps.map(app=>{
-                const cleanCode=(()=>{let c=app.code;const jm=c.match(/"code"\s*:\s*"([\s\S]*?)(?:"\s*[,}])/);if(jm)c=jm[1].replace(/\\n/g,'\n').replace(/\\"/g,'"').replace(/\\\\/g,'\\');const cb=c.match(/```(?:json|jsx?|tsx?)?\s*\n?([\s\S]*?)```/);if(cb)c=cb[1];return c.replace(/^import\s.*?[\r\n]+/gm,'').replace(/export\s+default\s+function/g,'function').replace(/export\s+default\s+/g,'')})()
-                const previewHtml=`<!DOCTYPE html><html><head><meta charset="utf-8"/><script src="https://unpkg.com/react@18/umd/react.production.min.js"><\/script><script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"><\/script><script src="https://cdn.tailwindcss.com"><\/script><style>body{margin:0;background:#0a0e18;color:#F0F0FF;font-family:system-ui,sans-serif;transform:scale(0.5);transform-origin:top left;width:200%;height:200%}</style></head><body><div id="root"></div><script>try{const{useState,useEffect,useRef,useCallback,useMemo}=React;${cleanCode.replace(/`/g,'\\`').replace(/<\/script/g,'<\\/script')};ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App))}catch(e){document.getElementById('root').innerHTML='<div style="padding:20px;color:#FF6A00;font-size:11px">'+e.message+'</div>'}<\/script></body></html>`
                 return <div key={app.id} className="cursor-pointer flex flex-col" onClick={()=>{loadApp(app);setProjectsOpen(false)}} style={{border:`1px solid ${app.id===appId?'rgba(0,229,255,.3)':'rgba(0,229,255,.08)'}`,background:app.id===appId?'rgba(0,229,255,.03)':'rgba(8,11,22,.5)',transition:'all .2s',overflow:'hidden'}} onMouseEnter={e=>e.currentTarget.style.borderColor='rgba(0,229,255,.3)'} onMouseLeave={e=>{if(app.id!==appId)e.currentTarget.style.borderColor='rgba(0,229,255,.08)'}}>
                   <div style={{height:180,overflow:'hidden',position:'relative',background:'#0a0e18'}}>
-                    <iframe srcDoc={previewHtml} sandbox="allow-scripts" style={{width:'100%',height:'100%',border:'none',pointerEvents:'none'}}/>
+                    <ProjectPreview code={app.code}/>
                   </div>
                   <div className="flex items-center justify-between px-3 py-2.5" style={{borderTop:'1px solid rgba(0,229,255,.05)'}}>
                     <div>
@@ -558,7 +575,7 @@ export default function DashboardPage() {
         {sbCol&&<div className="flex items-center justify-center cursor-pointer mb-px" onClick={newBuild} style={{width:36,height:36,margin:'4px auto',color:'#00E5FF',border:'1px solid rgba(0,229,255,.15)',background:'rgba(0,229,255,.04)',fontSize:16}}>+</div>}
         {!sbCol&&<div style={{fontFamily:UI,fontSize:8,letterSpacing:'.2em',color:'rgba(0,229,255,.4)',padding:'10px 10px 4px'}}>RECENT</div>}
         {!sbCol&&savedApps.slice(0,5).map(app=><div key={app.id} className="flex items-center gap-2.5 cursor-pointer mb-px" onClick={()=>loadApp(app)} style={{padding:'8px 10px',fontSize:12,color:appId===app.id?'#00E5FF':'rgba(195,200,215,.75)',background:appId===app.id?'rgba(0,229,255,.04)':'transparent',border:`1px solid ${appId===app.id?'rgba(0,229,255,.15)':'transparent'}`}}><span style={{fontSize:14,width:20,textAlign:'center'}}>◫</span><span className="flex-1 truncate">{app.name}</span></div>)}
-        {!sbCol&&<div className="flex items-center justify-center cursor-pointer my-1 py-1.5" onClick={()=>setProjectsOpen(true)} style={{fontSize:9,color:'rgba(0,229,255,.5)',border:'1px solid rgba(0,229,255,.07)'}}>ALL PROJECTS ({savedApps.length}) →</div>}
+        {!sbCol&&<div className="flex items-center justify-center cursor-pointer my-1 py-2" onClick={()=>setProjectsOpen(true)} style={{fontFamily:UI,fontSize:8,letterSpacing:'.14em',fontWeight:600,color:'#00E5FF',border:'1px solid rgba(0,229,255,.25)',background:'rgba(0,229,255,.06)',transition:'all .3s'}} onMouseEnter={e=>{e.currentTarget.style.background='rgba(0,229,255,.12)';e.currentTarget.style.boxShadow='0 0 16px rgba(0,229,255,.1)'}} onMouseLeave={e=>{e.currentTarget.style.background='rgba(0,229,255,.06)';e.currentTarget.style.boxShadow='none'}}>ALL PROJECTS ({savedApps.length}) →</div>}
         {!sbCol&&<div style={{fontFamily:UI,fontSize:8,letterSpacing:'.2em',color:'rgba(0,229,255,.4)',padding:'10px 10px 4px'}}>SPARK · TEMPLATES</div>}
         {[{k:'portal',l:'Client Portal'},{k:'saas',l:'SaaS Dashboard'},{k:'booking',l:'Booking System'},{k:'store',l:'Online Store'}].map(s=><div key={s.k} className="flex items-center gap-2.5 cursor-pointer mb-px" onClick={()=>loadTpl(s.k)} style={{padding:sbCol?0:'8px 10px',width:sbCol?36:undefined,height:sbCol?36:undefined,margin:sbCol?'0 auto 2px':undefined,justifyContent:sbCol?'center':undefined,display:'flex',fontSize:12,color:'rgba(195,200,215,.75)(155,162,180,.55)',border:'1px solid transparent'}}><span style={{fontSize:14,width:20,textAlign:'center'}}>◈</span>{!sbCol&&<span>{s.l}</span>}</div>)}
         {!sbCol&&<div style={{height:1,background:'rgba(0,229,255,.035)',margin:'6px 10px'}}/>}
