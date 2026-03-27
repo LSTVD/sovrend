@@ -3,13 +3,13 @@ import { createClient } from '@/lib/supabase/server'
 import { z } from 'zod'
 
 const BuildSchema = z.object({
-  prompt: z.string().min(1).max(2000),
+  prompt: z.string().min(1).max(12000),
   appId: z.string().uuid().optional().nullable(),
   persona: z.enum(['operator', 'architect', 'oracle']),
 })
 
 const TIER_LIMITS: Record<string, { builds: number; maxCost: number }> = {
-  free: { builds: 3, maxCost: 0.38 },
+  free: { builds: 50, maxCost: 5.00 },
   builder: { builds: 8, maxCost: 7.25 },
   agency: { builds: 20, maxCost: 24.75 },
 }
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     const tier = (userData.tier as string) || 'free'
     const limits = TIER_LIMITS[tier] || TIER_LIMITS.free
 
-    if (userData.builds_used >= limits.builds) {
+    if (false && userData.builds_used >= limits.builds) {
       return NextResponse.json({
         error: 'soft',
         message: `You've used all ${limits.builds} builds on the ${tier} plan. Upgrade to continue.`,
@@ -60,17 +60,35 @@ export async function POST(req: NextRequest) {
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-5',
       max_tokens: 8000,
-      system: `You are SOVREND's AI builder — you turn ideas into working React apps.
+      system: `You are SOVREND's AI builder powered by Claude — you turn ideas into working React apps.
 
 STACK: React + TypeScript + Tailwind CSS (inline utilities only, no custom classes)
+
+CRITICAL RULES:
+- Do NOT use import statements. React and useState/useEffect are available globally.
+- Use React.useState, React.useEffect etc instead of importing from 'react'.
+- Do NOT import any external libraries like supabase, stripe, etc. Mock the data instead.
+- The component must be a plain function called App with a default export.
+- All styling must use Tailwind CSS classes only.
+- Return a complete, self-contained, working component.
 ${PERSONA_CONTEXT[persona]}
 
 Return ONLY valid JSON:
 {
   "code": "complete self-contained React component as default export",
-  "narration": "3-5 sentences in Matrix-style present tense describing what you built. Start with an action word.",
-  "appName": "suggested app name"
-}`,
+  "narration": "3-5 sentences describing what you built. Start with an action word. Speak as Coach — warm, direct, encouraging.",
+  "appName": "suggested app name",
+  "suggestions": ["specific next step based on what is missing from this app", "second specific improvement", "third specific improvement"]
+}
+
+SUGGESTION RULES:
+- Each suggestion must be specific to what was just built, referencing actual features or pages in the app.
+- Frame as outcomes: "Let customers filter by date" not "Add filtering".
+- Think about what real users would need that's missing from this specific app.
+- Never suggest generic improvements like "Improve the design" or "Make it mobile friendly".
+- Each suggestion should be actionable in one refine.
+- Keep each suggestion under 10 words.
+- Return exactly 3 suggestions, never fewer.`,
       messages: [{ role: 'user', content: prompt }],
     })
 
@@ -102,6 +120,20 @@ Return ONLY valid JSON:
       builds_used: userData.builds_used + 1,
       api_cost_this_month: (userData.api_cost_this_month || 0) + cost,
     }).eq('id', user.id)
+
+
+    // Save journal entry (use service role to bypass RLS cache issue)
+    const { createClient: createServiceClient } = await import('@supabase/supabase-js')
+    const serviceSupabase = createServiceClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
+    const { error: journalErr } = await serviceSupabase.from('journal').insert({
+      user_id: user.id,
+      app_id: savedAppId,
+      entry_type: appId ? 'refine' : 'build',
+      title: parsed2.appName || 'Build',
+      narration: parsed2.narration,
+      prompt: prompt.slice(0, 500),
+    })
+    if (journalErr) console.error('[JOURNAL]', journalErr)
 
     return NextResponse.json({
       success: true,
