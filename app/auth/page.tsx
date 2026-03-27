@@ -12,6 +12,9 @@ export default function AuthPage() {
   const [message, setMessage] = useState('')
   const [visible, setVisible] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const inputCanvasRef = useRef<HTMLCanvasElement>(null)
+  const inputParticlesRef = useRef<{x:number,y:number,vx:number,vy:number,life:number,decay:number,size:number}[]>([])
+  const formRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -69,6 +72,31 @@ export default function AuthPage() {
     return () => { window.removeEventListener('resize', resize); cancelAnimationFrame(raf) }
   }, [])
 
+  // Input typing particles
+  useEffect(()=>{
+    const c=inputCanvasRef.current,form=formRef.current;if(!c||!form)return
+    const ctx=c.getContext('2d')!;let raf=0
+    const resize=()=>{c.width=form.offsetWidth;c.height=form.offsetHeight}
+    resize();window.addEventListener('resize',resize)
+    const draw=()=>{
+      ctx.clearRect(0,0,c.width,c.height)
+      for(let i=inputParticlesRef.current.length-1;i>=0;i--){
+        const p=inputParticlesRef.current[i];p.x+=p.vx;p.y+=p.vy;p.vy*=0.99;p.life-=p.decay
+        if(p.life<=0){inputParticlesRef.current.splice(i,1);continue}
+        ctx.beginPath();ctx.arc(p.x,p.y,p.size*p.life,0,Math.PI*2)
+        ctx.fillStyle='rgba(255,106,0,'+(p.life*0.4)+')';ctx.fill()
+        if(p.life>0.5){ctx.beginPath();ctx.arc(p.x,p.y,p.size*0.3,0,Math.PI*2)
+          ctx.fillStyle='rgba(255,180,80,'+(p.life*0.3)+')';ctx.fill()}}
+      raf=requestAnimationFrame(draw)};raf=requestAnimationFrame(draw)
+    return()=>{cancelAnimationFrame(raf);window.removeEventListener('resize',resize)}
+  },[])
+  const emitSparks=(input:HTMLInputElement)=>{
+    const form=formRef.current;if(!form)return
+    const fr=form.getBoundingClientRect(),ir=input.getBoundingClientRect()
+    const x=ir.right-fr.left-4,y=ir.bottom-fr.top-6
+    for(let i=0;i<3;i++)inputParticlesRef.current.push({x:x+(Math.random()-0.5)*8,y:y+(Math.random()-0.5)*4,vx:(Math.random()-0.5)*0.4,vy:-(0.3+Math.random()*0.6),life:1,decay:0.008+Math.random()*0.005,size:0.7+Math.random()*1.3})
+  }
+
   async function handleSubmit() {
     if (!email || !password) { setError('Enter your email and password.'); return }
     setLoading(true); setError(''); setMessage('')
@@ -99,7 +127,8 @@ export default function AuthPage() {
       <div style={{ position: 'fixed', bottom: 24, right: 24, width: 40, height: 40, borderBottom: '1px solid rgba(0,229,255,0.06)', borderRight: '1px solid rgba(0,229,255,0.06)', zIndex: 5, pointerEvents: 'none' }} />
       <div style={{ position: 'fixed', top: 20, right: 20, zIndex: 999, padding: '4px 10px', fontFamily: "'Share Tech Mono', monospace", fontSize: '9px', letterSpacing: '0.15em', border: '1px solid rgba(255,227,0,0.3)', color: 'rgba(255,227,0,0.5)', background: 'rgba(0,0,0,0.7)' }}>PROTOTYPE</div>
       <div style={{ position: 'fixed', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
-        <div style={{ width: 380, maxWidth: 'calc(100vw - 48px)', opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(16px)', transition: 'all 0.8s ease' }}>
+        <div ref={formRef} style={{ width: 380, maxWidth: 'calc(100vw - 48px)', opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(16px)', transition: 'all 0.8s ease', position: 'relative' }}>
+          <canvas ref={inputCanvasRef} style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 20 }}/>
           <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 32, borderBottom: '1px solid rgba(255,106,0,0.15)', paddingBottom: 16 }}>
             <div style={{ fontFamily: "'Orbitron', sans-serif", fontSize: 'clamp(24px,5vw,30px)', fontWeight: 900, letterSpacing: '0.2em', background: 'linear-gradient(135deg,#00E5FF 20%,#FF6A00 80%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 0 12px rgba(0,229,255,0.15))' }}>SOVREND</div>
             <div style={{ fontSize: 9, letterSpacing: '0.12em', color: 'rgba(255,106,0,0.3)', textAlign: 'right' as const, lineHeight: 1.7 }}>SYSTEM v1.0<br /><span style={{ color: 'rgba(0,229,255,0.25)' }}>AUTHENTICATION REQ.</span></div>
@@ -110,11 +139,11 @@ export default function AuthPage() {
           </div>
           <div style={{ marginBottom: 24 }}>
             <label style={{ fontSize: 9, letterSpacing: '0.2em', color: 'rgba(255,106,0,0.4)', marginBottom: 6, display: 'block', textTransform: 'uppercase' as const }}>{mode === 'signin' ? 'IDENTIFICATION' : 'NEW IDENTIFICATION'}</label>
-            <input type="email" placeholder="Enter email address" value={email} onChange={e => setEmail(e.target.value)} autoComplete="email" style={{ width: '100%', background: 'rgba(255,255,255,0.015)', border: 'none', borderBottom: '1px solid rgba(255,106,0,0.15)', color: '#F0F0FF', padding: '12px 0', fontFamily: "'Share Tech Mono', monospace", fontSize: 14, letterSpacing: '0.04em', outline: 'none', transition: 'all 0.4s ease' }} onFocus={e => { e.target.style.borderBottomColor = '#FF6A00'; e.target.style.boxShadow = '0 4px 20px rgba(255,106,0,0.06)' }} onBlur={e => { e.target.style.borderBottomColor = 'rgba(255,106,0,0.15)'; e.target.style.boxShadow = 'none' }} />
+            <input type="email" placeholder="Enter email address" value={email} onChange={e => {setEmail(e.target.value);emitSparks(e.target)}} autoComplete="email" style={{ width: '100%', background: 'rgba(255,255,255,0.015)', border: 'none', borderBottom: '1px solid rgba(255,106,0,0.15)', color: '#F0F0FF', padding: '12px 0', fontFamily: "'Share Tech Mono', monospace", fontSize: 14, letterSpacing: '0.04em', outline: 'none', transition: 'all 0.4s ease' }} onFocus={e => { e.target.style.borderBottomColor = '#FF6A00'; e.target.style.boxShadow = '0 4px 20px rgba(255,106,0,0.06)' }} onBlur={e => { e.target.style.borderBottomColor = 'rgba(255,106,0,0.15)'; e.target.style.boxShadow = 'none' }} />
           </div>
           <div style={{ marginBottom: 24 }}>
             <label style={{ fontSize: 9, letterSpacing: '0.2em', color: 'rgba(255,106,0,0.4)', marginBottom: 6, display: 'block', textTransform: 'uppercase' as const }}>PASSPHRASE</label>
-            <input type="password" placeholder="Enter password" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') handleSubmit() }} autoComplete={mode === 'signin' ? 'current-password' : 'new-password'} style={{ width: '100%', background: 'rgba(255,255,255,0.015)', border: 'none', borderBottom: '1px solid rgba(255,106,0,0.15)', color: '#F0F0FF', padding: '12px 0', fontFamily: "'Share Tech Mono', monospace", fontSize: 14, letterSpacing: '0.04em', outline: 'none', transition: 'all 0.4s ease' }} onFocus={e => { e.target.style.borderBottomColor = '#FF6A00'; e.target.style.boxShadow = '0 4px 20px rgba(255,106,0,0.06)' }} onBlur={e => { e.target.style.borderBottomColor = 'rgba(255,106,0,0.15)'; e.target.style.boxShadow = 'none' }} />
+            <input type="password" placeholder="Enter password" value={password} onChange={e => {setPassword(e.target.value);emitSparks(e.target)}} onKeyDown={e => { if (e.key === 'Enter') handleSubmit() }} autoComplete={mode === 'signin' ? 'current-password' : 'new-password'} style={{ width: '100%', background: 'rgba(255,255,255,0.015)', border: 'none', borderBottom: '1px solid rgba(255,106,0,0.15)', color: '#F0F0FF', padding: '12px 0', fontFamily: "'Share Tech Mono', monospace", fontSize: 14, letterSpacing: '0.04em', outline: 'none', transition: 'all 0.4s ease' }} onFocus={e => { e.target.style.borderBottomColor = '#FF6A00'; e.target.style.boxShadow = '0 4px 20px rgba(255,106,0,0.06)' }} onBlur={e => { e.target.style.borderBottomColor = 'rgba(255,106,0,0.15)'; e.target.style.boxShadow = 'none' }} />
           </div>
           {mode==='signin'&&<div style={{ textAlign: 'right', marginBottom: 12 }}>
             <span className="cursor-pointer" onClick={async()=>{if(!email){setError('Enter your email first.');return}setError('');const{createClient:cc}=await import('@/lib/supabase/client');const sb=cc();const{error:e}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/auth/callback'});if(e)setError(e.message);else setMessage('Password reset email sent. Check your inbox.')}} style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 11, color: 'rgba(255,255,255,0.18)', background: 'none', border: 'none', cursor: 'pointer', transition: 'color 0.3s' }} onMouseEnter={e=>(e.currentTarget.style.color='#FF6A00')} onMouseLeave={e=>(e.currentTarget.style.color='rgba(255,255,255,0.18)')}>Forgot password?</span>
