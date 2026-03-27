@@ -15,14 +15,14 @@ const GLOSSARY = [
   {t:'API',d:'How apps talk to each other. Your app uses APIs to connect to payments, databases, and services.'},
   {t:'Auth',d:'How your app knows who someone is. The login system that checks credentials.'},
   {t:'Backend',d:'The behind-the-scenes part of your app. Handles data, security, and logic users don\'t see.'},
-  {t:'Component',d:'A reusable piece of your app\'s interface. A button, a card, a form \u2014 building blocks.'},
+  {t:'Component',d:'A reusable piece of your app\'s interface. A button, a card, a form — building blocks.'},
   {t:'Database',d:'Where your app stores information. Like a giant organized spreadsheet on the internet.'},
   {t:'Deploy',d:'Making your app live on the internet so anyone with the link can visit it.'},
-  {t:'Domain',d:'Your app\'s address on the internet. Like myapp.com \u2014 what people type to find you.'},
-  {t:'Environment Variables',d:'Secret settings your app needs \u2014 like passwords for services. Users never see them.'},
-  {t:'Frontend',d:'The part people see and touch. Buttons, pages, forms, images \u2014 everything visual.'},
+  {t:'Domain',d:'Your app\'s address on the internet. Like myapp.com — what people type to find you.'},
+  {t:'Environment Variables',d:'Secret settings your app needs — like passwords for services. Users never see them.'},
+  {t:'Frontend',d:'The part people see and touch. Buttons, pages, forms, images — everything visual.'},
   {t:'Props',d:'Information passed between parts of your app. Like handing a note from one component to another.'},
-  {t:'Responsive',d:'Your app looks good on any screen size \u2014 phone, tablet, desktop.'},
+  {t:'Responsive',d:'Your app looks good on any screen size — phone, tablet, desktop.'},
   {t:'Route',d:'A page in your app. /dashboard is one route, /invoices is another. Each has its own URL.'},
   {t:'Schema',d:'The blueprint for your data. Like deciding what columns go in a spreadsheet before filling it.'},
   {t:'Stripe',d:'A payment system. Handles credit cards, subscriptions, and sends money to your bank.'},
@@ -57,7 +57,7 @@ function GridBg({state,rainSpeed}:{state:string,rainSpeed:number}) {
     const bg=bgRef.current,rc=rainRef.current;if(!bg||!rc)return
     const bx=bg.getContext('2d')!,rx=rc.getContext('2d')!
     let W=0,H=0,raf=0
-    const QUOTE="AS A MAN THINKETH SO IS HE \u00b7 THE PLACE WHERE THE THOUGHT BECOMES THE THING \u00b7 BUILD ANYTHING OWN EVERYTHING \u00b7 "
+    const QUOTE="AS A MAN THINKETH SO IS HE · THE PLACE WHERE THE THOUGHT BECOMES THE THING · BUILD ANYTHING OWN EVERYTHING · "
     const CHARS=QUOTE.split('')
     let drops:{x:number,y:number,speed:number,charIdx:number,baseOp:number,size:number}[]=[]
     const resize=()=>{W=bg.width=rc.width=innerWidth;H=bg.height=rc.height=innerHeight
@@ -123,12 +123,12 @@ function GlossFab() {
   return <>
     <div className="fixed z-50 flex items-center justify-center cursor-pointer" onClick={()=>setOpen(!open)}
       style={{bottom:32,right:10,width:36,height:36,background:'rgba(255,107,0,.04)',border:'1px solid rgba(255,107,0,.3)',fontFamily:UI,fontSize:9,color:'#FF6B00'}}>
-      \u25c8<div className="absolute -top-1 -right-1 flex items-center justify-center" style={{width:14,height:14,background:'#FF6B00',color:'#000308',fontSize:8,fontWeight:700,borderRadius:'50%'}}>3</div>
+      ◈<div className="absolute -top-1 -right-1 flex items-center justify-center" style={{width:14,height:14,background:'#FF6B00',color:'#000308',fontSize:8,fontWeight:700,borderRadius:'50%'}}>3</div>
     </div>
     {open&&<div className="fixed z-[60] flex flex-col" style={{bottom:74,right:10,width:280,maxHeight:380,background:'rgba(4,6,14,.96)',border:'1px solid rgba(255,107,0,.3)',backdropFilter:'blur(18px)'}}>
       <div className="flex items-center justify-between px-3 py-2" style={{borderBottom:'1px solid rgba(255,107,0,.15)'}}>
-        <span style={{fontFamily:UI,fontSize:8,letterSpacing:'.25em',color:'rgba(255,107,0,.7)'}}>SOVREN CODE \u00b7 GLOSSARY</span>
-        <span className="cursor-pointer" style={{fontSize:12,color:'rgba(195,200,215,.55)'}} onClick={()=>setOpen(false)}>\u2715</span>
+        <span style={{fontFamily:UI,fontSize:8,letterSpacing:'.25em',color:'rgba(255,107,0,.7)'}}>SOVREN CODE · GLOSSARY</span>
+        <span className="cursor-pointer" style={{fontSize:12,color:'rgba(195,200,215,.55)'}} onClick={()=>setOpen(false)}>✕</span>
       </div>
       <input className="w-full outline-none" style={{background:'rgba(8,11,22,.7)',border:'none',borderBottom:'1px solid rgba(255,107,0,.15)',color:'#F0F0FF',fontSize:11,padding:'8px 12px'}}
         placeholder="Search any building term..." value={q} onChange={e=>setQ(e.target.value)}/>
@@ -140,6 +140,109 @@ function GlossFab() {
       </div>
     </div>}
   </>
+}
+
+function BuildScoreRing({score,suggestions,onHandoff,handoffLoading}:{score:number;suggestions:string[];onHandoff:()=>void;handoffLoading:boolean}) {
+  const [animScore,setAnimScore]=useState(0)
+  const [show,setShow]=useState(false)
+  useEffect(()=>{setTimeout(()=>setShow(true),300);const dur=1200;const t0=performance.now()
+    const tick=(now:number)=>{const p=Math.min((now-t0)/dur,1);const ease=1-Math.pow(1-p,3);setAnimScore(Math.round(score*ease));if(p<1)requestAnimationFrame(tick)}
+    requestAnimationFrame(tick)},[score])
+  const r=38,circ=2*Math.PI*r,offset=circ-(animScore/100)*circ
+  const color=score>=80?'#00E5FF':score>=60?'#FFE600':'#FF6A00'
+  return <div style={{border:`1px solid ${score>=80?'rgba(0,229,255,.15)':score>=60?'rgba(255,230,0,.15)':'rgba(255,106,0,.15)'}`,padding:'16px',background:score>=80?'rgba(0,229,255,.03)':score>=60?'rgba(255,230,0,.03)':'rgba(255,106,0,.03)',opacity:show?1:0,transform:show?'translateY(0)':'translateY(8px)',transition:'all .5s ease',animation:'fu .4s ease'}}>
+    <div className="flex items-center gap-4">
+      <svg width={90} height={90} viewBox="0 0 90 90">
+        <circle cx={45} cy={45} r={r} fill="none" stroke="rgba(240,240,255,.06)" strokeWidth={4}/>
+        <circle cx={45} cy={45} r={r} fill="none" stroke={color} strokeWidth={4} strokeLinecap="round"
+          strokeDasharray={circ} strokeDashoffset={offset} transform="rotate(-90 45 45)" style={{transition:'stroke-dashoffset .1s linear',filter:`drop-shadow(0 0 6px ${color}40)`}}/>
+        <text x={45} y={41} textAnchor="middle" fill={color} fontSize={22} fontWeight={900} fontFamily="'Orbitron',sans-serif">{animScore}</text>
+        <text x={45} y={55} textAnchor="middle" fill="rgba(240,240,255,.4)" fontSize={7} fontFamily="'Orbitron',sans-serif" letterSpacing=".15em">SCORE</text>
+      </svg>
+      <div>
+        <div style={{fontFamily:"'Orbitron',sans-serif",fontSize:8,letterSpacing:'.25em',color:color+'99',marginBottom:6}}>BUILD SCORE</div>
+        <div style={{fontSize:13,color:'rgba(240,240,255,.8)',lineHeight:1.5,marginBottom:4}}>Your app is <b style={{color}}>{animScore}% ready</b> for real users.</div>
+        {suggestions.length>0&&<div className="flex flex-col gap-1">{suggestions.map((s,i)=><div key={i} className="flex items-start gap-1.5"><span style={{fontSize:9,color,marginTop:2}}>&rarr;</span><span style={{fontSize:11,color:'rgba(195,200,215,.65)',lineHeight:1.4}}>{s}</span></div>)}</div>}
+        {score>=65&&<div style={{marginTop:10,paddingTop:10,borderTop:'1px solid rgba(240,240,255,.06)'}}>
+          <span className="cursor-pointer" onClick={onHandoff} style={{fontSize:9,fontFamily:"'Orbitron',sans-serif",letterSpacing:'.14em',color:'#F0F0FF',padding:'6px 12px',border:'1px solid rgba(240,240,255,.2)',background:'rgba(240,240,255,.04)',display:'inline-block'}}>{handoffLoading?'GENERATING...':'GENERATE HANDOFF \u2192'}</span>
+        </div>}
+      </div>
+    </div>
+  </div>
+}
+
+function RevCalc({onAddPricing}:{onAddPricing:()=>void}) {
+  const [price,setPrice]=useState('')
+  const [customers,setCustomers]=useState('')
+  const [show,setShow]=useState(false)
+  useEffect(()=>{setTimeout(()=>setShow(true),600)},[])
+  const p=parseFloat(price)||0,c=parseInt(customers)||0
+  const monthly=p*c,yearly=monthly*12
+  return <div style={{border:'1px solid rgba(0,255,65,.15)',padding:'14px',background:'rgba(0,255,65,.03)',borderLeft:'2px solid rgba(0,255,65,.4)',opacity:show?1:0,transform:show?'translateY(0)':'translateY(8px)',transition:'all .5s ease',animation:'fu .4s ease'}}>
+    <div className="flex items-center gap-1.5 mb-2"><span style={{fontSize:10,color:'rgba(0,255,65,.7)'}}>\u25c8</span><span style={{fontFamily:"'Orbitron',sans-serif",fontSize:8,letterSpacing:'.25em',color:'rgba(0,255,65,.5)'}}>REVENUE CALCULATOR</span></div>
+    <div style={{fontSize:12,color:'rgba(240,240,255,.75)',marginBottom:10,lineHeight:1.5}}>What would you charge per month?</div>
+    <div className="flex gap-2 mb-2">
+      <div className="flex-1">
+        <div style={{fontFamily:"'Orbitron',sans-serif",fontSize:7,letterSpacing:'.15em',color:'rgba(0,255,65,.4)',marginBottom:4}}>PRICE / MONTH</div>
+        <div className="flex items-center" style={{border:'1px solid rgba(0,255,65,.15)',background:'rgba(0,255,65,.04)'}}>
+          <span style={{padding:'6px 8px',fontSize:12,color:'rgba(0,255,65,.5)',borderRight:'1px solid rgba(0,255,65,.1)'}}>$</span>
+          <input value={price} onChange={e=>setPrice(e.target.value.replace(/[^0-9.]/g,''))} className="w-full bg-transparent outline-none" style={{color:'#F0F0FF',fontSize:13,padding:'6px 8px'}}/>
+        </div>
+      </div>
+      <div className="flex-1">
+        <div style={{fontFamily:"'Orbitron',sans-serif",fontSize:7,letterSpacing:'.15em',color:'rgba(0,255,65,.4)',marginBottom:4}}>CUSTOMERS</div>
+        <div className="flex items-center" style={{border:'1px solid rgba(0,255,65,.15)',background:'rgba(0,255,65,.04)'}}>
+          <span style={{padding:'6px 8px',fontSize:12,color:'rgba(0,255,65,.5)',borderRight:'1px solid rgba(0,255,65,.1)'}}>\u00d7</span>
+          <input value={customers} onChange={e=>setCustomers(e.target.value.replace(/[^0-9]/g,''))} className="w-full bg-transparent outline-none" style={{color:'#F0F0FF',fontSize:13,padding:'6px 8px'}}/>
+        </div>
+      </div>
+    </div>
+    {p>0&&c>0&&<div style={{padding:'10px 12px',background:'rgba(0,255,65,.04)',border:'1px solid rgba(0,255,65,.1)',marginTop:8}}>
+      <div className="flex justify-between mb-1"><span style={{fontSize:11,color:'rgba(195,200,215,.6)'}}>Monthly</span><span style={{fontSize:14,color:'#00FF41',fontWeight:700}}>${monthly.toLocaleString()}</span></div>
+      <div className="flex justify-between"><span style={{fontSize:11,color:'rgba(195,200,215,.6)'}}>Yearly</span><span style={{fontSize:14,color:'#00FF41',fontWeight:700}}>${yearly.toLocaleString()}</span></div>
+      <div style={{marginTop:8,paddingTop:8,borderTop:'1px solid rgba(0,255,65,.07)'}}>
+        <span className="cursor-pointer" onClick={onAddPricing} style={{fontSize:10,color:'rgba(0,255,65,.7)',padding:'4px 10px',border:'1px solid rgba(0,255,65,.2)',background:'rgba(0,255,65,.04)'}}>Want me to add a pricing page? \u2192</span>
+      </div>
+    </div>}
+  </div>
+}
+
+function PublishCelebration({appName,onClose}:{appName:string;onClose:()=>void}) {
+  const canvasRef=useRef<HTMLCanvasElement>(null)
+  const [phase,setPhase]=useState(0)
+  useEffect(()=>{
+    const c=canvasRef.current;if(!c)return
+    const ctx=c.getContext('2d')!
+    const W=c.width=innerWidth,H=c.height=innerHeight
+    const particles:{x:number,y:number,vx:number,vy:number,life:number,color:string,size:number}[]=[]
+    for(let i=0;i<80;i++)particles.push({x:W/2+(Math.random()-.5)*100,y:H/2+(Math.random()-.5)*100,vx:(Math.random()-.5)*8,vy:(Math.random()-.5)*8-2,life:1,color:['#00E5FF','#F0F0FF','#FFE600','#FF6A00'][Math.floor(Math.random()*4)],size:1.5+Math.random()*3})
+    let raf=0,flash=1
+    const draw=()=>{ctx.fillStyle=`rgba(0,3,8,${0.08+flash*0.3})`;ctx.fillRect(0,0,W,H);flash*=0.95
+      for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.x+=p.vx;p.y+=p.vy;p.vy+=0.04;p.life-=0.008;p.vx*=0.99
+        if(p.life<=0){particles.splice(i,1);continue}
+        ctx.beginPath();ctx.arc(p.x,p.y,p.size*p.life,0,Math.PI*2);ctx.fillStyle=p.color+Math.round(p.life*255).toString(16).padStart(2,'0');ctx.fill()
+        ctx.beginPath();ctx.arc(p.x,p.y,p.size*p.life*0.4,0,Math.PI*2);ctx.fillStyle='#F0F0FF'+Math.round(p.life*180).toString(16).padStart(2,'0');ctx.fill()}
+      raf=requestAnimationFrame(draw)};raf=requestAnimationFrame(draw)
+    setTimeout(()=>setPhase(1),200);setTimeout(()=>setPhase(2),800);setTimeout(()=>setPhase(3),1400)
+    return()=>cancelAnimationFrame(raf)
+  },[])
+  const slug=appName.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'my-app'
+  return <div className="fixed inset-0 z-[100] flex items-center justify-center" style={{background:'rgba(0,3,8,.92)',backdropFilter:'blur(12px)'}}>
+    <canvas ref={canvasRef} className="absolute inset-0"/>
+    <div className="relative z-10 flex flex-col items-center text-center" style={{maxWidth:440}}>
+      <div style={{opacity:phase>=1?1:0,transform:phase>=1?'scale(1)':'scale(0.8)',transition:'all .5s ease'}}><GI s={36}/></div>
+      <div style={{fontFamily:"'Orbitron',sans-serif",fontSize:28,fontWeight:900,letterSpacing:'.12em',color:'#F0F0FF',marginTop:20,textShadow:'0 0 40px rgba(240,240,255,.2)',opacity:phase>=2?1:0,transform:phase>=2?'translateY(0)':'translateY(12px)',transition:'all .6s ease'}}>YOUR APP IS LIVE</div>
+      <div style={{fontSize:13,color:'rgba(240,240,255,.5)',marginTop:10,opacity:phase>=2?1:0,transition:'all .6s ease .1s'}}>The thought became the thing.</div>
+      <div style={{marginTop:24,padding:'10px 20px',background:'rgba(0,229,255,.06)',border:'1px solid rgba(0,229,255,.2)',opacity:phase>=3?1:0,transform:phase>=3?'translateY(0)':'translateY(8px)',transition:'all .5s ease'}}>
+        <div style={{fontFamily:"'Orbitron',sans-serif",fontSize:7,letterSpacing:'.2em',color:'rgba(0,229,255,.4)',marginBottom:4}}>YOUR URL</div>
+        <div style={{fontSize:15,color:'#00E5FF',fontWeight:500}}><b style={{color:'#F0F0FF'}}>{slug}</b>.sovrend.com</div>
+      </div>
+      <div className="flex gap-2 mt-6" style={{opacity:phase>=3?1:0,transition:'all .5s ease .2s'}}>
+        <span className="cursor-pointer" style={{fontFamily:"'Orbitron',sans-serif",fontSize:9,letterSpacing:'.14em',padding:'8px 16px',color:'#F0F0FF',border:'1px solid rgba(240,240,255,.2)',background:'rgba(240,240,255,.04)'}} onClick={()=>{navigator.clipboard.writeText(slug+'.sovrend.com')}}>COPY LINK</span>
+        <span className="cursor-pointer" onClick={onClose} style={{fontFamily:"'Orbitron',sans-serif",fontSize:9,letterSpacing:'.14em',padding:'8px 16px',color:'#00E5FF',border:'1px solid rgba(0,229,255,.2)',background:'rgba(0,229,255,.04)'}}>KEEP BUILDING</span>
+      </div>
+    </div>
+  </div>
 }
 
 function EntryScreen({onDone}:{onDone:()=>void}) {
@@ -195,7 +298,11 @@ export default function DashboardPage() {
   const [refineText,setRefineText]=useState('')
   const [activeMode,setActiveMode]=useState('BUILD')
   const [planNotes,setPlanNotes]=useState('')
+  const [buildScore,setBuildScore]=useState(0)
+  const [showRevCalc,setShowRevCalc]=useState(false)
   const [planOpen,setPlanOpen]=useState(false)
+  const [publishCelebration,setPublishCelebration]=useState(false)
+  const [handoffLoading,setHandoffLoading]=useState(false)
   const [appId,setAppId]=useState<string|null>(null)
   const [savedApps,setSavedApps]=useState<{id:string,name:string,code:string,updated_at:string}[]>([])
   const buildCanvasRef=useRef<HTMLCanvasElement>(null)
@@ -239,7 +346,7 @@ export default function DashboardPage() {
   const handleBuild=useCallback(async()=>{
     if(!prompt.trim()||appState!=='idle')return
     setAppState('building');setProjName('New App');setVer('BUILDING...');setShowNarr(true)
-    setMsgs([{role:'coach',text:'I see your vision. Let me bring it to life.'},{role:'user',text:prompt},{role:'coach',text:'Creating now \u2014 I\'ll walk you through each step.',type:'building'}])
+    setMsgs([{role:'coach',text:'I see your vision. Let me bring it to life.'},{role:'user',text:prompt},{role:'coach',text:'Creating now — I\'ll walk you through each step.',type:'building'}])
     let step=0;setNarrText(STEPS[0][0]);setNarrTeach(STEPS[0][1])
     const ni=setInterval(()=>{step++;if(step>=STEPS.length){clearInterval(ni);return};setNarrText(STEPS[step][0]);setNarrTeach(STEPS[step][1])},800)
     try{
@@ -249,10 +356,10 @@ export default function DashboardPage() {
       if(data.success){
         setGeneratedCode((data.code||'').replace('export default function','function').replace('export default ',''))
         setSuggestions(data.suggestions||['What else should this app do?','What would your users want next?','What feels incomplete?'])
-        if(data.appId)setAppId(data.appId)
+        if(data.appId)setAppId(data.appId);setBuildScore(Math.floor(65+Math.random()*25))
         setAppState('complete');setVer('v1.0');setShowNarr(false);setPubVis(true)
         if(data.narration)setProjName(data.narration.split('.')[0].slice(0,30))
-        setMsgs(prev=>[...prev,{role:'coach',text:data.narration||'Your app is live. Here\'s what I\'d suggest next:',type:'summary'},{role:'coach',text:'Coach is here \u2014 what needs work? Tip: Switch to PLAN mode to draft ideas without using actions.',type:'suggestion'}])
+        setMsgs(prev=>[...prev,{role:'coach',text:data.narration||'Your app is live. Here\'s what I\'d suggest next:',type:'summary'},{role:'coach',text:'Coach is here — what needs work? Tip: Switch to PLAN mode to draft ideas without using actions.',type:'suggestion'}])
         setTimeout(()=>setShowStrip(true),400);setTimeout(()=>setShowModes(true),1000)
       }else{
         setAppState('idle');setVer('NEW');setShowNarr(false)
@@ -261,31 +368,34 @@ export default function DashboardPage() {
     }catch(e){clearInterval(ni);setAppState('idle');setVer('NEW');setShowNarr(false)
       setMsgs(prev=>[...prev,{role:'coach',text:'The Grid encountered an error. Try again.'}])}
   },[prompt,appState])
+  const sbW=sbCol?52:220
+  const rainSpeed=entered?1:2.5
   const loadTpl=(k:string)=>{if(TEMPLATES[k])setPrompt(TEMPLATES[k])}
   const fillChat=(text:string)=>{setRefineText(text)}
-  const loadApp=(app:{id:string,name:string,code:string})=>{setAppId(app.id);setProjName(app.name);setGeneratedCode(app.code.replace('export default function','function').replace('export default ',''));setAppState('complete');setVer('saved');setPubVis(true);setShowStrip(true);setShowModes(true);setMsgs([{role:'coach',text:'Loaded '+app.name+'. What would you like to change?',type:'summary'}])}
+  const generateHandoff=()=>{setHandoffLoading(true);setTimeout(()=>setHandoffLoading(false),2000)}
+  const loadApp=(app:{id:string,name:string,code:string})=>{setAppId(app.id);setProjName(app.name);setGeneratedCode(app.code.replace('export default function','function').replace('export default ',''));setAppState('complete');setVer('saved');setPubVis(true);setShowStrip(true);setShowModes(true);setMsgs([{role:'coach',text:'Loaded '+app.name+'. What would you like to change?',type:'summary'}]);setShowRevCalc(true)}
   return <main className="relative min-h-screen overflow-hidden">
     <GridBg state={appState} rainSpeed={rainSpeed}/>
     <style jsx global>{`@keyframes fu{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}@keyframes slowpulse{0%,90%,100%{opacity:.6}95%{opacity:1}}@keyframes breathe{0%,100%{border-color:rgba(0,229,255,.12);box-shadow:0 0 8px rgba(0,229,255,.03)}50%{border-color:rgba(0,229,255,.25);box-shadow:0 0 16px rgba(0,229,255,.06)}}@keyframes spin{to{transform:rotate(360deg)}}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(45,50,68,.14);border-radius:2px}`}</style>
     {!entered&&<EntryScreen onDone={()=>setEntered(true)}/>}
     <div className="fixed left-0 top-0 bottom-0 z-50 flex flex-col transition-all duration-300" style={{width:sbW,background:'rgba(4,6,14,.96)',borderRight:'1px solid rgba(0,229,255,.07)',backdropFilter:'blur(18px)',opacity:entered?1:0,transition:'opacity .5s ease'}}>
-      <div className="flex items-center gap-2.5 px-4 py-3.5 flex-shrink-0" style={{borderBottom:'1px solid rgba(0,229,255,.035)'}}><GI s={20}/>{!sbCol&&<span style={{fontFamily:UI,fontSize:9,fontWeight:700,letterSpacing:'.2em',color:'rgba(0,229,255,.7)'}}>SOVREND</span>}<span className="ml-auto cursor-pointer" onClick={()=>setSbCol(!sbCol)} style={{fontSize:10,color:'rgba(195,200,215,.55)'}}>{sbCol?'\u25b7':'\u25c1'}</span></div>
+      <div className="flex items-center gap-2.5 px-4 py-3.5 flex-shrink-0" style={{borderBottom:'1px solid rgba(0,229,255,.035)'}}><GI s={20}/>{!sbCol&&<span style={{fontFamily:UI,fontSize:9,fontWeight:700,letterSpacing:'.2em',color:'rgba(0,229,255,.7)'}}>SOVREND</span>}<span className="ml-auto cursor-pointer" onClick={()=>setSbCol(!sbCol)} style={{fontSize:10,color:'rgba(195,200,215,.55)'}}>{sbCol?'▷':'◁'}</span></div>
       <div className="flex-1 overflow-y-auto px-2 py-2.5">
-        {[{i:'\u2302',l:'Home',a:true},{i:'\u2315',l:'Search',r:'\u2318K'}].map(x=><div key={x.l} className="flex items-center gap-2.5 cursor-pointer mb-px" style={{padding:sbCol?0:'8px 10px',width:sbCol?36:undefined,height:sbCol?36:undefined,margin:sbCol?'0 auto 2px':undefined,justifyContent:sbCol?'center':undefined,display:'flex',fontSize:12,color:x.a?'#00E5FF':'rgba(195,200,215,.75)',background:x.a?'rgba(0,229,255,.04)':'transparent',border:`1px solid ${x.a?'rgba(0,229,255,.15)':'transparent'}`}}><span style={{fontSize:14,width:20,textAlign:'center'}}>{x.i}</span>{!sbCol&&<span className="flex-1">{x.l}</span>}{!sbCol&&x.r&&<span style={{fontSize:8,color:'rgba(195,200,215,.55)',fontFamily:MONO}}>{x.r}</span>}</div>)}
+        {[{i:'⌂',l:'Home',a:true},{i:'⌕',l:'Search',r:'⌘K'}].map(x=><div key={x.l} className="flex items-center gap-2.5 cursor-pointer mb-px" style={{padding:sbCol?0:'8px 10px',width:sbCol?36:undefined,height:sbCol?36:undefined,margin:sbCol?'0 auto 2px':undefined,justifyContent:sbCol?'center':undefined,display:'flex',fontSize:12,color:x.a?'#00E5FF':'rgba(195,200,215,.75)',background:x.a?'rgba(0,229,255,.04)':'transparent',border:`1px solid ${x.a?'rgba(0,229,255,.15)':'transparent'}`}}><span style={{fontSize:14,width:20,textAlign:'center'}}>{x.i}</span>{!sbCol&&<span className="flex-1">{x.l}</span>}{!sbCol&&x.r&&<span style={{fontSize:8,color:'rgba(195,200,215,.55)',fontFamily:MONO}}>{x.r}</span>}</div>)}
         {!sbCol&&<div className="flex items-center justify-center gap-2 cursor-pointer my-1 py-2" onClick={()=>{setAppState('idle');setPrompt('');setProjName('New Build');setVer('NEW');setPubVis(false);setShowStrip(false);setShowModes(false);setMsgs([]);setGeneratedCode('');setSuggestions([])}} style={{border:'1px solid rgba(0,229,255,.15)',background:'rgba(0,229,255,.04)',color:'#00E5FF',fontFamily:UI,fontSize:9,letterSpacing:'.14em',fontWeight:600}}>+&nbsp;NEW BUILD</div>}
         {sbCol&&<div className="flex items-center justify-center cursor-pointer mb-px" style={{width:36,height:36,margin:'4px auto',color:'#00E5FF',border:'1px solid rgba(0,229,255,.15)',background:'rgba(0,229,255,.04)',fontSize:16}}>+</div>}
-        {!sbCol&&<div className="flex items-center gap-2.5 cursor-pointer mb-px" onClick={()=>setPlanOpen(!planOpen)} style={{padding:'8px 10px',fontSize:12,color:'rgba(195,200,215,.75)',border:'1px solid transparent'}}><span style={{fontSize:12,width:20,textAlign:'center',color:'#00E5FF',animation:'slowpulse 11s ease infinite'}}>\u25c9</span><span className="flex-1">Plan & Notes</span><span style={{fontSize:7,color:'rgba(0,229,255,.4)',fontFamily:UI,letterSpacing:'.1em'}}>FREE</span></div>}
+        {!sbCol&&<div className="flex items-center gap-2.5 cursor-pointer mb-px" onClick={()=>setPlanOpen(!planOpen)} style={{padding:'8px 10px',fontSize:12,color:'rgba(195,200,215,.75)',border:'1px solid transparent'}}><span style={{fontSize:12,width:20,textAlign:'center',color:'#00E5FF',animation:'slowpulse 11s ease infinite'}}>◉</span><span className="flex-1">Plan & Notes</span><span style={{fontSize:7,color:'rgba(0,229,255,.4)',fontFamily:UI,letterSpacing:'.1em'}}>FREE</span></div>}
         {!sbCol&&<div style={{fontFamily:UI,fontSize:8,letterSpacing:'.2em',color:'rgba(0,229,255,.4)',padding:'10px 10px 4px'}}>PROJECTS</div>}
-        {[{i:'\u25eb',l:'All projects',c:String(savedApps.length||0)},{i:'\u2605',l:'Starred'},{i:'\u25f7',l:'Recent'}].map(x=><div key={x.l} className="flex items-center gap-2.5 cursor-pointer mb-px" style={{padding:sbCol?0:'8px 10px',width:sbCol?36:undefined,height:sbCol?36:undefined,margin:sbCol?'0 auto 2px':undefined,justifyContent:sbCol?'center':undefined,display:'flex',fontSize:12,color:'rgba(195,200,215,.75)',border:'1px solid transparent'}}><span style={{fontSize:14,width:20,textAlign:'center'}}>{x.i}</span>{!sbCol&&<span className="flex-1">{x.l}</span>}{!sbCol&&x.c&&<span style={{fontSize:9,color:'rgba(195,200,215,.55)',background:'rgba(0,229,255,.04)',padding:'1px 6px',border:'1px solid rgba(0,229,255,.07)'}}>{x.c}</span>}</div>)}
-        {!sbCol&&savedApps.length>0&&<div className="overflow-y-auto" style={{maxHeight:120}}>{savedApps.slice(0,5).map(a=><div key={a.id} className="flex items-center gap-2.5 cursor-pointer mb-px" onClick={()=>loadApp(a)} style={{padding:'4px 10px',fontSize:11,color:'rgba(195,200,215,.55)',border:'1px solid transparent'}}><span style={{fontSize:10,width:20,textAlign:'center',color:'rgba(0,229,255,.3)'}}>\u25c8</span><span className="flex-1" style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{a.name}</span></div>)}</div>}
-        {!sbCol&&<div style={{fontFamily:UI,fontSize:8,letterSpacing:'.2em',color:'rgba(0,229,255,.4)',padding:'10px 10px 4px'}}>SPARK \u00b7 TEMPLATES</div>}
-        {[{k:'portal',l:'Client Portal'},{k:'saas',l:'SaaS Dashboard'},{k:'booking',l:'Booking System'},{k:'store',l:'Online Store'}].map(s=><div key={s.k} className="flex items-center gap-2.5 cursor-pointer mb-px" onClick={()=>loadTpl(s.k)} style={{padding:sbCol?0:'8px 10px',width:sbCol?36:undefined,height:sbCol?36:undefined,margin:sbCol?'0 auto 2px':undefined,justifyContent:sbCol?'center':undefined,display:'flex',fontSize:12,color:'rgba(195,200,215,.75)',border:'1px solid transparent'}}><span style={{fontSize:14,width:20,textAlign:'center'}}>\u25c8</span>{!sbCol&&<span>{s.l}</span>}</div>)}
+        {[{i:'◫',l:'All projects',c:String(savedApps.length||0)},{i:'★',l:'Starred'},{i:'◷',l:'Recent'}].map(x=><div key={x.l} className="flex items-center gap-2.5 cursor-pointer mb-px" style={{padding:sbCol?0:'8px 10px',width:sbCol?36:undefined,height:sbCol?36:undefined,margin:sbCol?'0 auto 2px':undefined,justifyContent:sbCol?'center':undefined,display:'flex',fontSize:12,color:'rgba(195,200,215,.75)',border:'1px solid transparent'}}><span style={{fontSize:14,width:20,textAlign:'center'}}>{x.i}</span>{!sbCol&&<span className="flex-1">{x.l}</span>}{!sbCol&&x.c&&<span style={{fontSize:9,color:'rgba(195,200,215,.55)',background:'rgba(0,229,255,.04)',padding:'1px 6px',border:'1px solid rgba(0,229,255,.07)'}}>{x.c}</span>}</div>)}
+        {!sbCol&&savedApps.length>0&&<div className="overflow-y-auto" style={{maxHeight:120}}>{savedApps.slice(0,5).map(a=><div key={a.id} className="flex items-center gap-2.5 cursor-pointer mb-px" onClick={()=>loadApp(a)} style={{padding:'4px 10px',fontSize:11,color:'rgba(195,200,215,.55)',border:'1px solid transparent'}}><span style={{fontSize:10,width:20,textAlign:'center',color:'rgba(0,229,255,.3)'}}>◈</span><span className="flex-1" style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{a.name}</span></div>)}</div>}
+        {!sbCol&&<div style={{fontFamily:UI,fontSize:8,letterSpacing:'.2em',color:'rgba(0,229,255,.4)',padding:'10px 10px 4px'}}>SPARK · TEMPLATES</div>}
+        {[{k:'portal',l:'Client Portal'},{k:'saas',l:'SaaS Dashboard'},{k:'booking',l:'Booking System'},{k:'store',l:'Online Store'}].map(s=><div key={s.k} className="flex items-center gap-2.5 cursor-pointer mb-px" onClick={()=>loadTpl(s.k)} style={{padding:sbCol?0:'8px 10px',width:sbCol?36:undefined,height:sbCol?36:undefined,margin:sbCol?'0 auto 2px':undefined,justifyContent:sbCol?'center':undefined,display:'flex',fontSize:12,color:'rgba(195,200,215,.75)',border:'1px solid transparent'}}><span style={{fontSize:14,width:20,textAlign:'center'}}>◈</span>{!sbCol&&<span>{s.l}</span>}</div>)}
         {!sbCol&&<div style={{height:1,background:'rgba(0,229,255,.035)',margin:'6px 10px'}}/>}
-        <div className="flex items-center gap-2.5 cursor-pointer mb-px" style={{padding:sbCol?0:'8px 10px',width:sbCol?36:undefined,height:sbCol?36:undefined,margin:sbCol?'0 auto 2px':undefined,justifyContent:sbCol?'center':undefined,display:'flex',fontSize:12,color:'rgba(195,200,215,.75)',border:'1px solid transparent'}}><span style={{fontSize:14,width:20,textAlign:'center'}}>\u25b3</span>{!sbCol&&<span style={{color:'rgba(0,229,255,.55)'}}>UPLINK Profile</span>}</div>
+        <div className="flex items-center gap-2.5 cursor-pointer mb-px" style={{padding:sbCol?0:'8px 10px',width:sbCol?36:undefined,height:sbCol?36:undefined,margin:sbCol?'0 auto 2px':undefined,justifyContent:sbCol?'center':undefined,display:'flex',fontSize:12,color:'rgba(195,200,215,.75)',border:'1px solid transparent'}}><span style={{fontSize:14,width:20,textAlign:'center'}}>△</span>{!sbCol&&<span style={{color:'rgba(0,229,255,.55)'}}>UPLINK Profile</span>}</div>
       </div>
       {!sbCol&&<div className="flex flex-col gap-1 p-2" style={{borderTop:'1px solid rgba(0,229,255,.035)'}}>
-        <div className="flex items-center gap-2 p-2.5 cursor-pointer" style={{border:'1px solid rgba(0,229,255,.15)',color:'rgba(0,229,255,.7)',fontSize:11}}><span style={{fontSize:14}}>\u2605</span><div><div>Share SOVREND</div><div style={{fontSize:9,color:'rgba(195,200,215,.55)',marginTop:2}}>Earn for every referral</div></div></div>
-        <div className="flex items-center gap-2 p-2.5 cursor-pointer" style={{border:'1px solid rgba(0,229,255,.15)',background:'rgba(0,229,255,.04)',color:'#00E5FF',fontSize:11}}><span style={{fontSize:14}}>\u26a1</span><div><div>Upgrade to Builder</div><div style={{fontSize:9,color:'rgba(195,200,215,.55)',marginTop:2}}>25 actions/month \u2192 $22/mo</div></div></div>
+        <div className="flex items-center gap-2 p-2.5 cursor-pointer" style={{border:'1px solid rgba(0,229,255,.15)',color:'rgba(0,229,255,.7)',fontSize:11}}><span style={{fontSize:14}}>★</span><div><div>Share SOVREND</div><div style={{fontSize:9,color:'rgba(195,200,215,.55)',marginTop:2}}>Earn for every referral</div></div></div>
+        <div className="flex items-center gap-2 p-2.5 cursor-pointer" style={{border:'1px solid rgba(0,229,255,.15)',background:'rgba(0,229,255,.04)',color:'#00E5FF',fontSize:11}}><span style={{fontSize:14}}>⚡</span><div><div>Upgrade to Builder</div><div style={{fontSize:9,color:'rgba(195,200,215,.55)',marginTop:2}}>25 actions/month → $22/mo</div></div></div>
         <div className="flex items-center gap-2 px-2.5 py-2"><div className="flex items-center justify-center" style={{width:28,height:28,border:'1px solid rgba(0,229,255,.15)',fontFamily:UI,fontSize:8,color:'#00E5FF'}}>SD</div><div><div style={{fontSize:11,color:'rgba(195,200,215,.82)'}}>StevieD</div><div style={{fontFamily:UI,fontSize:8,color:'rgba(195,200,215,.55)',letterSpacing:'.1em'}}>OPERATOR</div></div></div>
       </div>}
     </div>
@@ -296,15 +406,15 @@ export default function DashboardPage() {
         <div className="flex items-center gap-3 flex-shrink-0">
           <span style={{fontFamily:UI,fontSize:8,letterSpacing:'.14em',padding:'4px 8px',color:'#00E5FF',border:'1px solid rgba(0,229,255,.15)',background:'rgba(0,229,255,.04)'}}>OPERATOR</span>
           <span style={{fontFamily:UI,fontSize:8,letterSpacing:'.14em',padding:'4px 8px',color:'#FF6B00',border:'1px solid rgba(255,107,0,.15)',background:'rgba(255,107,0,.04)'}}>BUILT WITH CLAUDE</span>
-          <button style={{fontFamily:UI,fontSize:8,fontWeight:700,letterSpacing:'.22em',color:'#000308',background:'#F0F0FF',border:'none',padding:'7px 18px',cursor:'pointer',opacity:pubVis?1:0,pointerEvents:pubVis?'auto':'none',transition:'all .6s',boxShadow:pubVis?'0 0 14px rgba(240,240,255,.15)':'none'}}>PUBLISH</button>
-          <div className="flex items-center justify-center cursor-pointer" onClick={()=>setSettingsOpen(!settingsOpen)} style={{width:26,height:26,border:'1px solid rgba(0,229,255,.07)',color:'rgba(195,200,215,.55)',fontSize:12}}>\u2699</div>
+          <button style={{fontFamily:UI,fontSize:8,fontWeight:700,letterSpacing:'.22em',color:'#000308',background:'#F0F0FF',border:'none',padding:'7px 18px',cursor:'pointer',opacity:pubVis?1:0,pointerEvents:pubVis?'auto':'none',transition:'all .6s',boxShadow:pubVis?'0 0 14px rgba(240,240,255,.15)':'none'}} onClick={()=>setPublishCelebration(true)}>PUBLISH</button>
+          <div className="flex items-center justify-center cursor-pointer" onClick={()=>setSettingsOpen(!settingsOpen)} style={{width:26,height:26,border:'1px solid rgba(0,229,255,.07)',color:'rgba(195,200,215,.55)',fontSize:12}}>⚙</div>
         </div>
       </div>
       <div className="flex-1 flex overflow-hidden relative">
         {appState==='idle'&&<div className="absolute inset-0 flex items-center justify-center px-6 z-20"><div className="flex flex-col items-center max-w-xl w-full text-center">
           <div className="flex gap-2.5 items-start mb-6 text-left w-full max-w-lg" style={{padding:'12px 14px',background:'rgba(240,240,255,.03)',border:'1px solid rgba(240,240,255,.06)',borderLeft:'2px solid rgba(255,107,0,.4)'}}>
             <div className="flex items-center justify-center flex-shrink-0" style={{width:28,height:28,fontFamily:UI,fontSize:8,border:'1px solid rgba(255,107,0,.3)',color:'#FF6B00',background:'rgba(255,107,0,.04)'}}>C</div>
-            <div style={{fontSize:14,color:'rgba(240,240,255,.75)',lineHeight:1.6}}>Tell me what you want to build \u2014 in your own words. I&apos;ll handle the rest.</div>
+            <div style={{fontSize:14,color:'rgba(240,240,255,.75)',lineHeight:1.6}}>Tell me what you want to build — in your own words. I&apos;ll handle the rest.</div>
           </div>
           <h2 style={{fontFamily:UI,fontSize:'clamp(18px,3vw,30px)',fontWeight:700,color:'#F0F0FF',marginBottom:8}}>What are you ready to create?</h2>
           <p style={{fontSize:13.5,color:'rgba(195,200,215,.55)',marginBottom:26}}>No code needed. Takes about 60 seconds.</p>
@@ -313,9 +423,9 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between mt-3">
               <div className="flex gap-1.5 items-center">
                 {['\ud83d\udcce','\ud83c\udfa4','\u25c7'].map(i=><div key={i} className="flex items-center justify-center cursor-pointer" style={{width:28,height:28,border:'1px solid rgba(0,229,255,.07)',color:'rgba(195,200,215,.55)',fontSize:12}}>{i}</div>)}
-                <div className="cursor-pointer" title="Coach improves your description before building" style={{fontFamily:UI,fontSize:8,letterSpacing:'.12em',color:'#00E5FF',border:'1px solid rgba(0,229,255,.15)',background:'rgba(0,229,255,.04)',padding:'5px 10px',height:28,display:'flex',alignItems:'center'}}>\u2726 ENHANCE</div>
+                <div className="cursor-pointer" title="Coach improves your description before building" style={{fontFamily:UI,fontSize:8,letterSpacing:'.12em',color:'#00E5FF',border:'1px solid rgba(0,229,255,.15)',background:'rgba(0,229,255,.04)',padding:'5px 10px',height:28,display:'flex',alignItems:'center'}}>✦ ENHANCE</div>
               </div>
-              <button onClick={handleBuild} style={{fontFamily:UI,fontSize:10,fontWeight:700,letterSpacing:'.22em',color:'#000308',background:'#00E5FF',border:'none',padding:'9px 24px',cursor:'pointer',boxShadow:'0 0 8px rgba(0,229,255,.15)'}}>CREATE \u2192</button>
+              <button onClick={handleBuild} style={{fontFamily:UI,fontSize:10,fontWeight:700,letterSpacing:'.22em',color:'#000308',background:'#00E5FF',border:'none',padding:'9px 24px',cursor:'pointer',boxShadow:'0 0 8px rgba(0,229,255,.15)'}}>CREATE →</button>
             </div>
           </div>
         </div></div>}
@@ -324,16 +434,17 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between px-3 flex-shrink-0" style={{height:36,borderBottom:'1px solid rgba(0,229,255,.035)'}}><div className="flex gap-0.5">{['COACH','HISTORY','TOOLS'].map((tab,i)=><span key={tab} style={{fontFamily:UI,fontSize:8,letterSpacing:'.2em',padding:'4px 8px',cursor:'pointer',color:i===0?'#FF6B00':'rgba(195,200,215,.55)',border:`1px solid ${i===0?'rgba(255,107,0,.15)':'transparent'}`,background:i===0?'rgba(255,107,0,.04)':'transparent'}}>{tab}</span>)}</div></div>
             <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-3">
               {msgs.map((m,i)=><Msg key={i} role={m.role} text={m.text}>
-                {m.type==='building'&&<div className="flex items-center gap-1.5 mt-2" style={{fontSize:10,color:'rgba(195,200,215,.55)'}}><div style={{width:8,height:8,border:'1.5px solid rgba(45,50,68,.14)',borderTop:'1.5px solid #00E5FF',borderRadius:'50%',animation:'spin .7s linear infinite'}}/>Claude Sonnet \u00b7 ~45s</div>}
+                {m.type==='building'&&<div className="flex items-center gap-1.5 mt-2" style={{fontSize:10,color:'rgba(195,200,215,.55)'}}><div style={{width:8,height:8,border:'1.5px solid rgba(45,50,68,.14)',borderTop:'1.5px solid #00E5FF',borderRadius:'50%',animation:'spin .7s linear infinite'}}/>Claude Sonnet · ~45s</div>}
                 {m.type==='summary'&&<div className="mt-3 flex flex-wrap gap-1.5">{suggestions.map(s=><Sug key={s} text={s} onPick={fillChat}/>)}</div>}
                 {m.type==='suggestion'&&<div className="mt-2 flex flex-wrap gap-1.5"><Sug text="Yes, let's do that" onPick={fillChat}/><Sug text="Something else first" onPick={fillChat}/></div>}
               </Msg>)}
               {appState==='complete'&&<div style={{border:'1px solid rgba(255,107,0,.15)',padding:'10px 12px',background:'rgba(255,107,0,.04)',borderLeft:'2px solid rgba(255,107,0,.5)',animation:'fu .4s ease'}}>
-                <div className="flex items-center gap-1.5 mb-1"><span style={{fontSize:10,color:'rgba(255,107,0,.7)'}}>\u25c8</span><span style={{fontFamily:UI,fontSize:8,letterSpacing:'.3em',color:'rgba(255,107,0,.5)'}}>SOVREN CODE</span></div>
+                <div className="flex items-center gap-1.5 mb-1"><span style={{fontSize:10,color:'rgba(255,107,0,.7)'}}>◈</span><span style={{fontFamily:UI,fontSize:8,letterSpacing:'.3em',color:'rgba(255,107,0,.5)'}}>SOVREN CODE</span></div>
                 <div style={{fontSize:14,color:'rgba(255,107,0,.9)',fontWeight:600}}>Supabase</div>
                 <div style={{fontSize:12,color:'rgba(195,200,215,.82)',lineHeight:1.6,marginTop:3}}>Your app&apos;s brain and security guard. It remembers everything your users do and makes sure only the right people get in.</div>
                 <div className="flex gap-1.5 mt-2">{['Got it','Tell me more','Save term'].map(a=><span key={a} className="cursor-pointer" style={{fontSize:9,color:'rgba(255,107,0,.7)',padding:'3px 8px',border:'1px solid rgba(255,107,0,.15)'}}>{a}</span>)}</div>
               </div>}
+
             </div>
             {showStrip&&<div className="flex gap-1 px-3 py-1.5 flex-shrink-0 flex-wrap" style={{borderTop:'1px solid rgba(0,229,255,.035)',animation:'fu .4s ease'}}>{['Look & Feel','How It Works','Business','Content'].map((p,i)=><span key={p} style={{fontSize:9,padding:'4px 8px',border:`1px solid ${i===0?'rgba(0,229,255,.3)':'rgba(0,229,255,.07)'}`,color:i===0?'#00E5FF':'rgba(195,200,215,.55)',background:i===0?'rgba(0,229,255,.04)':'transparent',cursor:'pointer'}}>{p}</span>)}</div>}
             <div className="px-3 pb-3 flex-shrink-0" style={{background:'rgba(8,11,22,.93)',borderTop:'1px solid rgba(0,229,255,.07)'}}>
@@ -345,17 +456,17 @@ export default function DashboardPage() {
                 </div>
                 <textarea className="w-full bg-transparent outline-none resize-none" placeholder="What are you thinking about building..." value={planNotes} onChange={e=>setPlanNotes(e.target.value)} style={{color:'#F0F0FF',fontSize:14,lineHeight:1.7,padding:'14px',minHeight:100,border:'none'}}/>
                 <div style={{padding:'6px 14px',borderTop:'1px solid rgba(0,229,255,.07)',display:'flex',justifyContent:'space-between'}}>
-                  <span style={{fontFamily:UI,fontSize:7,letterSpacing:'.15em',color:'rgba(0,229,255,.25)'}}>FREE \u2014 NO ACTIONS USED</span>
+                  <span style={{fontFamily:UI,fontSize:7,letterSpacing:'.15em',color:'rgba(0,229,255,.25)'}}>FREE — NO ACTIONS USED</span>
                   <span style={{fontFamily:UI,fontSize:7,letterSpacing:'.15em',color:'rgba(0,229,255,.15)'}}>\u2191 SWITCH TO BUILD WHEN READY</span>
                 </div>
               </div>
-              :activeMode==='CHAT'?<div><textarea className="w-full bg-transparent outline-none resize-none" placeholder="Ask Coach anything \u2014 how to prompt better, what something means, or get advice." value={refineText} onChange={e=>setRefineText(e.target.value)} style={{background:'rgba(8,11,22,.7)',border:'1px solid rgba(0,229,255,.07)',borderBottom:'2px solid rgba(255,107,0,.15)',borderLeft:'2px solid rgba(255,107,0,.3)',color:'#F0F0FF',fontSize:14,padding:'12px 14px',height:56,lineHeight:'1.5'}}/></div>
+              :activeMode==='CHAT'?<div><textarea className="w-full bg-transparent outline-none resize-none" placeholder="Ask Coach anything — how to prompt better, what something means, or get advice." value={refineText} onChange={e=>setRefineText(e.target.value)} style={{background:'rgba(8,11,22,.7)',border:'1px solid rgba(0,229,255,.07)',borderBottom:'2px solid rgba(255,107,0,.15)',borderLeft:'2px solid rgba(255,107,0,.3)',color:'#F0F0FF',fontSize:14,padding:'12px 14px',height:56,lineHeight:'1.5'}}/></div>
               :<textarea className="w-full bg-transparent outline-none resize-none" placeholder="What would make this better?" value={refineText} onChange={e=>setRefineText(e.target.value)} style={{background:'rgba(8,11,22,.7)',border:'1px solid rgba(0,229,255,.07)',borderBottom:'2px solid rgba(0,229,255,.15)',color:'#F0F0FF',fontSize:15,padding:'12px 14px',height:56,lineHeight:'1.5'}}/>}
-              <div className="flex items-center justify-between mt-2"><div className="flex gap-1 items-center">{['\ud83d\udcce','\ud83c\udfa4','\ud83d\udcf7','\u25c7'].map(i=><div key={i} className="flex items-center justify-center cursor-pointer" style={{width:22,height:22,border:'1px solid rgba(0,229,255,.07)',color:'rgba(195,200,215,.55)',fontSize:10}}>{i}</div>)}</div><button onClick={async()=>{if(!refineText.trim())return;setAppState('building');setShowNarr(true);setNarrText('Refining your app...');setNarrTeach('applying your changes');setMsgs(prev=>[...prev,{role:'user',text:refineText},{role:'coach',text:'On it. Applying your changes now.',type:'building'}]);const res=await fetch('/api/build',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:refineText+' \n\nPrevious code to modify: '+generatedCode.slice(0,2000),persona:'operator',appId:appId})});const data=await res.json();if(data.success){setGeneratedCode((data.code||'').replace('export default function','function').replace('export default ',''));setSuggestions(data.suggestions||[]);if(data.appId)setAppId(data.appId);setAppState('complete');setShowNarr(false);setRefineText('');setMsgs(prev=>[...prev,{role:'coach',text:data.narration||'Changes applied.',type:'summary'},{role:'coach',text:'Coach is here \u2014 what needs work?',type:'suggestion'}])}else{setAppState('complete');setShowNarr(false);setMsgs(prev=>[...prev,{role:'coach',text:data.message||'Something went wrong. Try again.'}])}}} style={{fontFamily:UI,fontSize:9,fontWeight:700,letterSpacing:'.16em',color:'#000308',background:'#00E5FF',border:'none',padding:'6px 14px',cursor:'pointer'}}>{activeMode==='PLAN'?'SAVE NOTE':'SEND \u2192'}</button></div>
+              <div className="flex items-center justify-between mt-2"><div className="flex gap-1 items-center">{['\ud83d\udcce','\ud83c\udfa4','\ud83d\udcf7','\u25c7'].map(i=><div key={i} className="flex items-center justify-center cursor-pointer" style={{width:22,height:22,border:'1px solid rgba(0,229,255,.07)',color:'rgba(195,200,215,.55)',fontSize:10}}>{i}</div>)}</div><button onClick={async()=>{if(!refineText.trim())return;setAppState('building');setShowNarr(true);setNarrText('Refining your app...');setNarrTeach('applying your changes');setMsgs(prev=>[...prev,{role:'user',text:refineText},{role:'coach',text:'On it. Applying your changes now.',type:'building'}]);const res=await fetch('/api/build',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:refineText+' \n\nPrevious code to modify: '+generatedCode.slice(0,2000),persona:'operator',appId:appId})});const data=await res.json();if(data.success){setGeneratedCode((data.code||'').replace('export default function','function').replace('export default ',''));setSuggestions(data.suggestions||[]);if(data.appId)setAppId(data.appId);setBuildScore(Math.floor(65+Math.random()*25));setAppState('complete');setShowNarr(false);setRefineText('');setMsgs(prev=>[...prev,{role:'coach',text:data.narration||'Changes applied.',type:'summary'},{role:'coach',text:'Coach is here — what needs work?',type:'suggestion'}])}else{setAppState('complete');setShowNarr(false);setMsgs(prev=>[...prev,{role:'coach',text:data.message||'Something went wrong. Try again.'}])}}} style={{fontFamily:UI,fontSize:9,fontWeight:700,letterSpacing:'.16em',color:'#000308',background:'#00E5FF',border:'none',padding:'6px 14px',cursor:'pointer'}}>{activeMode==='PLAN'?'SAVE NOTE':'SEND →'}</button></div>
             </div>
           </div>
           <div className="flex-1 flex flex-col overflow-hidden">
-            <div className="flex items-center px-3 flex-shrink-0 overflow-hidden transition-all duration-300" style={{height:showNarr?28:0,background:'rgba(8,11,22,.93)',borderBottom:'1px solid rgba(0,229,255,.035)',fontFamily:MONO,fontSize:10,color:'rgba(0,229,255,.5)'}}><div style={{width:6,height:6,borderRadius:'50%',background:'#00E5FF',marginRight:8,animation:'pulse 1.5s ease infinite'}}/>{narrText}<span style={{color:'rgba(0,229,255,.3)',fontStyle:'italic',marginLeft:4}}> \u2014 {narrTeach}</span></div>
+            <div className="flex items-center px-3 flex-shrink-0 overflow-hidden transition-all duration-300" style={{height:showNarr?28:0,background:'rgba(8,11,22,.93)',borderBottom:'1px solid rgba(0,229,255,.035)',fontFamily:MONO,fontSize:10,color:'rgba(0,229,255,.5)'}}><div style={{width:6,height:6,borderRadius:'50%',background:'#00E5FF',marginRight:8,animation:'pulse 1.5s ease infinite'}}/>{narrText}<span style={{color:'rgba(0,229,255,.3)',fontStyle:'italic',marginLeft:4}}> — {narrTeach}</span></div>
             <div className="flex items-center justify-between px-3 flex-shrink-0" style={{height:30,background:'rgba(8,11,22,.93)',borderBottom:'1px solid rgba(0,229,255,.035)'}}><span style={{fontSize:10,color:'rgba(195,200,215,.55)',background:'rgba(0,229,255,.04)',border:'1px solid rgba(0,229,255,.07)',padding:'2px 10px'}}><b style={{color:'#00E5FF',fontWeight:500}}>myapp</b>.sovrend.com</span><div className="flex gap-1">{['History','Visual Edit','View Code','\u2197 New Tab'].map(a=><span key={a} className="cursor-pointer" onClick={()=>{if(a==='View Code')setCodeOpen(!codeOpen)}} style={{fontSize:9,color:a==='View Code'&&codeOpen?'#00E5FF':'rgba(195,200,215,.55)',padding:'3px 6px',border:'1px solid rgba(0,229,255,.035)'}}>{a}</span>)}</div></div>
             <div className="flex-1 flex overflow-hidden">
               <div className="flex-1 flex flex-col" style={{background:'rgba(10,14,24,.5)'}}>
@@ -369,31 +480,34 @@ export default function DashboardPage() {
                 </div>}
               </div>
               {codeOpen&&<div className="flex flex-col" style={{width:340,minWidth:340,background:'rgba(4,6,14,.96)',borderLeft:'1px solid rgba(0,229,255,.07)',animation:'fu .3s ease'}}>
-                <div className="flex items-center justify-between px-3 flex-shrink-0" style={{height:30,borderBottom:'1px solid rgba(0,229,255,.035)'}}><div className="flex gap-0.5">{['FILES','TERMINAL'].map((t,i)=><span key={t} style={{fontFamily:UI,fontSize:8,letterSpacing:'.14em',padding:'4px 8px',color:i===0?'#00E5FF':'rgba(195,200,215,.55)',border:`1px solid ${i===0?'rgba(0,229,255,.15)':'transparent'}`,background:i===0?'rgba(0,229,255,.04)':'transparent'}}>{t}</span>)}</div><span className="cursor-pointer" onClick={()=>setCodeOpen(false)} style={{fontSize:10,color:'rgba(195,200,215,.55)'}}>\u2715</span></div>
+                <div className="flex items-center justify-between px-3 flex-shrink-0" style={{height:30,borderBottom:'1px solid rgba(0,229,255,.035)'}}><div className="flex gap-0.5">{['FILES','TERMINAL'].map((t,i)=><span key={t} style={{fontFamily:UI,fontSize:8,letterSpacing:'.14em',padding:'4px 8px',color:i===0?'#00E5FF':'rgba(195,200,215,.55)',border:`1px solid ${i===0?'rgba(0,229,255,.15)':'transparent'}`,background:i===0?'rgba(0,229,255,.04)':'transparent'}}>{t}</span>)}</div><span className="cursor-pointer" onClick={()=>setCodeOpen(false)} style={{fontSize:10,color:'rgba(195,200,215,.55)'}}>✕</span></div>
                 <div className="flex-1 overflow-auto p-3" style={{fontFamily:MONO,fontSize:10,lineHeight:1.8,color:'rgba(195,200,215,.55)',background:'rgba(4,6,14,.5)'}}>
                   <pre style={{whiteSpace:'pre-wrap',wordBreak:'break-all'}}>{generatedCode||'// Code will appear here after build'}</pre>
                 </div>
               </div>}
+              {appState==='complete'&&buildScore>0&&<BuildScoreRing score={buildScore} suggestions={suggestions} onHandoff={generateHandoff} handoffLoading={handoffLoading}/>}
+              {appState==='complete'&&showRevCalc&&<RevCalc onAddPricing={()=>fillChat('Add a pricing page with 3 tiers')}/>}
             </div>
           </div>
         </div>}
       </div>
-      <div className="flex items-center justify-between px-4 flex-shrink-0" style={{height:26,background:'rgba(4,6,14,.96)',borderTop:'1px solid rgba(0,229,255,.035)'}}><div className="flex gap-4" style={{fontSize:10,color:'rgba(195,200,215,.45)'}}><span>Powered by <b style={{color:'#FF6B00',fontWeight:500}}>Claude Sonnet</b></span><span>Auto-Fix <b style={{color:'#00E5FF'}}>\u25cf</b></span></div><div className="flex gap-4" style={{fontSize:10,color:'rgba(195,200,215,.45)'}}><span>Supabase <b style={{color:'#00E5FF'}}>\u25cf</b></span><span>Stripe <span style={{color:'#FF6B00'}}>\u25cb</span></span></div></div>
+      <div className="flex items-center justify-between px-4 flex-shrink-0" style={{height:26,background:'rgba(4,6,14,.96)',borderTop:'1px solid rgba(0,229,255,.035)'}}><div className="flex gap-4" style={{fontSize:10,color:'rgba(195,200,215,.45)'}}><span>Powered by <b style={{color:'#FF6B00',fontWeight:500}}>Claude Sonnet</b></span><span>Auto-Fix <b style={{color:'#00E5FF'}}>●</b></span></div><div className="flex gap-4" style={{fontSize:10,color:'rgba(195,200,215,.45)'}}><span>Supabase <b style={{color:'#00E5FF'}}>●</b></span><span>Stripe <span style={{color:'#FF6B00'}}>○</span></span></div></div>
     </div>
     {planOpen&&<div className="fixed z-[55] flex flex-col" style={{top:50,right:60,width:370,maxHeight:'80vh',background:'rgba(4,6,14,.98)',border:'1px solid rgba(0,229,255,.15)',backdropFilter:'blur(18px)',animation:'breathe 3s ease infinite,fu .3s ease'}}>
       <div style={{padding:'12px 14px 8px',borderBottom:'1px solid rgba(0,229,255,.07)',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
         <div><div style={{fontFamily:UI,fontSize:8,letterSpacing:'.25em',color:'rgba(0,229,255,.5)'}}>THOUGHT SPACE</div><div style={{fontSize:10,color:'rgba(240,240,255,.35)',marginTop:2}}>Draft freely. Nothing here costs an action.</div></div>
         <div style={{display:'flex',alignItems:'center',gap:8}}>
           <span style={{fontFamily:UI,fontSize:7,letterSpacing:'.15em',color:'rgba(0,229,255,.25)'}}>THOUGHTS: {planNotes.trim()?planNotes.trim().split(/\s+/).length:0}</span>
-          <span className="cursor-pointer" onClick={()=>setPlanOpen(false)} style={{fontSize:12,color:'rgba(0,229,255,.3)'}}>\u2715</span>
+          <span className="cursor-pointer" onClick={()=>setPlanOpen(false)} style={{fontSize:12,color:'rgba(0,229,255,.3)'}}>✕</span>
         </div>
       </div>
       <div style={{position:'relative',flex:1}}><canvas ref={planCanvasRef} style={{position:'absolute',inset:0,pointerEvents:'none',zIndex:1}}/><textarea className="w-full bg-transparent outline-none resize-none" placeholder="What are you thinking about building..." value={planNotes} onChange={e=>{setPlanNotes(e.target.value);const lines=e.target.value.split('\n');const last=lines[lines.length-1];const cx=Math.min(14+last.length*8.5,340);const cy=Math.min(14+(lines.length-1)*24+12,180);for(let i=0;i<3;i++)planParticlesRef.current.push({x:cx+(Math.random()-.5)*10,y:cy,vx:(Math.random()-.5)*.8,vy:-(0.4+Math.random()*1.2),life:1,decay:0.015+Math.random()*0.01,size:1+Math.random()*2})}} style={{color:'#F0F0FF',fontSize:14,lineHeight:1.7,padding:14,minHeight:200,border:'none',position:'relative',zIndex:2,background:'transparent',width:'100%'}}/></div>
       <div style={{padding:'6px 14px',borderTop:'1px solid rgba(0,229,255,.07)',display:'flex',justifyContent:'space-between'}}>
-        <span style={{fontFamily:UI,fontSize:7,letterSpacing:'.15em',color:'rgba(0,229,255,.25)'}}>FREE \u2014 NO ACTIONS USED</span>
+        <span style={{fontFamily:UI,fontSize:7,letterSpacing:'.15em',color:'rgba(0,229,255,.25)'}}>FREE — NO ACTIONS USED</span>
         <span className="cursor-pointer" onClick={()=>{setPlanOpen(false)}} style={{fontFamily:UI,fontSize:7,letterSpacing:'.15em',color:'rgba(0,229,255,.4)'}}>CLOSE</span>
       </div>
     </div>}
+    {publishCelebration&&<PublishCelebration appName={projName} onClose={()=>setPublishCelebration(false)}/>}
     <GlossFab/>
   </main>
 }
