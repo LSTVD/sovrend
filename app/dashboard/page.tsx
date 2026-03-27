@@ -356,13 +356,16 @@ export default function DashboardPage() {
   // Render generated code in iframe
   useEffect(()=>{
     if(!generatedCode||!iframeRef.current)return
-    let cleanCode=generatedCode
+    let c=generatedCode
     // Strip JSON wrapper if code was saved with it
-    const jsonMatch=cleanCode.match(/"code"\s*:\s*"([\s\S]*?)(?:"\s*[,}])/);if(jsonMatch)cleanCode=jsonMatch[1].replace(/\\n/g,'\n').replace(/\\"/g,'"').replace(/\\\\/g,'\\')
-    const codeBlockMatch=cleanCode.match(/```(?:json|jsx?|tsx?)?\s*\n?([\s\S]*?)```/);if(codeBlockMatch)cleanCode=codeBlockMatch[1]
-    cleanCode=cleanCode.replace(/^import\s.*?[\r\n]+/gm,'').replace(/export\s+default\s+function/g,'function').replace(/export\s+default\s+/g,'')
-    const html=`<!DOCTYPE html><html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><script src="https://unpkg.com/react@18/umd/react.production.min.js"><\/script><script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"><\/script><script src="https://cdn.tailwindcss.com"><\/script><style>body{margin:0;background:#0a0e18;color:#F0F0FF;font-family:system-ui,sans-serif}</style></head><body><div id="root"></div><script>try{const{useState,useEffect,useRef,useCallback,useMemo}=React;${cleanCode};ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App))}catch(e){document.getElementById('root').innerHTML='<div style="padding:20px;color:#FF6A00">'+e.message+'</div>'}<\/script></body></html>`
-    iframeRef.current.srcdoc=html
+    const jm=c.match(/"code"\s*:\s*"([\s\S]*?)(?:"\s*[,}])/);if(jm)c=jm[1].replace(/\\n/g,'\n').replace(/\\"/g,'"').replace(/\\\\/g,'\\')
+    const cb=c.match(/```(?:json|jsx?|tsx?)?\s*\n?([\s\S]*?)```/);if(cb)c=cb[1]
+    c=c.replace(/^import\s.*?[\r\n]+/gm,'').replace(/export\s+default\s+function/g,'function').replace(/export\s+default\s+/g,'')
+    const html='<!DOCTYPE html><html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><script src="https://unpkg.com/react@18/umd/react.production.min.js"><\/script><script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"><\/script><script src="https://cdn.tailwindcss.com"><\/script><style>body{margin:0;background:#0a0e18;color:#F0F0FF;font-family:system-ui,sans-serif}</style></head><body><div id="root"></div><script>try{const{useState,useEffect,useRef,useCallback,useMemo}=React;'+c+';ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App))}catch(e){document.getElementById("root").innerHTML="<div style=\\"padding:20px;color:#FF6A00\\">"+e.message+"</div>"}<\/script></body></html>'
+    const blob=new Blob([html],{type:'text/html'})
+    const url=URL.createObjectURL(blob)
+    iframeRef.current.src=url
+    return()=>URL.revokeObjectURL(url)
   },[generatedCode])
   useEffect(()=>{if(appState!=='idle')return;const iv=setInterval(()=>setPhIdx(p=>(p+1)%PLACEHOLDERS.length),4000);return()=>clearInterval(iv)},[appState])
   useEffect(()=>{const h=(e:KeyboardEvent)=>{if((e.metaKey||e.ctrlKey)&&e.key==='Enter'&&appState==='idle'&&prompt.trim()){e.preventDefault();handleBuild()}};document.addEventListener('keydown',h);return()=>document.removeEventListener('keydown',h)},[appState,prompt])
@@ -501,7 +504,7 @@ export default function DashboardPage() {
             <div style={{fontFamily:UI,fontSize:8,letterSpacing:'.2em',color:'rgba(0,229,255,.3)',marginTop:6}}>— {dq.a.toUpperCase()}</div>
           </div>})()}
           <div className="flex gap-2.5 items-start mb-6 text-left w-full max-w-lg" style={{padding:'12px 14px',background:'rgba(240,240,255,.03)',border:'1px solid rgba(240,240,255,.06)',borderLeft:'2px solid rgba(255,107,0,.4)'}}>
-            <div className="flex items-center justify-center flex-shrink-0" style={{width:28,height:28,fontFamily:UI,fontSize:8,border:'1px solid rgba(255,107,0,.3)',color:'#FF6B00',background:'rgba(255,107,0,.04)'}}>◇</div>
+            <div className="flex items-center justify-center flex-shrink-0" style={{padding:'4px 10px',fontFamily:UI,fontSize:8,letterSpacing:'.15em',border:'1px solid rgba(255,107,0,.3)',color:'#FF6B00',background:'rgba(255,107,0,.04)'}}>CIPHER</div>
             <div style={{fontSize:14,color:'rgba(240,240,255,.75)',lineHeight:1.6}}>Tell me what you want to build — in your own words. I&apos;ll handle the rest.</div>
           </div>
           <h2 style={{fontFamily:UI,fontSize:'clamp(18px,3vw,30px)',fontWeight:700,background:'linear-gradient(135deg,#FF6A00 20%,#00E5FF 80%)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',filter:'drop-shadow(0 0 12px rgba(255,106,0,0.15))',marginBottom:8}}>Are you ready to create?</h2>
@@ -548,7 +551,7 @@ export default function DashboardPage() {
             <div className="flex-1 flex overflow-hidden">
               <div className="flex-1 flex items-center justify-center" style={{background:'rgba(10,14,24,.5)'}}>
                 {appState==='building'?<div className="flex-1 flex flex-col items-center justify-center gap-3" style={{background:'rgba(3,5,12,.9)'}}><div style={{width:28,height:28,border:'2px solid rgba(0,229,255,.07)',borderTop:'2px solid #00E5FF',borderRadius:'50%',animation:'spin .8s linear infinite'}}/><span style={{fontFamily:UI,fontSize:9,letterSpacing:'.28em',color:'#00E5FF'}}>BUILDING</span></div>:
-                <iframe ref={iframeRef} sandbox="allow-scripts" className="border-0" style={{width:activeDevice==='MOBILE'?375:activeDevice==='TABLET'?768:'100%',maxWidth:'100%',height:'100%',background:'#0a0e18',transition:'width .3s ease'}}/>}
+                <iframe ref={iframeRef} sandbox="allow-scripts allow-same-origin" className="border-0" style={{width:activeDevice==='MOBILE'?375:activeDevice==='TABLET'?768:'100%',maxWidth:'100%',height:'100%',background:'#0a0e18',transition:'width .3s ease'}}/>}
               </div>
               {codeOpen&&<div className="flex flex-col" style={{width:340,minWidth:340,background:'rgba(4,6,14,.96)',borderLeft:'1px solid rgba(0,229,255,.07)',animation:'fu .3s ease'}}>
                 <div className="flex items-center justify-between px-3 flex-shrink-0" style={{height:30,borderBottom:'1px solid rgba(0,229,255,.035)'}}><span style={{fontFamily:UI,fontSize:8,letterSpacing:'.14em',color:'#00E5FF'}}>SOURCE</span><span className="cursor-pointer" onClick={()=>setCodeOpen(false)} style={{fontSize:10,color:'rgba(78,84,105,.22)'}}>✕</span></div>
