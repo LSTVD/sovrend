@@ -352,7 +352,7 @@ function ProjectPreview({code}:{code:string}) {
     ref.current.src=url
     return()=>URL.revokeObjectURL(url)
   },[code])
-  return <iframe ref={ref} sandbox="allow-scripts" style={{width:'100%',height:'100%',border:'none',pointerEvents:'none'}}/>
+  return <iframe ref={ref} sandbox="allow-scripts allow-same-origin" style={{width:'100%',height:'100%',border:'none',pointerEvents:'none'}}/>
 }
 
 function EntryScreen({onDone}:{onDone:()=>void}) {
@@ -652,7 +652,7 @@ export default function DashboardPage() {
             <div className="flex-1 flex overflow-hidden">
               <div className="flex-1 flex items-center justify-center" style={{background:'rgba(10,14,24,.5)'}}>
                 {appState==='building'?<div className="flex-1 flex flex-col items-center justify-center gap-3" style={{background:'rgba(3,5,12,.9)'}}><div style={{width:28,height:28,border:'2px solid rgba(0,229,255,.07)',borderTop:'2px solid #00E5FF',borderRadius:'50%',animation:'spin .8s linear infinite'}}/><span style={{fontFamily:UI,fontSize:9,letterSpacing:'.28em',color:'#00E5FF'}}>BUILDING</span></div>:
-                <iframe ref={iframeRef} sandbox="allow-scripts" className="border-0" style={{width:activeDevice==='MOBILE'?375:activeDevice==='TABLET'?768:'100%',maxWidth:'100%',height:'100%',background:'#0a0e18',transition:'width .3s ease'}}/>}
+                <iframe ref={iframeRef} sandbox="allow-scripts allow-same-origin" className="border-0" style={{width:activeDevice==='MOBILE'?375:activeDevice==='TABLET'?768:'100%',maxWidth:'100%',height:'100%',background:'#0a0e18',transition:'width .3s ease'}}/>}
               </div>
               {codeOpen&&<div className="flex flex-col" style={{width:340,minWidth:340,background:'rgba(4,6,14,.96)',borderLeft:'1px solid rgba(0,229,255,.07)',animation:'fu .3s ease'}}>
                 <div className="flex items-center justify-between px-3 flex-shrink-0" style={{height:30,borderBottom:'1px solid rgba(0,229,255,.035)'}}><span style={{fontFamily:UI,fontSize:8,letterSpacing:'.14em',color:'#00E5FF'}}>SOURCE</span><span className="cursor-pointer" onClick={()=>setCodeOpen(false)} style={{fontSize:10,color:'rgba(78,84,105,.22)'}}>✕</span></div>
