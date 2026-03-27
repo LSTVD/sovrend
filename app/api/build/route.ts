@@ -78,7 +78,8 @@ Return ONLY valid JSON:
   "code": "complete self-contained React component as default export",
   "narration": "3-5 sentences describing what you built. Start with an action word. Speak as Coach — warm, direct, encouraging.",
   "appName": "suggested app name",
-  "suggestions": ["specific next step based on what is missing from this app", "second specific improvement", "third specific improvement"]
+  "suggestions": ["specific next step based on what is missing from this app", "second specific improvement", "third specific improvement"],
+  "score": "number 0-100 rating how production-ready this app is. Score based on: auth present (+15), payment ready (+15), responsive layout (+10), error handling (+10), loading states (+10), navigation (+10), real data structure (+10), forms/input (+10), visual polish (+10). Be honest and specific."
 }
 
 SUGGESTION RULES:
@@ -141,6 +142,7 @@ SUGGESTION RULES:
       code: parsed2.code,
       narration: parsed2.narration,
       costWarning: (userData.api_cost_this_month || 0) >= limits.maxCost * 2,
+      score: parsed2.score || 0,
     })
 
   } catch (err: any) {
