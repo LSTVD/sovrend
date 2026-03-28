@@ -184,7 +184,7 @@ function GridBg({state,rainSpeed}:{state:string,rainSpeed:number}) {
 }
 
 function Msg({role,text,children}:{role:'cipher'|'user';text?:string;children?:React.ReactNode}) {
-  const ic=role==='coach'
+  const ic=role==='cipher'
   return <div className={`flex gap-2 items-start ${!ic?'flex-row-reverse':''}`} style={{animation:'fu .3s ease both'}}>
     <div className="flex items-center justify-center flex-shrink-0" style={{width:ic?42:26,height:26,fontFamily:UI,fontSize:ic?6:8,
       border:`1px solid ${ic?'rgba(255,107,0,.3)':'rgba(0,229,255,.15)'}`,color:ic?'#FF6B00':'#00E5FF',
@@ -206,8 +206,8 @@ function GlossFab() {
   const filt=GLOSSARY.filter(g=>g.t.toLowerCase().includes(q.toLowerCase())||g.d.toLowerCase().includes(q.toLowerCase()))
   return <>
     <div className="fixed z-50 flex items-center justify-center cursor-pointer" onClick={()=>setOpen(!open)}
-      style={{bottom:32,right:10,width:36,height:36,background:'rgba(255,107,0,.04)',border:'1px solid rgba(255,107,0,.3)',fontFamily:UI,fontSize:9,color:'#FF6B00'}}>
-      ◈<div className="absolute -top-1 -right-1 flex items-center justify-center" style={{width:14,height:14,background:'#FF6B00',color:'#000308',fontSize:8,fontWeight:700,borderRadius:'50%'}}>3</div>
+      style={{bottom:34,right:16,height:32,padding:'0 10px',gap:6,background:'rgba(0,229,255,.04)',border:'1px solid rgba(0,229,255,.3)',fontFamily:UI,fontSize:8,letterSpacing:'.12em',color:'#00E5FF'}}>
+      ◈ GLOSSARY
     </div>
     {open&&<div className="fixed z-[60] flex flex-col" style={{bottom:74,right:10,width:280,maxHeight:380,background:'rgba(4,6,14,.96)',border:'1px solid rgba(255,107,0,.3)',backdropFilter:'blur(18px)'}}>
       <div className="flex items-center justify-between px-3 py-2" style={{borderBottom:'1px solid rgba(255,107,0,.15)'}}>
@@ -235,8 +235,8 @@ function BuildScoreRing({score,suggestions,onHandoff,handoffLoading}:{score:numb
   const r=38,circ=2*Math.PI*r,offset=circ-(animScore/100)*circ
   const color=score>=80?'#00E5FF':score>=60?'#FFE600':'#FF6A00'
   return <div style={{border:`1px solid ${score>=80?'rgba(0,229,255,.15)':score>=60?'rgba(255,230,0,.15)':'rgba(255,106,0,.15)'}`,padding:'16px',background:score>=80?'rgba(0,229,255,.03)':score>=60?'rgba(255,230,0,.03)':'rgba(255,106,0,.03)',opacity:show?1:0,transform:show?'translateY(0)':'translateY(8px)',transition:'all .5s ease',animation:'fu .4s ease'}}>
-    <div className="flex items-center gap-4">
-      <svg width={90} height={90} viewBox="0 0 90 90">
+    <div className="flex items-start gap-4">
+      <svg width={90} height={90} viewBox="0 0 90 90" style={{flexShrink:0,minWidth:90}}>
         <circle cx={45} cy={45} r={r} fill="none" stroke="rgba(240,240,255,.06)" strokeWidth={4}/>
         <circle cx={45} cy={45} r={r} fill="none" stroke={color} strokeWidth={4} strokeLinecap="round"
           strokeDasharray={circ} strokeDashoffset={offset} transform="rotate(-90 45 45)" style={{transition:'stroke-dashoffset .1s linear',filter:`drop-shadow(0 0 6px ${color}40)`}}/>
@@ -360,6 +360,68 @@ function EntryScreen({onDone}:{onDone:()=>void}) {
     </div></>
 }
 
+
+function SignalDecode(){
+  var cRef=useRef(null)
+  var t0Ref=useRef(0)
+  useEffect(function(){
+    var c=cRef.current;if(!c)return
+    var X=c.getContext('2d')
+    var W=0,H=0,raf=0
+    var dpr=window.devicePixelRatio||1
+    function rs(){var p=c.parentElement;if(!p)return;var r=p.getBoundingClientRect();W=Math.floor(r.width);H=Math.floor(r.height);c.width=W*dpr;c.height=H*dpr;c.style.width=W+'px';c.style.height=H+'px';X.scale(dpr,dpr)}
+    rs()
+    window.addEventListener('resize',rs)
+    t0Ref.current=performance.now()
+    function hz(cx,cy,r,col,op){var g=X.createRadialGradient(cx,cy,0,cx,cy,r);g.addColorStop(0,'rgba('+col+','+op+')');g.addColorStop(1,'rgba(0,0,0,0)');X.fillStyle=g;X.fillRect(0,0,W,H)}
+    function draw(now){
+      var elapsed=now-t0Ref.current
+      var p=Math.min(elapsed/18000,1)
+      var cx=W/2,cy=H/2
+      var clarity=p*p
+      var noiseLevel=1-clarity
+      if(p<0.15){X.fillStyle='rgba(0,3,8,0.02)'}else if(p>0.88){X.fillStyle='rgba(0,3,8,0.3)'}else{X.fillStyle='rgba(0,3,8,0.12)'}
+      X.fillRect(0,0,W,H)
+      var staticBottom=p<0.15?H:H*Math.max(0.08,1-(p-0.15)*1.1)
+      if(noiseLevel>0.01&&staticBottom>5){
+        var staticHeight=staticBottom
+        var density=p<0.15?1400:800
+        var noiseCount=Math.floor(density*noiseLevel*(staticHeight/H))
+        for(var i=0;i<noiseCount;i++){
+          var nx=Math.random()*W,ny=Math.random()*staticHeight
+          var nv=Math.random()
+          var nc=nv>0.8?'0,229,255':nv>0.6?'240,240,255':'120,135,160'
+          var pSize=p<0.15?1+Math.random()*4:1+Math.random()*2
+          var pOp=p<0.15?noiseLevel*0.18*Math.random():noiseLevel*0.12*Math.random()
+          X.fillStyle='rgba('+nc+','+pOp+')';X.fillRect(nx,ny,pSize,p<0.15?1+Math.random()*1.5:1)
+        }
+        if(p<0.25){var bandCount=p<0.15?12:5;for(var si=0;si<bandCount;si++){var sy=Math.random()*staticHeight;var sh=p<0.15?2+Math.random()*8:1+Math.random()*4;X.fillStyle='rgba(240,240,255,'+(p<0.15?0.04+Math.random()*0.04:0.02+Math.random()*0.02)+')';X.fillRect(0,sy,W,sh)}}
+        if(noiseLevel>0.1&&Math.random()>(p<0.15?0.7:0.85)){var ty=Math.random()*staticHeight;var tearW=W*(0.3+Math.random()*0.7);var tearX=Math.random()*(W-tearW);var tearShift=(Math.random()-0.5)*30*noiseLevel;X.fillStyle='rgba(240,240,255,'+(0.04*noiseLevel)+')';X.fillRect(tearX+tearShift,ty,tearW,2);X.fillStyle='rgba(0,229,255,'+(0.06*noiseLevel)+')';X.fillRect(tearX+tearShift,ty+2,tearW*0.6,1)}
+        if(p<0.15&&Math.random()>0.95){X.fillStyle='rgba(240,240,255,0.015)';X.fillRect(0,0,W,staticHeight)}
+        if(p>0.12&&staticBottom<H-10){var bf=Math.sin(now*0.012)*0.3+0.7;X.strokeStyle='rgba(0,229,255,'+(0.12*bf)+')';X.lineWidth=0.5;X.beginPath();X.moveTo(0,staticBottom);X.lineTo(W,staticBottom);X.stroke();var bg=X.createLinearGradient(0,staticBottom-12,0,staticBottom+12);bg.addColorStop(0,'rgba(0,229,255,0)');bg.addColorStop(0.5,'rgba(240,240,255,'+(0.03*(1-noiseLevel)*bf)+')');bg.addColorStop(1,'rgba(0,229,255,0)');X.fillStyle=bg;X.fillRect(0,staticBottom-12,W,24)}
+      }
+      if(p<0.35){var wp=Math.min(p/0.12,1);var noiseAmt=Math.max(0,1-p*4);X.strokeStyle='rgba(0,229,255,'+(0.25*wp)+')';X.lineWidth=1.2;X.beginPath();var started=false;for(var i=0;i<W;i+=2){var wave=Math.sin(i*0.02+now*0.005)*35*wp+Math.sin(i*0.05+now*0.003)*18*wp+Math.sin(i*0.008+now*0.002)*25*wp;var n2=(Math.random()-0.5)*60*noiseAmt;var wy=cy+wave+n2;if(!started){X.moveTo(i,wy);started=true}else X.lineTo(i,wy)}X.stroke();X.strokeStyle='rgba(240,240,255,'+(0.08*wp*(1-noiseAmt*0.7))+')';X.lineWidth=3;X.beginPath();started=false;for(var i=0;i<W;i+=3){var wave=Math.sin(i*0.02+now*0.005)*35*wp+Math.sin(i*0.05+now*0.003)*18*wp+Math.sin(i*0.008+now*0.002)*25*wp;var wy=cy+wave;if(!started){X.moveTo(i,wy);started=true}else X.lineTo(i,wy)}X.stroke();X.strokeStyle='rgba(0,229,255,'+(0.02*wp)+')';X.lineWidth=12;X.beginPath();started=false;for(var i=0;i<W;i+=6){var wave=Math.sin(i*0.02+now*0.005)*35*wp+Math.sin(i*0.008+now*0.002)*25*wp;var wy=cy+wave;if(!started){X.moveTo(i,wy);started=true}else X.lineTo(i,wy)}X.stroke()}
+      if(p>0.12){var bp=Math.min((p-0.12)/0.2,1);for(var i=0;i<12*bp;i++){var bx=cx-120+i*20;var bh=(20+Math.sin(i*1.5+now*0.005)*15)*bp;var barTop=cy+60-bh;if(barTop<staticBottom+5)continue;X.fillStyle='rgba(0,229,255,'+(0.12*bp)+')';X.fillRect(bx,barTop,14,bh);X.fillStyle='rgba(240,240,255,'+(0.15*bp)+')';X.fillRect(bx,barTop,14,2)}}
+      if(p>0.25){var dp=Math.min((p-0.25)/0.2,1);X.font='300 '+(9+dp*2)+'px "Fira Code",monospace';X.textAlign='left';var lines=['SIGNAL ACQUIRED','DECODING LAYERS...','FOUNDATION: \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588','DETAILS: \u2588\u2588\u2588\u2588\u2588\u2588','EXPERIENCE: \u2588\u2588\u2588\u2588','ARCHITECTURE: \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588','PHILOSOPHY: \u2588\u2588'];for(var i=0;i<lines.length*dp;i++){var line=lines[i];var reveal=Math.min((dp-i/lines.length)*lines.length,1);var shown=line.slice(0,Math.floor(line.length*reveal));var ly=cy-80+i*22;if(ly<staticBottom+10)continue;X.fillStyle=i<2?'rgba(0,229,255,'+(0.2*dp)+')':'rgba(240,240,255,'+(0.18*dp)+')';X.fillText(shown,cx-140,ly)}}
+      if(p>0.4){var rp=Math.min((p-0.4)/0.2,1);var blockSize=Math.max(2,20*(1-rp));for(var bx2=cx-120;bx2<cx+120;bx2+=blockSize){for(var by=cy-80;by<cy+80;by+=blockSize){if(by<staticBottom+5)continue;if(Math.random()>0.3+rp*0.5)continue;var bc=Math.random()>0.5?'0,229,255':'240,240,255';X.fillStyle='rgba('+bc+','+(0.03+rp*0.04)+')';X.fillRect(bx2,by,blockSize-1,blockSize-1)}}}
+      if(p>0.55){var sp=Math.min((p-0.55)/0.2,1);X.strokeStyle='rgba(0,229,255,'+(0.15*sp)+')';X.lineWidth=1.5;X.beginPath();for(var i=0;i<W;i+=2){var wave=Math.sin(i*0.015+now*0.003)*20*sp;var wy=cy+wave;if(wy<staticBottom)continue;if(i===0)X.moveTo(i,wy);else X.lineTo(i,wy)}X.stroke();X.strokeStyle='rgba(0,229,255,'+(0.04*sp)+')';X.lineWidth=6;X.beginPath();for(var i=0;i<W;i+=4){var wave=Math.sin(i*0.015+now*0.003)*20*sp;var wy=cy+wave;if(wy<staticBottom)continue;if(i===0)X.moveTo(i,wy);else X.lineTo(i,wy)}X.stroke();for(var i=0;i<6;i++){var bx=W*0.3+(i/5)*W*0.4;var phase=(now*0.002+i*0.7)%1;var len=H*0.3*sp;var by=H*0.85-phase*len;if(by<staticBottom)continue;X.fillStyle='rgba(240,240,255,'+(0.04*sp*(1-phase))+')';X.fillRect(bx,by,1,20);X.beginPath();X.arc(bx+0.5,by,2,0,Math.PI*2);X.fillStyle='rgba(240,240,255,'+(0.25*sp*(1-phase))+')';X.fill()}}
+      if(p>0.78){var lp=Math.min((p-0.78)/0.14,1);X.font='700 14px "Orbitron",sans-serif';X.textAlign='center';X.fillStyle='rgba(240,240,255,'+(0.4*lp)+')';X.fillText('SIGNAL LOCKED',cx,cy-120);X.strokeStyle='rgba(240,240,255,'+(0.25*lp)+')';X.lineWidth=1.5;X.strokeRect(cx-10,cy-108,20,14);X.beginPath();X.arc(cx,cy-112,8,Math.PI,0);X.stroke();hz(cx,cy-100,60*lp,'240,240,255',0.025*lp);hz(cx,cy,200*lp,'0,229,255',0.012*lp)}
+      if(p>0.93){var fp=(p-0.93)/0.07;if(fp<0.2){X.fillStyle='rgba(240,240,255,'+((0.2-fp)*0.1)+')';X.fillRect(0,0,W,H)}}
+      var vg=X.createRadialGradient(W/2,H/2,W*0.2,W/2,H/2,W*0.7);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,3,8,0.3)');X.fillStyle=vg;X.fillRect(0,0,W,H)
+      if(p<1)raf=requestAnimationFrame(draw);else raf=requestAnimationFrame(draw)
+    }
+    raf=requestAnimationFrame(draw)
+    return function(){cancelAnimationFrame(raf);window.removeEventListener('resize',rs)}
+  },[])
+  return <div className="flex-1 flex flex-col" style={{background:'rgba(3,5,12,.9)',position:'relative',overflow:'hidden',minHeight:0}}>
+    <canvas ref={cRef} style={{position:'absolute',inset:0,width:'100%',height:'100%',display:'block'}}/>
+    <div className="absolute inset-0 flex flex-col items-center justify-end pb-8" style={{zIndex:1}}>
+      <span style={{fontFamily:UI,fontSize:9,letterSpacing:'.28em',color:'#00E5FF',opacity:0.6}}>CREATING</span>
+    </div>
+  </div>
+}
+
+
 export default function DashboardPage() {
   const [entered,setEntered]=useState(false)
   const [appState,setAppState]=useState<'idle'|'building'|'complete'>('idle')
@@ -397,6 +459,9 @@ export default function DashboardPage() {
   const [journalEntries,setJournalEntries]=useState<{id:string,entry_type:string,title:string,narration:string,prompt:string,created_at:string}[]>([])
   const [panelTab,setPanelTab]=useState<'cipher'|'journal'|'tools'>('cipher')
   const [appId,setAppId]=useState<string|null>(null)
+  const [promptAnalysis,setPromptAnalysis]=useState<{original:string,enhanced:string,layers:{layer:number,name:string,status:string,added:string|null}[],score:number}|null>(null)
+  const [pendingBuild,setPendingBuild]=useState<string|null>(null)
+  const [analyzing,setAnalyzing]=useState(false)
   const [savedApps,setSavedApps]=useState<{id:string,name:string,code:string,updated_at:string}[]>([])
   const buildCanvasRef=useRef<HTMLCanvasElement>(null)
   const buildParticlesRef=useRef<{x:number,y:number,vx:number,vy:number,life:number,decay:number,size:number}[]>([])
@@ -436,16 +501,14 @@ export default function DashboardPage() {
     })},[])
   useEffect(()=>{if(appState!=='idle')return;const iv=setInterval(()=>setPhIdx(p=>(p+1)%PLACEHOLDERS.length),4000);return()=>clearInterval(iv)},[appState])
   useEffect(()=>{const h=(e:KeyboardEvent)=>{if((e.metaKey||e.ctrlKey)&&e.key==='Enter'&&appState==='idle'&&prompt.trim()){e.preventDefault();handleBuild()}};document.addEventListener('keydown',h);return()=>document.removeEventListener('keydown',h)},[appState,prompt])
-  const handleBuild=useCallback(async()=>{
-    if(!prompt.trim()||appState!=='idle')return
-    setAppState('building');setProjName('New App');setVer('BUILDING...');setShowNarr(true)
-    setMsgs([{role:'cipher',text:'I see your vision. Let me bring it to life.'},{role:'user',text:prompt},{role:'cipher',text:'Enhancing your idea first...',type:'building'}])
-    let buildPrompt=prompt
-    try{const eRes=await fetch('/api/enhance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});const eData=await eRes.json();if(eData.success&&eData.enhanced){buildPrompt=eData.enhanced;setMsgs(prev=>[...prev.slice(0,-1),{role:'cipher',text:'Creating now — I\'ll walk you through each step.',type:'building'}])}}catch(e){}
+  const executeBuild=useCallback(async(buildPrompt:string)=>{
+    setAppState('building');setProjName('New App');setVer('BUILDING...');setShowNarr(true);setPendingBuild(null)
+    setMsgs(prev=>[...prev,{role:'cipher',text:'Building your enhanced vision now.',type:'building'}])
+    let buildPrompt2=buildPrompt
     let step=0;setNarrText(STEPS[0][0]);setNarrTeach(STEPS[0][1])
     const ni=setInterval(()=>{step++;if(step>=STEPS.length){clearInterval(ni);return};setNarrText(STEPS[step][0]);setNarrTeach(STEPS[step][1])},800)
     try{
-      const res=await fetch('/api/build',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:buildPrompt,persona:'operator',appId:null})})
+      const res=await fetch('/api/build',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:buildPrompt2,persona:'operator',appId:null})})
       const data=await res.json()
       clearInterval(ni)
       if(data.success){
@@ -462,13 +525,34 @@ export default function DashboardPage() {
       }
     }catch(e){clearInterval(ni);setAppState('idle');setVer('NEW');setShowNarr(false)
       setMsgs(prev=>[...prev,{role:'cipher',text:'The Grid encountered an error. Try again.'}])}
+  },[])
+  const handleBuild=useCallback(async()=>{
+    if(!prompt.trim()||appState!=='idle')return
+    setAnalyzing(true)
+    setMsgs([{role:'cipher',text:'I see your vision. Let me analyze it.'},{role:'user',text:prompt},{role:'cipher',text:'Analyzing your prompt across 5 layers...',type:'building'}])
+    try{
+      const eRes=await fetch('/api/enhance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})})
+      const eData=await eRes.json()
+      if(eData.success&&eData.enhanced){
+        setPromptAnalysis({original:prompt,enhanced:eData.enhanced,layers:eData.layers||[],score:eData.promptScore||3})
+        setPendingBuild(eData.enhanced)
+        setMsgs(prev=>[...prev.slice(0,-1),{role:'cipher',text:'Prompt analyzed. Review the breakdown below, then confirm to build.'}])
+      }else{
+        setPendingBuild(prompt)
+        setMsgs(prev=>[...prev.slice(0,-1),{role:'cipher',text:'Ready to build. Hit confirm below.'}])
+      }
+    }catch(e){
+      setPendingBuild(prompt)
+      setMsgs(prev=>[...prev.slice(0,-1),{role:'cipher',text:'Ready to build.'}])
+    }
+    setAnalyzing(false)
   },[prompt,appState])
   const sbW=sbCol?52:220
   const rainSpeed=entered?1:2.5
   const loadTpl=(k:string)=>{if(TEMPLATES[k])setPrompt(TEMPLATES[k])}
   const fillChat=(text:string)=>{setRefineText(text)}
   const generateHandoff=async()=>{setHandoffLoading(true);try{const res=await fetch('/api/handoff',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:generatedCode,appName:projName,suggestions,score:buildScore})});const data=await res.json();if(data.success){setHandoffData(data);setHandoffOpen(true)}}catch(e){}finally{setHandoffLoading(false)}}
-  const loadApp=(app:{id:string,name:string,code:string})=>{setAppId(app.id);setProjName(app.name);setGeneratedCode(app.code.replace('export default function','function').replace('export default ',''));setAppState('complete');setVer('saved');setPubVis(true);setShowStrip(true);setShowModes(true);setMsgs([{role:'cipher',text:'Loaded '+app.name+'. What would you like to change?',type:'summary'}]);setShowRevCalc(true);setBuildScore(Math.floor(65+Math.random()*25))}
+  const loadApp=(app:{id:string,name:string,code:string})=>{setAppId(app.id);setProjName(app.name);setGeneratedCode(app.code.replace('export default function','function').replace('export default ',''));setAppState('complete');setVer('saved');setPubVis(true);setShowStrip(true);setShowModes(true);setMsgs([{role:'cipher',text:'Loaded '+app.name+'. Ready to refine — tell me what needs work.'},{role:'cipher',text:'Here\'s what I\'d suggest improving next:',type:'summary'}]);setShowRevCalc(true);setBuildScore(Math.floor(65+Math.random()*25))}
   return <main className="relative min-h-screen overflow-hidden">
     <GridBg state={appState} rainSpeed={rainSpeed}/>
     <style jsx global>{`@keyframes fu{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}@keyframes slowpulse{0%,90%,100%{opacity:.6}95%{opacity:1}}@keyframes breathe{0%,100%{border-color:rgba(0,229,255,.12);box-shadow:0 0 8px rgba(0,229,255,.03)}50%{border-color:rgba(0,229,255,.25);box-shadow:0 0 16px rgba(0,229,255,.06)}}@keyframes spin{to{transform:rotate(360deg)}}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(45,50,68,.14);border-radius:2px}`}</style>
@@ -476,7 +560,7 @@ export default function DashboardPage() {
     <div className="fixed left-0 top-0 bottom-0 z-50 flex flex-col transition-all duration-300" style={{width:sbW,background:'rgba(4,6,14,.96)',borderRight:'1px solid rgba(0,229,255,.07)',backdropFilter:'blur(18px)',opacity:entered?1:0,transition:'opacity .5s ease'}}>
       <div className="flex items-center gap-2.5 px-4 py-3.5 flex-shrink-0" style={{borderBottom:'1px solid rgba(0,229,255,.035)'}}><GI s={20}/>{!sbCol&&<span style={{fontFamily:UI,fontSize:9,fontWeight:700,letterSpacing:'.2em',color:'rgba(0,229,255,.7)'}}>SOVREND</span>}<span className="ml-auto cursor-pointer" onClick={()=>setSbCol(!sbCol)} style={{fontSize:10,color:'rgba(195,200,215,.55)'}}>{sbCol?'▷':'◁'}</span></div>
       <div className="flex-1 overflow-y-auto px-2 py-2.5">
-        {[{i:'⌂',l:'Home',a:appState==='idle',click:()=>{setAppState('idle');setPrompt('');setProjName('New Build');setVer('NEW');setPubVis(false);setShowStrip(false);setShowModes(false);setMsgs([]);setGeneratedCode('');setSuggestions([]);setBuildScore(0);setShowRevCalc(false)}},{i:'⌕',l:'Search',r:'⌘K'}].map(x=><div key={x.l} className="flex items-center gap-2.5 cursor-pointer mb-px" onClick={()=>{if((x as any).click)(x as any).click()}} style={{padding:sbCol?0:'8px 10px',width:sbCol?36:undefined,height:sbCol?36:undefined,margin:sbCol?'0 auto 2px':undefined,justifyContent:sbCol?'center':undefined,display:'flex',fontSize:12,color:(x as any).a?'#00E5FF':'rgba(195,200,215,.75)',background:x.a?'rgba(0,229,255,.04)':'transparent',border:`1px solid ${x.a?'rgba(0,229,255,.15)':'transparent'}`}}><span style={{fontSize:14,width:20,textAlign:'center'}}>{x.i}</span>{!sbCol&&<span className="flex-1">{x.l}</span>}{!sbCol&&x.r&&<span style={{fontSize:8,color:'rgba(195,200,215,.55)',fontFamily:MONO}}>{x.r}</span>}</div>)}
+        {[{i:'⌂',l:'Home',a:appState==='idle',click:()=>{setAppState('idle');setPrompt('');setProjName('New Build');setVer('NEW');setPubVis(false);setShowStrip(false);setShowModes(false);setMsgs([]);setGeneratedCode('');setSuggestions([]);setBuildScore(0);setShowRevCalc(false);setPromptAnalysis(null)}},{i:'⌕',l:'Search',r:'⌘K'}].map(x=><div key={x.l} className="flex items-center gap-2.5 cursor-pointer mb-px" onClick={()=>{if((x as any).click)(x as any).click()}} style={{padding:sbCol?0:'8px 10px',width:sbCol?36:undefined,height:sbCol?36:undefined,margin:sbCol?'0 auto 2px':undefined,justifyContent:sbCol?'center':undefined,display:'flex',fontSize:12,color:(x as any).a?'#00E5FF':'rgba(195,200,215,.75)',background:x.a?'rgba(0,229,255,.04)':'transparent',border:`1px solid ${x.a?'rgba(0,229,255,.15)':'transparent'}`}}><span style={{fontSize:14,width:20,textAlign:'center'}}>{x.i}</span>{!sbCol&&<span className="flex-1">{x.l}</span>}{!sbCol&&x.r&&<span style={{fontSize:8,color:'rgba(195,200,215,.55)',fontFamily:MONO}}>{x.r}</span>}</div>)}
         {!sbCol&&<div className="flex items-center justify-center gap-2 cursor-pointer my-1 py-2" onClick={()=>{setAppState('idle');setPrompt('');setProjName('New Build');setVer('NEW');setPubVis(false);setShowStrip(false);setShowModes(false);setMsgs([]);setGeneratedCode('');setSuggestions([])}} style={{border:'1px solid rgba(0,229,255,.15)',background:'rgba(0,229,255,.04)',color:'#00E5FF',fontFamily:UI,fontSize:9,letterSpacing:'.14em',fontWeight:600}}>+&nbsp;NEW BUILD</div>}
         {sbCol&&<div className="flex items-center justify-center cursor-pointer mb-px" style={{width:36,height:36,margin:'4px auto',color:'#00E5FF',border:'1px solid rgba(0,229,255,.15)',background:'rgba(0,229,255,.04)',fontSize:16}}>+</div>}
         {!sbCol&&<div className="flex items-center gap-2.5 cursor-pointer mb-px" onClick={()=>setPlanOpen(!planOpen)} style={{padding:'8px 10px',fontSize:13,color:'rgba(195,200,215,.8)',border:'1px solid transparent'}}><span style={{fontSize:12,width:20,textAlign:'center',color:'#00E5FF',animation:'slowpulse 11s ease infinite'}}>◉</span><span className="flex-1">Plan & Notes</span><span style={{fontSize:7,color:'rgba(0,229,255,.4)',fontFamily:UI,letterSpacing:'.1em'}}>FREE</span></div>}
@@ -514,8 +598,8 @@ export default function DashboardPage() {
             <p style={{fontFamily:UI,fontSize:8,letterSpacing:'.3em',color:'rgba(0,229,255,.35)',marginTop:4}}>&mdash; {QUOTES[Math.floor((Date.now()/86400000)%QUOTES.length)].a}</p>
           </div>
           <div className="flex gap-2.5 items-start mb-6 text-left w-full max-w-lg" style={{padding:'12px 14px',background:'rgba(240,240,255,.03)',border:'1px solid rgba(240,240,255,.06)',borderLeft:'2px solid rgba(255,107,0,.4)'}}>
-            <div className="flex items-center justify-center flex-shrink-0" style={{width:46,height:28,fontFamily:UI,fontSize:6,border:'1px solid rgba(255,107,0,.3)',color:'#FF6B00',background:'rgba(255,107,0,.04)'}}>CIPHER</div>
-            <div style={{fontSize:14,color:'rgba(240,240,255,.75)',lineHeight:1.6}}>Tell me what you want to build — in your own words. I&apos;ll handle the rest.</div>
+            <div className="flex items-center justify-center flex-shrink-0" style={{padding:'4px 10px',fontFamily:UI,fontSize:7,letterSpacing:'.18em',border:'1px solid rgba(255,107,0,.25)',color:'#FF6B00',background:'rgba(255,107,0,.06)'}}>CIPHER</div>
+            <div style={{fontSize:14,color:'rgba(240,240,255,.75)',lineHeight:1.6}}>Tell me what you want to build. The more layers you cover, the better your app comes out:<br/><br/><span style={{fontSize:11,color:'rgba(0,229,255,.5)'}}>→ What can users <b style={{color:'#00E5FF'}}>DO</b>?</span><br/><span style={{fontSize:11,color:'rgba(0,229,255,.4)'}}>→ How should it <b style={{color:'#00E5FF'}}>BEHAVE</b>?</span><br/><span style={{fontSize:11,color:'rgba(0,229,255,.35)'}}>→ How should it <b style={{color:'#00E5FF'}}>FEEL</b>?</span><br/><span style={{fontSize:11,color:'rgba(0,229,255,.3)'}}>→ What <b style={{color:'#00E5FF'}}>POWERS</b> it?</span><br/><span style={{fontSize:11,color:'rgba(0,229,255,.25)'}}>→ What is it <b style={{color:'#00E5FF'}}>NOT</b>?</span></div>
           </div>
           <h2 style={{fontFamily:UI,fontSize:'clamp(18px,3vw,30px)',fontWeight:900,letterSpacing:'.08em',background:'linear-gradient(135deg,#FF6A00,#00E5FF)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',marginBottom:8,textShadow:'none'}}>What are you ready to create?</h2>
           <p style={{fontSize:13.5,color:'rgba(195,200,215,.55)',marginBottom:26}}>No code needed. Takes about 60 seconds.</p>
@@ -526,9 +610,22 @@ export default function DashboardPage() {
                 {['\ud83d\udcce','\ud83c\udfa4','\u25c7'].map(i=><div key={i} className="flex items-center justify-center cursor-pointer" style={{width:28,height:28,border:'1px solid rgba(0,229,255,.07)',color:'rgba(195,200,215,.55)',fontSize:12}}>{i}</div>)}
 
               </div>
-              <button onClick={handleBuild} style={{fontFamily:UI,fontSize:10,fontWeight:700,letterSpacing:'.22em',color:'#000308',background:'linear-gradient(135deg,#FF6A00,#00E5FF)',border:'none',padding:'12px 32px',cursor:'pointer',boxShadow:'0 0 20px rgba(0,229,255,.2),0 0 40px rgba(255,106,0,.1)',transition:'all .3s'}}>CREATE →</button>
+              <button onClick={handleBuild} disabled={analyzing||!!pendingBuild} style={{fontFamily:UI,fontSize:10,fontWeight:700,letterSpacing:'.22em',color:'#000308',background:analyzing?'rgba(0,229,255,.3)':'linear-gradient(135deg,#FF6A00,#00E5FF)',border:'none',padding:'12px 32px',cursor:analyzing?'wait':'pointer',boxShadow:'0 0 20px rgba(0,229,255,.2),0 0 40px rgba(255,106,0,.1)',transition:'all .3s',opacity:pendingBuild?0.3:1}}>{analyzing?'ANALYZING...':'CREATE →'}</button>
             </div>
           </div>
+          {pendingBuild&&promptAnalysis&&<div className="w-full max-w-lg mt-4" style={{animation:'fu .4s ease'}}>
+            <div style={{border:'1px solid rgba(0,229,255,.2)',padding:'14px',background:'rgba(0,229,255,.03)',borderLeft:'2px solid rgba(0,229,255,.4)'}}>
+              <div className="flex items-center justify-between mb-3"><div className="flex items-center gap-1.5"><span style={{fontSize:10,color:'rgba(0,229,255,.7)'}}>◈</span><span style={{fontFamily:UI,fontSize:8,letterSpacing:'.25em',color:'rgba(0,229,255,.5)'}}>PROMPT ANALYSIS</span></div><span style={{fontFamily:UI,fontSize:9,color:promptAnalysis.score>=4?'#00E5FF':promptAnalysis.score>=3?'rgba(255,230,0,.7)':'rgba(255,80,80,.6)'}}>SCORE: {promptAnalysis.score}/5</span></div>
+              <div className="flex flex-col gap-1.5 mb-3">{promptAnalysis.layers.map(function(l){return <div key={l.layer} className="flex items-start gap-2" style={{fontSize:10}}>
+                <span style={{fontFamily:UI,fontSize:7,letterSpacing:'.1em',color:l.status==='strong'?'rgba(0,229,255,.6)':l.status==='weak'?'rgba(255,230,0,.6)':'rgba(255,80,80,.5)',padding:'2px 5px',border:'1px solid '+(l.status==='strong'?'rgba(0,229,255,.15)':l.status==='weak'?'rgba(255,230,0,.15)':'rgba(255,80,80,.12)'),minWidth:72,textAlign:'center'}}>{l.name.toUpperCase()}</span>
+                <span style={{color:l.added?'rgba(240,240,255,.6)':'rgba(0,229,255,.4)',lineHeight:1.4}}>{l.added||'Covered \u2713'}</span>
+              </div>})}</div>
+              <div className="flex gap-2 mt-3">
+                <button onClick={function(){executeBuild(pendingBuild)}} style={{fontFamily:UI,fontSize:9,fontWeight:700,letterSpacing:'.18em',color:'#000308',background:'linear-gradient(135deg,#FF6A00,#00E5FF)',border:'none',padding:'10px 24px',cursor:'pointer',boxShadow:'0 0 16px rgba(0,229,255,.2)',flex:1}}>BUILD WITH ENHANCED →</button>
+                <button onClick={function(){setPendingBuild(null);setPromptAnalysis(null);setMsgs([])}} style={{fontFamily:UI,fontSize:8,letterSpacing:'.14em',color:'rgba(0,229,255,.6)',background:'transparent',border:'1px solid rgba(0,229,255,.15)',padding:'10px 14px',cursor:'pointer'}}>EDIT</button>
+              </div>
+            </div>
+          </div>}
         </div></div>}
         {appState!=='idle'&&<div className="flex w-full h-full" style={{animation:'fu .5s ease'}}>
           <div className="flex flex-col h-full" style={{width:370,minWidth:370,background:'rgba(4,6,14,.96)',borderRight:'1px solid rgba(0,229,255,.07)',backdropFilter:'blur(18px)'}}>
@@ -622,6 +719,14 @@ export default function DashboardPage() {
                 {m.type==='summary'&&<div className="mt-3 flex flex-wrap gap-1.5">{suggestions.map(s=><Sug key={s} text={s} onPick={fillChat}/>)}</div>}
                 {m.type==='suggestion'&&<div className="mt-2 flex flex-wrap gap-1.5"><Sug text="Yes, let's do that" onPick={fillChat}/><Sug text="Something else first" onPick={fillChat}/></div>}
               </Msg>)}
+              {appState==='complete'&&promptAnalysis&&<div style={{border:'1px solid rgba(0,229,255,.15)',padding:'12px',background:'rgba(0,229,255,.03)',borderLeft:'2px solid rgba(0,229,255,.4)',animation:'fu .4s ease'}}>
+                <div className="flex items-center justify-between mb-2"><div className="flex items-center gap-1.5"><span style={{fontSize:10,color:'rgba(0,229,255,.7)'}}>◈</span><span style={{fontFamily:UI,fontSize:8,letterSpacing:'.25em',color:'rgba(0,229,255,.5)'}}>PROMPT ANALYSIS</span></div><span style={{fontFamily:UI,fontSize:8,color:'rgba(0,229,255,.4)'}}>SCORE: {promptAnalysis.score}/5</span></div>
+                <div style={{fontSize:11,color:'rgba(195,200,215,.5)',marginBottom:6,lineHeight:1.4}}>Your prompt: <span style={{color:'rgba(240,240,255,.6)'}}>{promptAnalysis.original.length>80?promptAnalysis.original.slice(0,80)+'...':promptAnalysis.original}</span></div>
+                {promptAnalysis.layers.length>0&&<div className="flex flex-col gap-1">{promptAnalysis.layers.map(function(l){return <div key={l.layer} className="flex items-start gap-2" style={{fontSize:10}}>
+                  <span style={{fontFamily:UI,fontSize:7,letterSpacing:'.1em',color:l.status==='strong'?'rgba(0,229,255,.6)':l.status==='weak'?'rgba(255,230,0,.6)':'rgba(255,80,80,.5)',padding:'2px 5px',border:'1px solid '+(l.status==='strong'?'rgba(0,229,255,.15)':l.status==='weak'?'rgba(255,230,0,.15)':'rgba(255,80,80,.12)'),minWidth:65,textAlign:'center'}}>{l.name.toUpperCase()}</span>
+                  <span style={{color:l.added?'rgba(240,240,255,.6)':'rgba(0,229,255,.4)',lineHeight:1.4}}>{l.added||'Already covered \u2713'}</span>
+                </div>})}</div>}
+              </div>}
               {appState==='complete'&&<div style={{border:'1px solid rgba(255,107,0,.15)',padding:'10px 12px',background:'rgba(255,107,0,.04)',borderLeft:'2px solid rgba(255,107,0,.5)',animation:'fu .4s ease'}}>
                 <div className="flex items-center gap-1.5 mb-1"><span style={{fontSize:10,color:'rgba(255,107,0,.7)'}}>◈</span><span style={{fontFamily:UI,fontSize:8,letterSpacing:'.3em',color:'rgba(255,107,0,.5)'}}>SOVREN CODE</span></div>
                 <div style={{fontSize:14,color:'rgba(255,107,0,.9)',fontWeight:600}}>Supabase</div>
@@ -632,7 +737,7 @@ export default function DashboardPage() {
               {appState==='complete'&&showRevCalc&&<RevCalc onAddPricing={()=>fillChat('Add a pricing page with 3 tiers')}/>}
 
             </div>
-            {showStrip&&<div className="flex gap-1 px-3 py-1.5 flex-shrink-0 flex-wrap" style={{borderTop:'1px solid rgba(0,229,255,.035)',animation:'fu .4s ease'}}>{['Look & Feel','How It Works','Business','Content'].map((p,i)=><span key={p} style={{fontSize:9,padding:'4px 8px',border:`1px solid ${i===0?'rgba(0,229,255,.3)':'rgba(0,229,255,.07)'}`,color:i===0?'#00E5FF':'rgba(195,200,215,.55)',background:i===0?'rgba(0,229,255,.04)':'transparent',cursor:'pointer'}}>{p}</span>)}</div>}
+            {showStrip&&<div className="flex gap-1 px-3 py-1.5 flex-shrink-0 flex-wrap" style={{borderTop:'1px solid rgba(0,229,255,.035)',animation:'fu .4s ease'}}>{[{l:'Foundation',h:'What should users be able to DO that they can\'t yet? What actions are missing?'},{l:'Details',h:'How should this BEHAVE differently? What rules, states, or interactions need changing?'},{l:'Experience',h:'How should this FEEL? What\'s the vibe — calmer, bolder, more playful, more minimal?'},{l:'Architecture',h:'What should this CONNECT to? Database, payments, auth, external services?'},{l:'Philosophy',h:'What should this NOT be? What should I remove, simplify, or cut?'}].map((p)=><span key={p.l} onClick={()=>setRefineText(p.h)} style={{fontSize:9,padding:'4px 8px',border:'1px solid rgba(0,229,255,.07)',color:'rgba(195,200,215,.55)',background:'transparent',cursor:'pointer',transition:'all .15s'}} onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(0,229,255,.3)';e.currentTarget.style.color='#00E5FF';e.currentTarget.style.background='rgba(0,229,255,.04)'}} onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(0,229,255,.07)';e.currentTarget.style.color='rgba(195,200,215,.55)';e.currentTarget.style.background='transparent'}}>{p.l}</span>)}</div>}
             <div className="px-3 pb-3 flex-shrink-0" style={{background:'rgba(8,11,22,.93)',borderTop:'1px solid rgba(0,229,255,.07)'}}>
               {showModes&&<div className="flex gap-0.5 mb-1" style={{animation:'fu .3s ease'}}>{['BUILD','PLAN','CHAT'].map((m)=><span key={m} onClick={()=>setActiveMode(m)} style={{fontFamily:UI,fontSize:8,letterSpacing:'.14em',padding:'3px 6px',cursor:'pointer',color:activeMode===m?'#00E5FF':'rgba(195,200,215,.55)',border:`1px solid ${activeMode===m?'rgba(0,229,255,.15)':'transparent'}`,background:activeMode===m?'rgba(0,229,255,.04)':'transparent'}}>{m}</span>)}</div>}
               {activeMode==='PLAN'?<div style={{border:'1px solid rgba(0,229,255,.15)',background:'rgba(4,6,14,.96)',animation:'breathe 3s ease infinite'}}>
@@ -653,10 +758,10 @@ export default function DashboardPage() {
           </div>
           <div className="flex-1 flex flex-col overflow-hidden">
             <div className="flex items-center px-3 flex-shrink-0 overflow-hidden transition-all duration-300" style={{height:showNarr?28:0,background:'rgba(8,11,22,.93)',borderBottom:'1px solid rgba(0,229,255,.035)',fontFamily:MONO,fontSize:10,color:'rgba(0,229,255,.5)'}}><div style={{width:6,height:6,borderRadius:'50%',background:'#00E5FF',marginRight:8,animation:'pulse 1.5s ease infinite'}}/>{narrText}<span style={{color:'rgba(0,229,255,.3)',fontStyle:'italic',marginLeft:4}}> — {narrTeach}</span></div>
-            <div className="flex items-center justify-between px-3 flex-shrink-0" style={{height:30,background:'rgba(8,11,22,.93)',borderBottom:'1px solid rgba(0,229,255,.035)'}}><span style={{fontSize:10,color:'rgba(195,200,215,.55)',background:'rgba(0,229,255,.04)',border:'1px solid rgba(0,229,255,.07)',padding:'2px 10px'}}><b style={{color:'#00E5FF',fontWeight:500}}>myapp</b>.sovrend.com</span><div className="flex gap-1">{['History','Visual Edit','View Code','\u2197 New Tab'].map(a=><span key={a} className="cursor-pointer" onClick={()=>{if(a==='View Code')setCodeOpen(!codeOpen);if(a==='Visual Edit'){setMsgs(prev=>[...prev,{role:'cipher',text:'Visual Edit mode coming soon. For now, describe what you want to change and I\'ll handle it.'}])};if(a==='History'){setMsgs(prev=>[...prev,{role:'cipher',text:'Version history coming soon. Each refine is saved automatically.'}])}}} style={{fontSize:9,color:a==='View Code'&&codeOpen?'#00E5FF':'rgba(195,200,215,.55)',padding:'3px 6px',border:'1px solid rgba(0,229,255,.035)'}}>{a}</span>)}</div></div>
+            <div className="flex items-center justify-between px-3 flex-shrink-0" style={{height:30,background:'rgba(8,11,22,.93)',borderBottom:'1px solid rgba(0,229,255,.035)'}}><span style={{fontSize:10,color:'rgba(195,200,215,.55)',background:'rgba(0,229,255,.04)',border:'1px solid rgba(0,229,255,.07)',padding:'2px 10px'}}><b style={{color:'#00E5FF',fontWeight:500}}>{projName.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'myapp'}</b>.sovrend.com</span><div className="flex gap-1">{['History','Visual Edit','View Code','\u2197 New Tab'].map(a=><span key={a} className="cursor-pointer" onClick={()=>{if(a==='View Code')setCodeOpen(!codeOpen);if(a==='Visual Edit'){setMsgs(prev=>[...prev,{role:'cipher',text:'Visual Edit mode coming soon. For now, describe what you want to change and I\'ll handle it.'}])};if(a==='History'){setMsgs(prev=>[...prev,{role:'cipher',text:'Version history coming soon. Each refine is saved automatically.'}])}}} style={{fontSize:9,color:a==='View Code'&&codeOpen?'#00E5FF':'rgba(195,200,215,.55)',padding:'3px 6px',border:'1px solid rgba(0,229,255,.035)'}}>{a}</span>)}</div></div>
             <div className="flex-1 flex overflow-hidden">
               <div className="flex-1 flex flex-col" style={{background:'rgba(10,14,24,.5)'}}>
-                {appState==='building'?<div className="flex-1 flex flex-col items-center justify-center gap-3" style={{background:'rgba(3,5,12,.9)'}}><div style={{width:28,height:28,border:'2px solid rgba(0,229,255,.07)',borderTop:'2px solid #00E5FF',borderRadius:'50%',animation:'spin .8s linear infinite'}}/><span style={{fontFamily:UI,fontSize:9,letterSpacing:'.28em',color:'#00E5FF'}}>CREATING</span></div>:
+                {appState==='building'?<SignalDecode/>:
                 <div className="flex-1 flex flex-col">
                   <div className="flex items-center px-3 gap-1 flex-shrink-0" style={{height:28,background:'rgba(0,229,255,.04)',borderBottom:'1px solid rgba(0,229,255,.035)'}}>{[0,1,2].map(i=><div key={i} style={{width:6,height:6,borderRadius:'50%',border:'1px solid rgba(45,50,68,.14)'}}/>)}<span style={{fontSize:9,color:'rgba(195,200,215,.55)',marginLeft:5}}>Preview</span></div>
                   <div className="flex-1 overflow-hidden flex justify-center" style={{background:'rgba(3,5,12,.9)'}}>
