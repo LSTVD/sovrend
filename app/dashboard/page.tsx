@@ -541,12 +541,50 @@ export default function DashboardPage() {
                   <div style={{fontSize:9,color:'rgba(195,200,215,.3)',marginTop:2,fontStyle:'italic'}}>Prompt: {j.prompt?.slice(0,60)}...</div>
                 </div>)}
               </div>}
-              {panelTab==='tools'&&<div className="flex flex-col gap-2">
-                <div style={{fontFamily:UI,fontSize:8,letterSpacing:'.2em',color:'rgba(255,107,0,.4)',marginBottom:4}}>TOOLS</div>
-                {GLOSSARY.map(g=><div key={g.t} style={{border:'1px solid rgba(255,107,0,.06)',padding:'6px 10px'}}>
-                  <div style={{fontSize:11,color:'rgba(255,107,0,.8)',fontWeight:500}}>{g.t}</div>
-                  <div style={{fontSize:10,color:'rgba(195,200,215,.5)',marginTop:2,lineHeight:1.4}}>{g.d}</div>
-                </div>)}
+              {panelTab==='tools'&&<div className="flex flex-col gap-3">
+                <div className="flex gap-1 mb-1">{['glossary','prompts','patterns'].map(t=><span key={t} onClick={()=>setToolsView(t as any)} className="cursor-pointer" style={{fontFamily:UI,fontSize:7,letterSpacing:'.15em',padding:'3px 8px',color:toolsView===t?'#FF6B00':'rgba(195,200,215,.45)',border:'1px solid '+(toolsView===t?'rgba(255,107,0,.2)':'transparent'),background:toolsView===t?'rgba(255,107,0,.04)':'transparent',textTransform:'uppercase'}}>{t}</span>)}</div>
+                {toolsView==='glossary'&&<div className="flex flex-col gap-1">
+                  <input className="w-full outline-none mb-2" placeholder="Search terms..." value={toolSearch} onChange={e=>setToolSearch(e.target.value)} style={{background:'rgba(8,11,22,.7)',border:'1px solid rgba(255,107,0,.1)',color:'#F0F0FF',fontSize:11,padding:'6px 10px'}}/>
+                  {GLOSSARY.filter(g=>!toolSearch||g.t.toLowerCase().includes(toolSearch.toLowerCase())||g.d.toLowerCase().includes(toolSearch.toLowerCase())).map(g=><div key={g.t} style={{border:'1px solid rgba(255,107,0,.06)',padding:'6px 10px'}}>
+                    <div style={{fontSize:11,color:'rgba(255,107,0,.8)',fontWeight:500}}>{g.t}</div>
+                    <div style={{fontSize:10,color:'rgba(195,200,215,.5)',marginTop:2,lineHeight:1.4}}>{g.d}</div>
+                  </div>)}
+                </div>}
+                {toolsView==='prompts'&&<div className="flex flex-col gap-3">
+                  <div style={{fontSize:12,color:'rgba(240,240,255,.7)',lineHeight:1.5,marginBottom:4}}>Better prompts = better apps. Learn the difference.</div>
+                  {[
+                    {weak:'Make me an app',strong:'A booking system where customers pick a date and time, pay a deposit, and get a confirmation email with a calendar view and admin panel',lesson:'Be specific about features, pages, and user flows'},
+                    {weak:'I need a dashboard',strong:'A SaaS analytics dashboard showing revenue charts, user growth, plan distribution, and a sidebar with navigation to Users, Billing, and Settings pages',lesson:'Describe what data to show and how to organize it'},
+                    {weak:'Build a store',strong:'An online store with product grid, category filters, search bar, shopping cart with quantity controls, and a Stripe checkout flow with order confirmation',lesson:'Walk through the user journey step by step'},
+                    {weak:'Make a social app',strong:'A community feed where users post updates with images, like and comment on posts, follow other users, and see a personalized feed sorted by recency',lesson:'Define the interactions between users'},
+                    {weak:'I want a portfolio',strong:'A minimal portfolio with a hero section, project cards with hover effects, an about page with timeline, a contact form that sends email, and a dark/light mode toggle',lesson:'Include specific UI details and interactions'},
+                  ].map((p,i)=><div key={i} style={{border:'1px solid rgba(0,229,255,.08)',padding:10}}>
+                    <div style={{fontFamily:UI,fontSize:7,letterSpacing:'.15em',color:'rgba(255,106,0,.4)',marginBottom:4}}>EXAMPLE {i+1}</div>
+                    <div style={{fontSize:10,color:'rgba(255,106,0,.5)',marginBottom:2}}>✗ Weak:</div>
+                    <div style={{fontSize:11,color:'rgba(195,200,215,.5)',marginBottom:6,fontStyle:'italic'}}>{p.weak}</div>
+                    <div style={{fontSize:10,color:'rgba(0,229,255,.5)',marginBottom:2}}>✓ Strong:</div>
+                    <div style={{fontSize:11,color:'rgba(240,240,255,.7)',marginBottom:6,lineHeight:1.4}}>{p.strong}</div>
+                    <div style={{fontSize:10,color:'rgba(0,255,65,.4)',borderTop:'1px solid rgba(0,229,255,.05)',paddingTop:4}}>→ {p.lesson}</div>
+                    <span className="cursor-pointer mt-2 inline-block" onClick={()=>{setPrompt(p.strong);setActiveMode('BUILD');setPanelTab('cipher')}} style={{fontSize:9,fontFamily:UI,letterSpacing:'.1em',color:'#00E5FF',padding:'3px 8px',border:'1px solid rgba(0,229,255,.15)',marginTop:6}}>USE THIS PROMPT</span>
+                  </div>)}
+                </div>}
+                {toolsView==='patterns'&&<div className="flex flex-col gap-3">
+                  <div style={{fontSize:12,color:'rgba(240,240,255,.7)',lineHeight:1.5,marginBottom:4}}>Common app patterns. Tap to create one.</div>
+                  {[
+                    {name:'Dashboard',desc:'Sidebar navigation + stats cards + data table + charts. The command center pattern.',prompt:'A dashboard with sidebar navigation, 4 stat cards at the top showing key metrics, a data table with sortable columns, and a line chart showing trends over time. Include a search bar and filter dropdown.'},
+                    {name:'CRUD App',desc:'Create, Read, Update, Delete. The backbone of every data app.',prompt:'A task management app where users can create tasks with title, description, priority, and due date. Show tasks in a list with edit and delete buttons. Include a form modal for creating and editing. Add filters for priority and completion status.'},
+                    {name:'Auth Flow',desc:'Sign up, verify, log in, protected pages. Every real app needs this.',prompt:'A login and signup page with email and password fields, form validation, error messages, and a toggle between sign in and sign up modes. Include a forgot password link and a welcome message after login.'},
+                    {name:'Landing Page',desc:'Hero, features, pricing, CTA. Convert visitors to users.',prompt:'A modern landing page with a hero section featuring a headline, subtext and CTA button, a 3-column features section with icons, a pricing table with 3 tiers, testimonial cards, and a footer with links.'},
+                    {name:'E-Commerce',desc:'Products, cart, checkout. Turn browsers into buyers.',prompt:'An online store with a product grid showing images, prices and ratings, category filter sidebar, product detail page with add to cart, a shopping cart drawer with quantity controls, and a checkout form.'},
+                    {name:'Social Feed',desc:'Posts, likes, comments, profiles. Community in a box.',prompt:'A social media feed where users see posts with author avatar, text content, images, like count and comment count. Include a compose post form at the top, a comment section that expands, and a trending sidebar.'},
+                  ].map((p,i)=><div key={i} style={{border:'1px solid rgba(0,229,255,.08)',padding:10}}>
+                    <div className="flex items-center justify-between mb-1">
+                      <div style={{fontSize:13,color:'#00E5FF',fontWeight:600}}>{p.name}</div>
+                      <span className="cursor-pointer" onClick={()=>{setPrompt(p.prompt);setActiveMode('BUILD');setPanelTab('cipher')}} style={{fontSize:8,fontFamily:UI,letterSpacing:'.1em',color:'#00E5FF',padding:'3px 8px',border:'1px solid rgba(0,229,255,.15)'}}>CREATE THIS</span>
+                    </div>
+                    <div style={{fontSize:11,color:'rgba(195,200,215,.6)',lineHeight:1.4}}>{p.desc}</div>
+                  </div>)}
+                </div>}
               </div>}
               {panelTab==='cipher'&&msgs.map((m,i)=><Msg key={i} role={m.role} text={m.text}>
                 {m.type==='building'&&<div className="flex items-center gap-1.5 mt-2" style={{fontSize:10,color:'rgba(195,200,215,.55)'}}><div style={{width:8,height:8,border:'1.5px solid rgba(45,50,68,.14)',borderTop:'1.5px solid #00E5FF',borderRadius:'50%',animation:'spin .7s linear infinite'}}/>Claude Sonnet · ~45s</div>}
