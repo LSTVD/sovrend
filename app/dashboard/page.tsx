@@ -551,21 +551,50 @@ export default function DashboardPage() {
                   </div>)}
                 </div>}
                 {toolsView==='prompts'&&<div className="flex flex-col gap-3">
-                  <div style={{fontSize:12,color:'rgba(240,240,255,.7)',lineHeight:1.5,marginBottom:4}}>Better prompts = better apps. Learn the difference.</div>
+                  <div style={{fontSize:12,color:'rgba(240,240,255,.7)',lineHeight:1.5,marginBottom:4}}>Expert prompts by category. Tap CREATE to use any prompt.</div>
                   {[
-                    {weak:'Make me an app',strong:'A booking system where customers pick a date and time, pay a deposit, and get a confirmation email with a calendar view and admin panel',lesson:'Be specific about features, pages, and user flows'},
-                    {weak:'I need a dashboard',strong:'A SaaS analytics dashboard showing revenue charts, user growth, plan distribution, and a sidebar with navigation to Users, Billing, and Settings pages',lesson:'Describe what data to show and how to organize it'},
-                    {weak:'Build a store',strong:'An online store with product grid, category filters, search bar, shopping cart with quantity controls, and a Stripe checkout flow with order confirmation',lesson:'Walk through the user journey step by step'},
-                    {weak:'Make a social app',strong:'A community feed where users post updates with images, like and comment on posts, follow other users, and see a personalized feed sorted by recency',lesson:'Define the interactions between users'},
-                    {weak:'I want a portfolio',strong:'A minimal portfolio with a hero section, project cards with hover effects, an about page with timeline, a contact form that sends email, and a dark/light mode toggle',lesson:'Include specific UI details and interactions'},
-                  ].map((p,i)=><div key={i} style={{border:'1px solid rgba(0,229,255,.08)',padding:10}}>
-                    <div style={{fontFamily:UI,fontSize:7,letterSpacing:'.15em',color:'rgba(255,106,0,.4)',marginBottom:4}}>EXAMPLE {i+1}</div>
-                    <div style={{fontSize:10,color:'rgba(255,106,0,.5)',marginBottom:2}}>✗ Weak:</div>
-                    <div style={{fontSize:11,color:'rgba(195,200,215,.5)',marginBottom:6,fontStyle:'italic'}}>{p.weak}</div>
-                    <div style={{fontSize:10,color:'rgba(0,229,255,.5)',marginBottom:2}}>✓ Strong:</div>
-                    <div style={{fontSize:11,color:'rgba(240,240,255,.7)',marginBottom:6,lineHeight:1.4}}>{p.strong}</div>
-                    <div style={{fontSize:10,color:'rgba(0,255,65,.4)',borderTop:'1px solid rgba(0,229,255,.05)',paddingTop:4}}>→ {p.lesson}</div>
-                    <span className="cursor-pointer mt-2 inline-block" onClick={()=>{setPrompt(p.strong);setActiveMode('BUILD');setPanelTab('cipher')}} style={{fontSize:9,fontFamily:UI,letterSpacing:'.1em',color:'#00E5FF',padding:'3px 8px',border:'1px solid rgba(0,229,255,.15)',marginTop:6}}>USE THIS PROMPT</span>
+                    {cat:'BUSINESS',color:'#00E5FF',items:[
+                      {t:'Client Portal',p:'A client portal for freelancers with a dashboard showing active projects with progress bars, an invoice generator with line items and tax calculation, a messaging system with read receipts, and sidebar navigation.',tip:'Add notification bell for unread messages'},
+                      {t:'SaaS Dashboard',p:'A SaaS analytics dashboard with sidebar showing Users, Revenue, Plans, Settings. Main area has 4 KPI cards, a revenue line chart, user growth bar chart, and recent signups table with avatar, email, plan, join date.',tip:'Add date range picker that filters all charts'},
+                      {t:'Invoice Generator',p:'An invoice generator with business name, client name, line items with description, quantity, rate, amount. Auto-calculate subtotal, tax, total. Preview panel showing formatted invoice. Download and email options.',tip:'Add recurring invoice toggle'},
+                      {t:'Booking System',p:'A booking system with weekly calendar showing available slots in green, booked in gray. Customers pick date, time, fill name, email, phone, service. Confirmation with booking ID. Admin view with filters.',tip:'Add email confirmation with calendar invite'},
+                      {t:'CRM Board',p:'A CRM with kanban board showing deal stages: Lead, Contacted, Proposal, Negotiation, Won, Lost. Cards show contact, company, deal value, last activity. Detail panel slides in with notes and next steps.',tip:'Add pipeline value summary at top'},
+                    ]},
+                    {cat:'CREATOR',color:'#FF6B00',items:[
+                      {t:'Blog Platform',p:'A blog with article cards showing image, title, excerpt, author, read time, date. Article page with hero image, formatted text, code blocks, author bio, related articles. Category filter and search.',tip:'Add newsletter signup between articles'},
+                      {t:'Portfolio',p:'A portfolio with dark hero, masonry project grid with hover effects, filterable categories, project detail pages with image gallery, about section with skills timeline, contact form.',tip:'Add testimonial carousel from clients'},
+                      {t:'Course Platform',p:'Online courses with cards showing thumbnail, title, instructor, progress, lesson count. Detail page with expandable curriculum, video placeholder, mark complete. Student dashboard with streak.',tip:'Add discussion forum under each lesson'},
+                      {t:'Newsletter Tool',p:'Newsletter builder with rich text editor on left, live preview on right. Formatting toolbar. Subscriber management with CSV import, tags. Send history with open and click rates.',tip:'Add A/B subject line testing'},
+                      {t:'Link in Bio',p:'A link-in-bio page with avatar, name, bio, social icons. Customizable link cards with title, icon, URL. Analytics showing clicks per link over time. Theme selector: minimal, neon, gradient, dark.',tip:'Add featured link that appears larger'},
+                    ]},
+                    {cat:'PRODUCTIVITY',color:'#FFE600',items:[
+                      {t:'Task Manager',p:'Task app with board and list view toggle. Board columns: To Do, In Progress, Review, Done. Cards have title, priority tag, assignee, due date. Quick-add at top of each column. Filter by priority.',tip:'Add daily standup summary of changes'},
+                      {t:'Habit Tracker',p:'Habit tracker with weekly grid, tappable cells to mark complete. Current streak, longest streak, completion percentage per habit. Add habit form with name, frequency, color. Monthly heatmap.',tip:'Add motivational quotes based on streak'},
+                      {t:'Budget Tracker',p:'Budget tracker with income and expense forms. Monthly cards for income, expenses, savings. Pie chart for categories, line chart for trends, transaction list with search and filter.',tip:'Add budget goals with progress bars'},
+                      {t:'Notes App',p:'Note-taking app with sidebar folders and notes list. Markdown editor with live preview, headings, bold, code blocks, checklists. Search with highlighting, tags, favorites, word count.',tip:'Add focus mode hiding everything except editor'},
+                      {t:'Meeting Scheduler',p:'Meeting scheduler with available hours per day. Calendar with available dates, time slot picker, booking form. Confirmation with timezone. Admin dashboard. Buffer time settings.',tip:'Add timezone auto-detection for visitors'},
+                    ]},
+                    {cat:'HEALTH',color:'#00FF41',items:[
+                      {t:'Fitness Tracker',p:'Fitness tracker with workout log for exercise, sets, reps, weight. Weekly summary with totals, calories, personal records. Body measurement charts. Exercise library with muscle group filters.',tip:'Add workout plan builder with rest days'},
+                      {t:'Meal Planner',p:'Weekly meal planner with 7-day grid for breakfast, lunch, dinner, snacks. Cards show name, calories, prep time. Auto-generated grocery list. Recipe browser with dietary filters.',tip:'Add nutrition summary with daily macros vs targets'},
+                      {t:'Meditation Timer',p:'Meditation app with centered timer, presets and custom duration. Breathing circle animation. History heatmap, total minutes, streak. Ambient sound options.',tip:'Add guided prompts at intervals'},
+                      {t:'Sleep Logger',p:'Sleep tracker with bedtime, wake time, quality rating. Weekly hours chart, quality trend, sleep debt. Daily sleep tips. Monthly calendar colored by quality.',tip:'Add wind-down routine checklist'},
+                      {t:'Water Tracker',p:'Water intake tracker with animated filling glass. Daily goal setting, progress with milestone messages. Hourly reminders, weekly chart, streak for consecutive goal days.',tip:'Add caffeine tracking for hydration'},
+                    ]},
+                    {cat:'COMMUNITY',color:'#B060FF',items:[
+                      {t:'Event Platform',p:'Event listings with image, title, date, location, price, attendees. Detail page with description, map placeholder, register with ticket selection. Filter by date, category, price.',tip:'Add share button with social preview'},
+                      {t:'Forum Q&A',p:'Q&A forum with questions showing title, tags, votes, answers. Detail with full question, ordered answers, upvote/downvote, accepted answer. Tag filtering, leaderboard.',tip:'Add related questions sidebar'},
+                      {t:'Team Directory',p:'Team directory grid with photo, name, role, department, contact. Search and department filters. Detail with bio, skills, projects, availability. Org chart view.',tip:'Add random coffee chat matcher'},
+                      {t:'Review Platform',p:'Reviews with star ratings, text, author, date, helpful count. Rating distribution chart. Write review form with stars, text, photo. Filter by rating.',tip:'Add verified purchase badge'},
+                      {t:'Marketplace',p:'Peer marketplace with listings showing image, title, price, condition, seller rating. Detail with gallery, message seller. Category browsing, search filters, my listings.',tip:'Add wishlist with price drop alerts'},
+                    ]},
+                  ].map(cat=><div key={cat.cat}>
+                    <div style={{fontFamily:UI,fontSize:8,letterSpacing:'.2em',color:cat.color,marginBottom:6,marginTop:8}}>{cat.cat}</div>
+                    {cat.items.map((p,i)=><div key={i} style={{border:'1px solid rgba(240,240,255,.06)',padding:10,marginBottom:6}}>
+                      <div className="flex items-center justify-between mb-2"><div style={{fontSize:13,color:'rgba(240,240,255,.8)',fontWeight:500}}>{p.t}</div><span className="cursor-pointer" onClick={()=>{setPrompt(p.p);setPanelTab('cipher');setActiveMode('BUILD')}} style={{fontSize:8,fontFamily:UI,letterSpacing:'.1em',color:cat.color,padding:'3px 8px',border:'1px solid '+cat.color+'33'}}>CREATE</span></div>
+                      <div style={{fontSize:11,color:'rgba(195,200,215,.6)',lineHeight:1.5,marginBottom:4}}>{p.p.slice(0,100)}...</div>
+                      <div style={{fontSize:10,color:'rgba(0,255,65,.4)',borderTop:'1px solid rgba(240,240,255,.04)',paddingTop:4,marginTop:4}}>Tip: {p.tip}</div>
+                    </div>)}
                   </div>)}
                 </div>}
                 {toolsView==='patterns'&&<div className="flex flex-col gap-3">
