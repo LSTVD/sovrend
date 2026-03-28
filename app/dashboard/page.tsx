@@ -391,6 +391,8 @@ export default function DashboardPage() {
   const [handoffOpen,setHandoffOpen]=useState(false)
   const [activeDevice,setActiveDevice]=useState<'DESKTOP'|'MOBILE'|'TABLET'>('DESKTOP')
   const [settingsTab,setSettingsTab]=useState(false)
+  const [toolsView,setToolsView]=useState<"glossary"|"prompts"|"patterns">("glossary")
+  const [toolSearch,setToolSearch]=useState("")
   const [projectsOpen,setProjectsOpen]=useState(false)
   const [journalEntries,setJournalEntries]=useState<{id:string,entry_type:string,title:string,narration:string,prompt:string,created_at:string}[]>([])
   const [panelTab,setPanelTab]=useState<'cipher'|'journal'|'tools'>('cipher')
