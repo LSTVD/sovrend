@@ -460,8 +460,6 @@ export default function DashboardPage() {
   const [panelTab,setPanelTab]=useState<'cipher'|'journal'|'tools'>('cipher')
   const [appId,setAppId]=useState<string|null>(null)
   const [promptAnalysis,setPromptAnalysis]=useState<{original:string,enhanced:string,layers:{layer:number,name:string,status:string,added:string|null}[],score:number}|null>(null)
-  const [pendingBuild,setPendingBuild]=useState<string|null>(null)
-  const [analyzing,setAnalyzing]=useState(false)
   const [savedApps,setSavedApps]=useState<{id:string,name:string,code:string,updated_at:string}[]>([])
   const buildCanvasRef=useRef<HTMLCanvasElement>(null)
   const buildParticlesRef=useRef<{x:number,y:number,vx:number,vy:number,life:number,decay:number,size:number}[]>([])
@@ -501,52 +499,34 @@ export default function DashboardPage() {
     })},[])
   useEffect(()=>{if(appState!=='idle')return;const iv=setInterval(()=>setPhIdx(p=>(p+1)%PLACEHOLDERS.length),4000);return()=>clearInterval(iv)},[appState])
   useEffect(()=>{const h=(e:KeyboardEvent)=>{if((e.metaKey||e.ctrlKey)&&e.key==='Enter'&&appState==='idle'&&prompt.trim()){e.preventDefault();handleBuild()}};document.addEventListener('keydown',h);return()=>document.removeEventListener('keydown',h)},[appState,prompt])
-  const executeBuild=useCallback(async(buildPrompt:string)=>{
-    setAppState('building');setProjName('New App');setVer('BUILDING...');setShowNarr(true);setPendingBuild(null)
-    setMsgs(prev=>[...prev,{role:'cipher',text:'Building your enhanced vision now.',type:'building'}])
-    let buildPrompt2=buildPrompt
+  const handleBuild=useCallback(async()=>{
+    if(!prompt.trim()||appState!=='idle')return
+    setAppState('building');setProjName('New Architect');setVer('BUILDING...');setShowNarr(true)
+    setMsgs([{role:'cipher',text:'I see your vision. Let me bring it to life.'},{role:'user',text:prompt},{role:'cipher',text:'Analyzing your prompt across 5 layers...',type:'building'}])
+    let buildPrompt=prompt
+    try{const eRes=await fetch('/api/enhance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});const eData=await eRes.json();if(eData.success&&eData.enhanced){buildPrompt=eData.enhanced;setPromptAnalysis({original:prompt,enhanced:eData.enhanced,layers:eData.layers||[],score:eData.promptScore||3});setMsgs(prev=>[...prev.slice(0,-1),{role:'cipher',text:'Prompt strengthened. Building now.',type:'building'}])}}catch(e){}
     let step=0;setNarrText(STEPS[0][0]);setNarrTeach(STEPS[0][1])
     const ni=setInterval(()=>{step++;if(step>=STEPS.length){clearInterval(ni);return};setNarrText(STEPS[step][0]);setNarrTeach(STEPS[step][1])},800)
     try{
-      const res=await fetch('/api/build',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:buildPrompt2,persona:'operator',appId:null})})
+      const res=await fetch('/api/build',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:buildPrompt,persona:'operator',appId:null})})
       const data=await res.json()
       clearInterval(ni)
       if(data.success){
-        setGeneratedCode((data.code||'').replace('export default function','function').replace('export default ',''))
+        setGeneratedCode((data.code||'').replace('export default function','function').replace('export default ','').replace('const App = () =>','function App()').replace('const App = ()=>','function App()').replace('const App = () =>{','function App(){'))
         setSuggestions(data.suggestions||['What else should this app do?','What would your users want next?','What feels incomplete?'])
         if(data.appId)setAppId(data.appId);setBuildScore(data.score?Number(data.score):Math.floor(40+Math.random()*20))
         setAppState('complete');setVer('v1.0');setShowNarr(false);setPubVis(true)
         if(data.narration)setProjName(data.narration.split('.')[0].slice(0,30))
-        setMsgs(prev=>[...prev,{role:'cipher',text:data.narration||'Your app is live. Here\'s what I\'d suggest next:',type:'summary'},{role:'cipher',text:'Cipher is here — what needs work? Tip: Switch to PLAN mode to draft ideas without using actions.',type:'suggestion'}])
+        setMsgs(prev=>[...prev,{role:'cipher',text:data.narration||'Your app is live. Here\'s what I\'d suggest next:',type:'summary'},{role:'cipher',text:'Cipher is here. Architect your next refine using the layers below.',type:'suggestion'}])
         setTimeout(()=>setShowStrip(true),400);setTimeout(()=>setShowModes(true),1000);setTimeout(()=>{const sb=createClient();sb.auth.getUser().then(({data:{user:u}})=>{if(u)sb.from('apps').select('id,name,code,updated_at').eq('user_id',u.id).order('updated_at',{ascending:false}).limit(10).then(({data:a})=>{if(a)setSavedApps(a)})})},2000)
       }else{
         setAppState('idle');setVer('NEW');setShowNarr(false)
-        setMsgs(prev=>[...prev,{role:'cipher',text:data.message||'Something went wrong. Try again with a different prompt.'}])
+        setMsgs(prev=>[...prev,{role:'cipher',text:data.message||'Something went wrong. Try again.'}])
       }
     }catch(e){clearInterval(ni);setAppState('idle');setVer('NEW');setShowNarr(false)
       setMsgs(prev=>[...prev,{role:'cipher',text:'The Grid encountered an error. Try again.'}])}
-  },[])
-  const handleBuild=useCallback(async()=>{
-    if(!prompt.trim()||appState!=='idle')return
-    setAnalyzing(true)
-    setMsgs([{role:'cipher',text:'I see your vision. Let me analyze it.'},{role:'user',text:prompt},{role:'cipher',text:'Analyzing your prompt across 5 layers...',type:'building'}])
-    try{
-      const eRes=await fetch('/api/enhance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})})
-      const eData=await eRes.json()
-      if(eData.success&&eData.enhanced){
-        setPromptAnalysis({original:prompt,enhanced:eData.enhanced,layers:eData.layers||[],score:eData.promptScore||3})
-        setPendingBuild(eData.enhanced)
-        setMsgs(prev=>[...prev.slice(0,-1),{role:'cipher',text:'Prompt analyzed. Review the breakdown below, then confirm to build.'}])
-      }else{
-        setPendingBuild(prompt)
-        setMsgs(prev=>[...prev.slice(0,-1),{role:'cipher',text:'Ready to build. Hit confirm below.'}])
-      }
-    }catch(e){
-      setPendingBuild(prompt)
-      setMsgs(prev=>[...prev.slice(0,-1),{role:'cipher',text:'Ready to build.'}])
-    }
-    setAnalyzing(false)
   },[prompt,appState])
+
   const sbW=sbCol?52:220
   const rainSpeed=entered?1:2.5
   const loadTpl=(k:string)=>{if(TEMPLATES[k])setPrompt(TEMPLATES[k])}
@@ -610,22 +590,10 @@ export default function DashboardPage() {
                 {['\ud83d\udcce','\ud83c\udfa4','\u25c7'].map(i=><div key={i} className="flex items-center justify-center cursor-pointer" style={{width:28,height:28,border:'1px solid rgba(0,229,255,.07)',color:'rgba(195,200,215,.55)',fontSize:12}}>{i}</div>)}
 
               </div>
-              <button onClick={handleBuild} disabled={analyzing||!!pendingBuild} style={{fontFamily:UI,fontSize:10,fontWeight:700,letterSpacing:'.22em',color:'#000308',background:analyzing?'rgba(0,229,255,.3)':'linear-gradient(135deg,#FF6A00,#00E5FF)',border:'none',padding:'12px 32px',cursor:analyzing?'wait':'pointer',boxShadow:'0 0 20px rgba(0,229,255,.2),0 0 40px rgba(255,106,0,.1)',transition:'all .3s',opacity:pendingBuild?0.3:1}}>{analyzing?'ANALYZING...':'CREATE →'}</button>
+              <button onClick={handleBuild} style={{fontFamily:UI,fontSize:10,fontWeight:700,letterSpacing:'.22em',color:'#000308',background:'linear-gradient(135deg,#FF6A00,#00E5FF)',border:'none',padding:'12px 32px',cursor:'pointer',boxShadow:'0 0 20px rgba(0,229,255,.2),0 0 40px rgba(255,106,0,.1)',transition:'all .3s'}}>ARCHITECT →</button>
             </div>
           </div>
-          {pendingBuild&&promptAnalysis&&<div className="w-full max-w-lg mt-4" style={{animation:'fu .4s ease'}}>
-            <div style={{border:'1px solid rgba(0,229,255,.2)',padding:'14px',background:'rgba(0,229,255,.03)',borderLeft:'2px solid rgba(0,229,255,.4)'}}>
-              <div className="flex items-center justify-between mb-3"><div className="flex items-center gap-1.5"><span style={{fontSize:10,color:'rgba(0,229,255,.7)'}}>◈</span><span style={{fontFamily:UI,fontSize:8,letterSpacing:'.25em',color:'rgba(0,229,255,.5)'}}>PROMPT ANALYSIS</span></div><span style={{fontFamily:UI,fontSize:9,color:promptAnalysis.score>=4?'#00E5FF':promptAnalysis.score>=3?'rgba(255,230,0,.7)':'rgba(255,80,80,.6)'}}>SCORE: {promptAnalysis.score}/5</span></div>
-              <div className="flex flex-col gap-1.5 mb-3">{promptAnalysis.layers.map(function(l){return <div key={l.layer} className="flex items-start gap-2" style={{fontSize:10}}>
-                <span style={{fontFamily:UI,fontSize:7,letterSpacing:'.1em',color:l.status==='strong'?'rgba(0,229,255,.6)':l.status==='weak'?'rgba(255,230,0,.6)':'rgba(255,80,80,.5)',padding:'2px 5px',border:'1px solid '+(l.status==='strong'?'rgba(0,229,255,.15)':l.status==='weak'?'rgba(255,230,0,.15)':'rgba(255,80,80,.12)'),minWidth:72,textAlign:'center'}}>{l.name.toUpperCase()}</span>
-                <span style={{color:l.added?'rgba(240,240,255,.6)':'rgba(0,229,255,.4)',lineHeight:1.4}}>{l.added||'Covered \u2713'}</span>
-              </div>})}</div>
-              <div className="flex gap-2 mt-3">
-                <button onClick={function(){executeBuild(pendingBuild)}} style={{fontFamily:UI,fontSize:9,fontWeight:700,letterSpacing:'.18em',color:'#000308',background:'linear-gradient(135deg,#FF6A00,#00E5FF)',border:'none',padding:'10px 24px',cursor:'pointer',boxShadow:'0 0 16px rgba(0,229,255,.2)',flex:1}}>BUILD WITH ENHANCED →</button>
-                <button onClick={function(){setPendingBuild(null);setPromptAnalysis(null);setMsgs([])}} style={{fontFamily:UI,fontSize:8,letterSpacing:'.14em',color:'rgba(0,229,255,.6)',background:'transparent',border:'1px solid rgba(0,229,255,.15)',padding:'10px 14px',cursor:'pointer'}}>EDIT</button>
-              </div>
-            </div>
-          </div>}
+
         </div></div>}
         {appState!=='idle'&&<div className="flex w-full h-full" style={{animation:'fu .5s ease'}}>
           <div className="flex flex-col h-full" style={{width:370,minWidth:370,background:'rgba(4,6,14,.96)',borderRight:'1px solid rgba(0,229,255,.07)',backdropFilter:'blur(18px)'}}>
@@ -753,7 +721,7 @@ export default function DashboardPage() {
               </div>
               :activeMode==='CHAT'?<div><textarea className="w-full bg-transparent outline-none resize-none" placeholder="Ask Coach anything — how to prompt better, what something means, or get advice." value={refineText} onChange={e=>setRefineText(e.target.value)} style={{background:'rgba(8,11,22,.7)',border:'1px solid rgba(0,229,255,.07)',borderBottom:'2px solid rgba(255,107,0,.15)',borderLeft:'2px solid rgba(255,107,0,.3)',color:'#F0F0FF',fontSize:14,padding:'12px 14px',height:56,lineHeight:'1.5'}}/></div>
               :<textarea className="w-full bg-transparent outline-none resize-none" placeholder="What would make this better?" value={refineText} onChange={e=>setRefineText(e.target.value)} style={{background:'rgba(8,11,22,.7)',border:'1px solid rgba(0,229,255,.07)',borderBottom:'2px solid rgba(0,229,255,.15)',color:'#F0F0FF',fontSize:15,padding:'12px 14px',height:56,lineHeight:'1.5'}}/>}
-              <div className="flex items-center justify-between mt-2"><div className="flex gap-1 items-center">{['\ud83d\udcce','\ud83c\udfa4','\ud83d\udcf7','\u25c7'].map(i=><div key={i} className="flex items-center justify-center cursor-pointer" style={{width:22,height:22,border:'1px solid rgba(0,229,255,.07)',color:'rgba(195,200,215,.55)',fontSize:10}}>{i}</div>)}</div><button onClick={async()=>{if(!refineText.trim())return;setAppState('building');setShowNarr(true);setNarrText('Refining your app...');setNarrTeach('applying your changes');setMsgs(prev=>[...prev,{role:'user',text:refineText},{role:'cipher',text:'On it. Applying your changes now.',type:'building'}]);const res=await fetch('/api/build',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:refineText+' \n\nPrevious code to modify: '+generatedCode.slice(0,2000),persona:'operator',appId:appId})});const data=await res.json();if(data.success){setGeneratedCode((data.code||'').replace('export default function','function').replace('export default ',''));setSuggestions(data.suggestions||[]);if(data.appId)setAppId(data.appId);setBuildScore(data.score?Number(data.score):Math.floor(40+Math.random()*20));setAppState('complete');setShowNarr(false);setRefineText('');setMsgs(prev=>[...prev,{role:'cipher',text:data.narration||'Changes applied.',type:'summary'},{role:'cipher',text:'Cipher is here — what needs work?',type:'suggestion'}])}else{setAppState('complete');setShowNarr(false);setMsgs(prev=>[...prev,{role:'cipher',text:data.message||'Something went wrong. Try again.'}])}}} style={{fontFamily:UI,fontSize:9,fontWeight:700,letterSpacing:'.16em',color:'#000308',background:'#00E5FF',border:'none',padding:'6px 14px',cursor:'pointer'}}>{activeMode==='PLAN'?'SAVE NOTE':'SEND →'}</button></div>
+              <div className="flex items-center justify-between mt-2"><div className="flex gap-1 items-center">{['\ud83d\udcce','\ud83c\udfa4','\ud83d\udcf7','\u25c7'].map(i=><div key={i} className="flex items-center justify-center cursor-pointer" style={{width:22,height:22,border:'1px solid rgba(0,229,255,.07)',color:'rgba(195,200,215,.55)',fontSize:10}}>{i}</div>)}</div><button onClick={async()=>{if(!refineText.trim())return;setAppState('building');setShowNarr(true);setNarrText('Refining your app...');setNarrTeach('applying your changes');setMsgs(prev=>[...prev,{role:'user',text:refineText},{role:'cipher',text:'On it. Applying your changes now.',type:'building'}]);const res=await fetch('/api/build',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:refineText+' \n\nPrevious code to modify: '+generatedCode.slice(0,2000),persona:'operator',appId:appId})});const data=await res.json();if(data.success){setGeneratedCode((data.code||'').replace('export default function','function').replace('export default ','').replace('const App = () =>','function App()').replace('const App = ()=>','function App()').replace('const App = () =>{','function App(){'));setSuggestions(data.suggestions||[]);if(data.appId)setAppId(data.appId);setBuildScore(data.score?Number(data.score):Math.floor(40+Math.random()*20));setAppState('complete');setShowNarr(false);setRefineText('');setMsgs(prev=>[...prev,{role:'cipher',text:data.narration||'Changes applied.',type:'summary'},{role:'cipher',text:'Cipher is here — what needs work?',type:'suggestion'}])}else{setAppState('complete');setShowNarr(false);setMsgs(prev=>[...prev,{role:'cipher',text:data.message||'Something went wrong. Try again.'}])}}} style={{fontFamily:UI,fontSize:9,fontWeight:700,letterSpacing:'.16em',color:'#000308',background:'#00E5FF',border:'none',padding:'6px 14px',cursor:'pointer'}}>{activeMode==='PLAN'?'SAVE NOTE':'SEND →'}</button></div>
             </div>
           </div>
           <div className="flex-1 flex flex-col overflow-hidden">
