@@ -125,8 +125,8 @@ INTERACTION (every touch should feel intentional):
 - Delete/destructive actions: hover:bg-red-500/10 hover:text-red-400
 
 DATA (real or nothing):
-- Names: Sarah Chen, Marcus Rivera, Aisha Patel, James Wright, Luna Park
-- Emails: sarah.chen@outlook.com, m.rivera@gmail.com
+- Generate unique realistic names, emails, and data that fit the app's context. A restaurant app needs dish names and prices. A fitness app needs exercise names and reps. A CRM needs company names and deal amounts. Never reuse the same names across different apps.
+- Names should be diverse and realistic. Emails should match the names.
 - Amounts: $4,250.00 not $100. $89.50 not $10. Make numbers feel real.
 - Dates: use relative when possible ("2 hours ago", "Yesterday", "Mar 15")
 - Status values: mix of states (completed, in-progress, pending, overdue) — never all the same
