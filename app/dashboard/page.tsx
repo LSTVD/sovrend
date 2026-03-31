@@ -226,7 +226,7 @@ function GlossFab() {
   </>
 }
 
-function BuildScoreRing({score,suggestions,onHandoff,handoffLoading}:{score:number;suggestions:string[];onHandoff:()=>void;handoffLoading:boolean}) {
+function BuildScoreRing({score,suggestions,onHandoff,handoffLoading,tokenUsage}:{score:number;suggestions:string[];onHandoff:()=>void;handoffLoading:boolean;tokenUsage:{inputTokens:number,outputTokens:number,totalTokens:number}|null}) {
   const [animScore,setAnimScore]=useState(0)
   const [show,setShow]=useState(false)
   useEffect(()=>{setTimeout(()=>setShow(true),300);const dur=1200;const t0=performance.now()
@@ -247,7 +247,8 @@ function BuildScoreRing({score,suggestions,onHandoff,handoffLoading}:{score:numb
         <div style={{fontFamily:"'Orbitron',sans-serif",fontSize:8,letterSpacing:'.25em',color:color+'99',marginBottom:6}}>BUILD SCORE</div>
         <div style={{fontSize:13,color:'rgba(240,240,255,.8)',lineHeight:1.5,marginBottom:4}}>The thought is taking shape. <b style={{color}}>{animScore}% ready.</b> Every point on this score represents something Cipher can teach you to build. Let's get it higher together.{score<70?'':score<85?'':''}</div>
         {suggestions.length>0&&<div className="flex flex-col gap-1">{suggestions.map((s,i)=><div key={i} className="flex items-start gap-1.5"><span style={{fontSize:9,color,marginTop:2}}>&rarr;</span><span style={{fontSize:11,color:'rgba(195,200,215,.65)',lineHeight:1.4}}>{s}</span></div>)}</div>}
-        {score>=65&&<div style={{marginTop:10,paddingTop:10,borderTop:'1px solid rgba(240,240,255,.06)'}}>
+        {tokenUsage&&<div style={{marginBottom:8,padding:'6px 10px',background:'rgba(0,229,255,.04)',border:'1px solid rgba(0,229,255,.08)',borderRadius:6,display:'flex',gap:16}}><span style={{fontSize:10,color:'rgba(195,200,215,.5)',fontFamily:'monospace'}}>IN <b style={{color:'rgba(0,229,255,.7)'}}>{tokenUsage.inputTokens.toLocaleString()}</b></span><span style={{fontSize:10,color:'rgba(195,200,215,.5)',fontFamily:'monospace'}}>OUT <b style={{color:'rgba(0,229,255,.7)'}}>{tokenUsage.outputTokens.toLocaleString()}</b></span><span style={{fontSize:10,color:'rgba(195,200,215,.5)',fontFamily:'monospace'}}>TOTAL <b style={{color:'rgba(0,229,255,.7)'}}>{tokenUsage.totalTokens.toLocaleString()}</b></span></div>}
+{score>=65&&<div style={{marginTop:10,paddingTop:10,borderTop:'1px solid rgba(240,240,255,.06)'}}>
           <span className="cursor-pointer" onClick={onHandoff} style={{fontSize:9,fontFamily:"'Orbitron',sans-serif",letterSpacing:'.14em',color:'#F0F0FF',padding:'6px 12px',border:'1px solid rgba(240,240,255,.2)',background:'rgba(240,240,255,.04)',display:'inline-block'}}>{handoffLoading?'GENERATING...':'GENERATE HANDOFF →'}</span>
         </div>}
       </div>
@@ -459,6 +460,7 @@ export default function DashboardPage() {
   const [msgs,setMsgs]=useState<{role:'cipher'|'user';text:string;type?:string}[]>([])
   const [generatedCode,setGeneratedCode]=useState('')
   const [suggestions,setSuggestions]=useState<string[]>([])
+  const [tokenUsage,setTokenUsage]=useState<{inputTokens:number,outputTokens:number,totalTokens:number}|null>(null)
   const [refineText,setRefineText]=useState('')
   const [activeMode,setActiveMode]=useState('BUILD')
   const [planNotes,setPlanNotes]=useState('')
@@ -532,7 +534,7 @@ export default function DashboardPage() {
       if(data.success){
         setGeneratedCode((data.code||'').replace('export default function','function').replace('export default ','').replace('const App = () =>','function App()').replace('const App = ()=>','function App()').replace('const App = () =>{','function App(){'))
         setSuggestions(data.suggestions||['What else should this app do?','What would your users want next?','What feels incomplete?'])
-        if(data.appId)setAppId(data.appId);setBuildScore(data.score?Number(data.score):Math.floor(40+Math.random()*20))
+        if(data.appId)setAppId(data.appId);setBuildScore(data.score?Number(data.score):Math.floor(40+Math.random()*20));if(data.tokenUsage)setTokenUsage(data.tokenUsage)
         setAppState('revealing');setVer('v1.0');setShowNarr(false);setPubVis(true);setTimeout(()=>setAppState('complete'),2000)
         if(data.narration)setProjName(data.narration.split('.')[0].slice(0,30))
         setMsgs(prev=>[...prev,{role:'cipher',text:data.narration||'Your app is live. Here\'s what I\'d suggest next:',type:'summary'},{role:'cipher',text:'Cipher is here. Architect your next refine using the layers below.',type:'suggestion'}])
@@ -717,7 +719,7 @@ export default function DashboardPage() {
                 <div style={{fontSize:12,color:'rgba(195,200,215,.82)',lineHeight:1.6,marginTop:3}}>Your app&apos;s brain and security guard. It remembers everything your users do and makes sure only the right people get in.</div>
                 <div className="flex gap-1.5 mt-2">{['Got it','Tell me more','Save term'].map(a=><span key={a} className="cursor-pointer" style={{fontSize:9,color:'rgba(255,107,0,.7)',padding:'3px 8px',border:'1px solid rgba(255,107,0,.15)'}}>{a}</span>)}</div>
               </div>}
-              {appState==='complete'&&buildScore>0&&<BuildScoreRing score={buildScore} suggestions={suggestions} onHandoff={generateHandoff} handoffLoading={handoffLoading}/>}
+              {appState==='complete'&&buildScore>0&&<BuildScoreRing score={buildScore} suggestions={suggestions} onHandoff={generateHandoff} handoffLoading={handoffLoading} tokenUsage={tokenUsage}/>}
               {appState==='complete'&&showRevCalc&&<RevCalc onAddPricing={()=>fillChat('Add a pricing page with 3 tiers')}/>}
 
             </div>
@@ -737,7 +739,7 @@ export default function DashboardPage() {
               </div>
               :activeMode==='CHAT'?<div><textarea className="w-full bg-transparent outline-none resize-none" placeholder="Ask Coach anything — how to prompt better, what something means, or get advice." value={refineText} onChange={e=>setRefineText(e.target.value)} style={{background:'rgba(8,11,22,.7)',border:'1px solid rgba(0,229,255,.07)',borderBottom:'2px solid rgba(255,107,0,.15)',borderLeft:'2px solid rgba(255,107,0,.3)',color:'#F0F0FF',fontSize:14,padding:'12px 14px',height:56,lineHeight:'1.5'}}/></div>
               :<textarea className="w-full bg-transparent outline-none resize-none" placeholder="What would make this better?" value={refineText} onChange={e=>setRefineText(e.target.value)} style={{background:'rgba(8,11,22,.7)',border:'1px solid rgba(0,229,255,.07)',borderBottom:'2px solid rgba(0,229,255,.15)',color:'#F0F0FF',fontSize:15,padding:'12px 14px',height:56,lineHeight:'1.5'}}/>}
-              <div className="flex items-center justify-between mt-2"><div className="flex gap-1 items-center">{['\ud83d\udcce','\ud83c\udfa4','\ud83d\udcf7','\u25c7'].map(i=><div key={i} className="flex items-center justify-center cursor-pointer" style={{width:22,height:22,border:'1px solid rgba(0,229,255,.07)',color:'rgba(195,200,215,.55)',fontSize:10}}>{i}</div>)}</div><button onClick={async()=>{if(!refineText.trim())return;setAppState('building');setShowNarr(true);setNarrText('Refining your app...');setNarrTeach('applying your changes');setMsgs(prev=>[...prev,{role:'user',text:refineText},{role:'cipher',text:'On it. Applying your changes now.',type:'building'}]);const res=await fetch('/api/build',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:refineText+' \n\nPrevious code to modify: '+generatedCode.slice(0,2000),persona:'operator',appId:appId})});const data=await res.json();if(data.success){setGeneratedCode((data.code||'').replace('export default function','function').replace('export default ','').replace('const App = () =>','function App()').replace('const App = ()=>','function App()').replace('const App = () =>{','function App(){'));setSuggestions(data.suggestions||[]);if(data.appId)setAppId(data.appId);setBuildScore(data.score?Number(data.score):Math.floor(40+Math.random()*20));setAppState('complete');setShowNarr(false);setRefineText('');setMsgs(prev=>[...prev,{role:'cipher',text:data.narration||'Changes applied.',type:'summary'},{role:'cipher',text:'Cipher is here — what needs work?',type:'suggestion'}])}else{setAppState('complete');setShowNarr(false);setMsgs(prev=>[...prev,{role:'cipher',text:data.message||'Something went wrong. Try again.'}])}}} style={{fontFamily:UI,fontSize:9,fontWeight:700,letterSpacing:'.16em',color:'#000308',background:'#00E5FF',border:'none',padding:'6px 14px',cursor:'pointer'}}>{activeMode==='PLAN'?'SAVE NOTE':'SEND →'}</button></div>
+              <div className="flex items-center justify-between mt-2"><div className="flex gap-1 items-center">{['\ud83d\udcce','\ud83c\udfa4','\ud83d\udcf7','\u25c7'].map(i=><div key={i} className="flex items-center justify-center cursor-pointer" style={{width:22,height:22,border:'1px solid rgba(0,229,255,.07)',color:'rgba(195,200,215,.55)',fontSize:10}}>{i}</div>)}</div><button onClick={async()=>{if(!refineText.trim())return;setAppState('building');setShowNarr(true);setNarrText('Refining your app...');setNarrTeach('applying your changes');setMsgs(prev=>[...prev,{role:'user',text:refineText},{role:'cipher',text:'On it. Applying your changes now.',type:'building'}]);const res=await fetch('/api/build',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:refineText+' \n\nPrevious code to modify: '+generatedCode.slice(0,2000),persona:'operator',appId:appId})});const data=await res.json();if(data.success){setGeneratedCode((data.code||'').replace('export default function','function').replace('export default ','').replace('const App = () =>','function App()').replace('const App = ()=>','function App()').replace('const App = () =>{','function App(){'));setSuggestions(data.suggestions||[]);if(data.appId)setAppId(data.appId);setBuildScore(data.score?Number(data.score):Math.floor(40+Math.random()*20));if(data.tokenUsage)setTokenUsage(data.tokenUsage);setAppState('complete');setShowNarr(false);setRefineText('');setMsgs(prev=>[...prev,{role:'cipher',text:data.narration||'Changes applied.',type:'summary'},{role:'cipher',text:'Cipher is here — what needs work?',type:'suggestion'}])}else{setAppState('complete');setShowNarr(false);setMsgs(prev=>[...prev,{role:'cipher',text:data.message||'Something went wrong. Try again.'}])}}} style={{fontFamily:UI,fontSize:9,fontWeight:700,letterSpacing:'.16em',color:'#000308',background:'#00E5FF',border:'none',padding:'6px 14px',cursor:'pointer'}}>{activeMode==='PLAN'?'SAVE NOTE':'SEND →'}</button></div>
             </div>
           </div>
           <div className="flex-1 flex flex-col overflow-hidden">
