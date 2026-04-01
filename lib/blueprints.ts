@@ -691,6 +691,7 @@ export function getBlueprint(id: number): Blueprint | undefined {
 export function getBlueprintBrief(prompt: string): string {
   const blueprint = classifyPrompt(prompt);
   const design = getDesignSystem(blueprint.id);
+  const reference = getReferenceComponent(blueprint.id);
   return `
 ACTIVE BLUEPRINT: ${blueprint.id} — ${blueprint.name}
 
@@ -705,6 +706,8 @@ ${design}
 
 COMPLETE BUILD SPECIFICATION:
 ${blueprint.brief}
+
+${reference}
 `;
 }
 

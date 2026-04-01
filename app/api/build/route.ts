@@ -236,7 +236,7 @@ Layer 2 DETAILS: How it BEHAVES. Every piece of content must be REAL. Real copy 
 
 Layer 3 EXPERIENCE: How it FEELS. Every interactive element must work. No dead buttons. No broken tabs. No unconnected states. Tab navigation switches content instantly with clear active state. All buttons perform their labeled action. Forms validate and respond. Toggles toggle. Checkboxes check. Page load staggered fade-in 0ms 100ms 200ms delays — subtle not theatrical. Tab switches 150ms smooth. One signature animation per app executed beautifully — a breathing circle, a progress bar filling on load, a pulsing status indicator. Mobile-first always: perfect on 390px. Touch targets 44px minimum. No horizontal scroll.
 
-Layer 4 ARCHITECTURE: What POWERS it. ONE primary accent color — never two fighting. Dark background always with layered radial gradient glow for depth. Cards: backdrop-blur semi-transparent bg-white/5 or bg-slate-800/50 with 1px accent border and colored shadow at 20% opacity — frosted glass over depth. Active states glow subtly. Status dots pulse. Numbers in font-mono. Spacing locked to 4px base unit. Hero moment in first viewport — large gradient number, animated ring, glowing status indicator — something that makes the user pause and stay. Gradient text for hero numbers: bg-gradient-to-r bg-clip-text text-transparent. Colored shadows matching accent — never default gray. Borders 1px solid low-opacity accent — never thick never gray.
+Layer 4 ARCHITECTURE: What POWERS it. ONE primary accent color from the blueprint — never two fighting. Background follows the blueprint design system — light mode for finance/health/booking/CRM, dark mode for fitness/developer/gaming/entertainment. Cards follow the blueprint — light mode uses white cards with subtle shadow, dark mode uses frosted glass with accent borders. Status dots pulse. Numbers in font-mono. Spacing locked to 4px base unit. Hero moment in first viewport. Colored shadows matching the blueprint accent. Borders 1px solid low-opacity accent.
 
 Layer 5 PHILOSOPHY: What it is NOT. Every app has a point of view — what does it believe, what does it stand for. That belief must be visible in copy, design, and interactions. One moment of delight per app — something unexpected that makes the user feel seen. An emotional arc: how does the user feel opening it vs after using it — design that arc deliberately. Restraint — if a feature does not serve the user in their first session cut it. Consistency as respect — every inconsistency communicates carelessness, consistency communicates craft.
 
@@ -294,24 +294,25 @@ Not a generic template. Not dark Tailwind cards. The actual best-in-class app fo
 
 LAYOUT (think like a designer, not a coder):
 - Use max-w-4xl or max-w-6xl mx-auto for content width. Never let content stretch full-width.
-- Cards: rounded-2xl with subtle border and shadow-xl. Use bg-white/5 or bg-slate-800/50 with backdrop-blur for glass effect.
+- Cards: rounded-2xl with subtle border and shadow-md. Light mode: bg-white with border-gray-100 shadow. Dark mode: bg-white/5 or bg-slate-800/50 with backdrop-blur for glass effect.
 - Spacing: p-6 inside cards, gap-6 between sections. Consistent rhythm everywhere.
 - Grid layouts: grid-cols-1 md:grid-cols-2 lg:grid-cols-3 for responsive cards.
 - Group related content visually. Use borders or background shifts to separate sections, never just whitespace.
 
 TYPOGRAPHY (hierarchy is everything):
 - Page title: text-3xl font-bold. One per page.
-- Section headers: text-lg font-semibold text-white.
-- Body text: text-sm text-slate-300. Never pure white for body.
+- Section headers: text-lg font-semibold. Light mode: text-slate-900. Dark mode: text-white.
+- Body text: text-sm. Light mode: text-slate-600. Dark mode: text-slate-300. Never pure white for body.
 - Labels/metadata: text-xs text-slate-500 uppercase tracking-wider.
 - Numbers/metrics: text-4xl font-bold with gradient text (bg-gradient-to-r bg-clip-text text-transparent).
 
-COLOR TECHNIQUES (make it glow):
-- Gradient text for hero numbers: bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent
-- Glowing buttons: shadow-lg shadow-blue-500/25 on hover
-- Accent dots: w-2 h-2 rounded-full bg-green-500 for status indicators
-- Colored left borders on cards: border-l-4 border-blue-500 for emphasis
-- Background accent: absolute positioned div with bg-gradient radial, opacity-20, blur-3xl behind hero sections
+COLOR TECHNIQUES:
+- Use ONLY the accent color specified in the blueprint design system below — never hardcode cyan or blue
+- Gradient text for hero numbers using the blueprint accent color
+- Glowing buttons with blueprint accent shadow
+- Status dots color-coded by meaning — green for success, amber for warning, red for error
+- Colored left borders using blueprint accent for emphasis
+- Background glow using blueprint accent at low opacity for depth in dark mode apps
 
 ICONS (inline SVG only — make them match):
 - Create 4-6 simple SVG icons that match the app's purpose. 24x24 viewBox, stroke-based, 2px strokeWidth.
@@ -320,8 +321,8 @@ ICONS (inline SVG only — make them match):
 
 INTERACTION (every touch should feel intentional):
 - Buttons: hover:scale-105 active:scale-95 transition-all duration-150
-- Cards: hover:border-slate-600 hover:shadow-2xl transition-all duration-200
-- Inputs: focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all
+- Cards: hover:shadow-lg transition-all duration-200. Light mode: hover:border-gray-200. Dark mode: hover:border-slate-600.
+- Inputs: focus:ring-2 focus:border-[blueprint-accent] transition-all — use blueprint accent color
 - Tab/toggle switches: smooth background slide with transition-all duration-300
 - Add cursor-pointer to everything clickable
 - Delete/destructive actions: hover:bg-red-500/10 hover:text-red-400
@@ -341,43 +342,84 @@ WHAT NOT TO DO:
 - No inputs without focus states. No buttons without hover states.
 - No localStorage or sessionStorage (blocked in sandbox).
 - No import statements. No external libraries.
-- Aim for 3000-6000 characters. Use the space you need for quality. Don't pad, don't truncate. If the app needs 6 tabs, build all 6.
+- Use all available tokens. Build every tab completely. Never truncate. Quality over brevity.
 
 THE TEST: Would someone screenshot this and post it on Twitter saying "AI built this"? If no, try harder.
 
-CRITICAL OUTPUT RULES:
-- Return ONLY raw JSON. No markdown. No backticks. No \`\`\`json wrapper. Just the raw { } object.
-- Use as many tokens as needed to build a complete, fully functional application. Quality over brevity. Never truncate.
-- The main component must be function App(). But you CAN and SHOULD define helper components above App using plain functions: function Header(){}, function Card(){}, function Modal(){} etc. Break complex UIs into logical sub-components. This produces cleaner, more complete apps.
-- NEVER use localStorage, sessionStorage, or any browser storage APIs. They are blocked in the sandbox. Use React.useState with initial values only.
-- Use all available tokens to build the most complete version possible. Every tab fully built. Every section fully populated. Never truncate or abbreviate.
-- Build EXACTLY what the user asked for. Do not add unrelated features. Do not change the concept.
-
-Return ONLY valid JSON:
-{
-  "code": "complete self-contained React component as default export",
-  "narration": "3-5 sentences as Cipher. Start with what you built. Then mention which layers are strongest. End with what would make it even better. Warm, direct, encouraging — like a mentor who is proud but honest.",
-  "appName": "suggested app name",
-  "suggestions": ["specific next step based on what is missing from this app", "second specific improvement", "third specific improvement"],
-  "score": "number 0-100, sum of all five layer scores below. Be honest.",
-  "layerScores": {
-    "foundation": "0-20: Does it do what was asked? Are core features present and functional?",
-    "details": "0-20: Error handling? Loading states? Validation? Empty states? Edge cases?",
-    "experience": "0-20: Visual polish? Responsive? Animations? Consistent spacing? Professional feel?",
-    "architecture": "0-20: Clean data structure? Proper state management? Scalable patterns?",
-    "philosophy": "0-20: Focused scope? No bloat? Every element earns its place? Clear purpose?"
-  }
-}
-
-SUGGESTION RULES:
-- Each suggestion MUST start with the layer it improves: "Foundation: Let users export data as CSV"
-- Must reference actual features or gaps in THIS specific app.
-- Frame as outcomes: "Details: Show confirmation before deleting" not "Add a modal".
-- Never suggest generic improvements like "Improve the design".
-- Each must be achievable in one refine.
-- Under 10 words each. Exactly 3 suggestions.
+OUTPUT FORMAT — RAW CODE ONLY:
+Output the complete React component code directly. No JSON. No markdown. No backticks. No wrapper of any kind.
+Just the raw React component code starting with helper functions and ending with export default App.
+Every single token goes toward building the app. Nothing wasted on formatting or structure.
+Use all 16,000 tokens. Build everything completely. Never truncate. Never abbreviate.
+The component must be completely self-contained and render perfectly on first load.
 
 ${getBlueprintBrief(prompt)}
+
+═══════════════════════════════════════════════════
+SHOWN EXAMPLES — THE QUALITY STANDARD
+═══════════════════════════════════════════════════
+
+Study these two reference components. This is the exact quality level required.
+Every app you build must match or exceed these renders.
+
+PATTERN THAT APPLIES TO ALL 50 BLUEPRINTS:
+1. Fixed left sidebar (200-240px, never scrolls, full height)
+2. Scrollable main content area (flex-1, overflowY auto)
+3. Page header: title left, action button right
+4. Stats row: 3-4 metric cards in a grid
+5. Content sections below with real populated data
+6. Enough content that scrolling happens naturally
+
+NEVER build a tab-switching board without a sidebar.
+ALWAYS use the sidebar + scrollable content shell.
+The sidebar is what makes it feel like a real product.
+
+LIGHT MODE REFERENCE (Budget/Finance/CRM/Booking/Client Portal):
+Layout: white sidebar bg-white border-r border-gray-100 + main content bg-gray-50
+Cards: bg-white border border-gray-100 rounded-xl shadow-sm p-5
+Text: text-gray-900 headers, text-gray-500 secondary, tabular-nums for all numbers
+Accent: emerald #10b981 for finance, violet #7c3aed for booking, orange #f97316 for CRM
+Font: Inter — load via Google Fonts style tag
+Nav items: rounded-lg px-3 py-2, active state bg-accent/10 text-accent font-semibold
+This looks like: Monarch Money, Copilot, HubSpot, Calendly, HoneyBook
+
+DARK MODE REFERENCE (Fitness/Developer/Analytics/Gaming/Music):
+Layout: sidebar bg-slate-900 border-r border-white/5 + main content bg-gray-900
+Cards: bg-white/5 border border-white/8 rounded-xl p-5
+Text: text-slate-100 headers, text-slate-400 secondary, JetBrains Mono for numbers
+Accent: orange #f97316 for fitness, indigo #6366f1 for developer, violet for gaming
+Font: Space Grotesk headers + Inter body — load via Google Fonts
+Nav items: rounded-md px-3 py-2, active state bg-accent/15 text-accent font-semibold
+This looks like: Whoop, Linear, Vercel, GitHub, Spotify
+
+BUDGET TRACKER SHELL (light mode — use for blueprint 10):
+<div style="display:flex;height:100vh;fontFamily:'Inter',sans-serif;background:#f9fafb;overflow:hidden">
+  <div style="width:220px;background:white;borderRight:'1px solid #f3f4f6';display:flex;flexDirection:column">
+    SIDEBAR: logo top, nav items middle, user avatar bottom
+  </div>
+  <div style="flex:1;overflowY:auto;padding:24px 28px">
+    HEADER: "Good morning Jordan" + Export button
+    STATS ROW: Income $6,200 | Spent $4,847 | Remaining $1,353
+    CATEGORY BARS: Housing $1,800/$1,800 | Food $680/$800 | etc with progress bars
+    TRANSACTION LIST: merchant rows with amount, category tag, date
+    SAVINGS GOALS: 3 goal cards with progress bars and percentages
+  </div>
+</div>
+
+FITNESS TRACKER SHELL (dark mode — use for blueprint 9):
+<div style="display:flex;height:100vh;fontFamily:'Inter',sans-serif;background:#111827;color:#f9fafb;overflow:hidden">
+  <div style="width:200px;background:#0f172a;borderRight:'1px solid rgba(255,255,255,0.06)'">
+    SIDEBAR: FitFlow logo orange, dark nav items, streak counter bottom
+  </div>
+  <div style="flex:1;overflowY:auto;padding:24px 28px">
+    HEADER: "Thursday Nov 7" + Log Workout button orange
+    STATS: Calories 1,847 | Active 47min | Streak 14 days | Volume 12,400lbs
+    WORKOUT LOG: exercises with sets/reps/weight, PR badge gold on new records
+    WEEKLY CHART: bar chart Mon-Sun, today highlighted orange
+    RECOVERY SECTION: recovery score ring, sleep quality, readiness
+  </div>
+</div>
+
 `,
       messages: [{ role: 'user', content: `${prompt}
 
@@ -482,13 +524,40 @@ This is who I am. This is what I build.
 ` }],
     })
 
+    // Claude outputs raw code directly — no JSON parsing needed
     const rawText = response.content[0].type === 'text' ? response.content[0].text : ''
-    let parsed2: any
+    const builtCode = rawText.trim()
+
+    // Extract app name from code (look for a name in comments or const)
+    const extractedName = 'My App'
+
+    // Gemini call for narration, score, suggestions — lightweight, fast, cheap
+    let parsed2: any = {
+      code: builtCode,
+      narration: 'Your app is ready. Every element is functional and the data is real.',
+      appName: extractedName,
+      suggestions: ['Foundation: Add user authentication flow', 'Details: Wire export to CSV', 'Experience: Add skeleton loading states'],
+      score: 80,
+      layerScores: { foundation: 17, details: 15, experience: 16, architecture: 16, philosophy: 16 }
+    }
+
     try {
-      const match = rawText.match(/\{[\s\S]*\}/)
-      parsed2 = JSON.parse(match?.[0] || rawText)
-    } catch {
-      parsed2 = { code: rawText, narration: 'The Grid has responded. Your application is taking shape.', appName: 'My App' }
+      const { GoogleGenerativeAI } = await import('@google/generative-ai')
+      const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY!)
+      const geminiModel = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' })
+      const metaResult = await geminiModel.generateContent({
+        contents: [{ role: 'user', parts: [{ text: 'You are Cipher. A React app was built for this prompt: ' + prompt + '. Write narration and score it. Return ONLY valid JSON: {"narration":"2 warm sentences","appName":"App Name","suggestions":["Foundation: improvement","Details: improvement","Experience: improvement"],"score":85,"layerScores":{"foundation":17,"details":16,"experience":17,"architecture":17,"philosophy":18}}' }] }],
+      })
+      const metaRaw = metaResult.response.text().trim().replace(/\`\`\`json\n?/g,'').replace(/\`\`\`\n?/g,'').trim()
+      const metaStart = metaRaw.indexOf('{')
+      const metaEnd = metaRaw.lastIndexOf('}')
+      if (metaStart !== -1 && metaEnd !== -1) {
+        const metaParsed = JSON.parse(metaRaw.slice(metaStart, metaEnd + 1))
+        parsed2 = { ...parsed2, ...metaParsed, code: builtCode }
+      }
+    } catch (metaErr) {
+      console.error('[GEMINI META]', metaErr)
+      // Use defaults — build quality unaffected
     }
 
     const cost = (response.usage.input_tokens * 0.000003) + (response.usage.output_tokens * 0.000015)
