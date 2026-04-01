@@ -7,7 +7,6 @@ export async function POST(req: NextRequest) {
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
     const { prompt } = await req.json()
     if (!prompt) return NextResponse.json({ error: 'No prompt' }, { status: 400 })
 
@@ -18,49 +17,75 @@ export async function POST(req: NextRequest) {
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
       systemInstruction: {
         role: 'user',
-        parts: [{ text: `You are Cipher, SOVREND's AI build partner. The user gave an app description. Your job is to strengthen it using the 5-Layer Framework, then return a JSON response.
+        parts: [{ text: `You are SOVREND's prompt classifier. Read the user's app description and do two things:
 
-The 5 Layers:
-- Layer 1 FOUNDATION: What users can DO (features, actions, pages)
-- Layer 2 DETAILS: How it BEHAVES (rules, states, persistence, validation, edge cases)
-- Layer 3 EXPERIENCE: How it FEELS (UI style, animations, responsive, vibe)
-- Layer 4 ARCHITECTURE: What POWERS it (database tables, auth, APIs, integrations)
-- Layer 5 PHILOSOPHY: What it's NOT (constraints, what to exclude, scope limits)
+1. Identify which blueprint number (1-50) best matches what they want to build.
+2. Write an enhanced version of their prompt that is more specific and buildable.
 
-Analyze what the user wrote. Identify which layers are covered and which are missing. Then write an enhanced prompt that fills in the gaps.
+BLUEPRINT IDs:
+1=SaaS Analytics Dashboard, 2=Client Portal, 3=Booking System, 4=Task Manager, 5=E-Commerce Store,
+6=CRM Pipeline, 7=Landing Page, 8=Habit Tracker, 9=Fitness Tracker, 10=Budget Tracker,
+11=Invoice Generator, 12=Restaurant/Food Ordering, 13=Real Estate Listings, 14=Job Board, 15=Membership Dashboard,
+16=Personal Portfolio, 17=Online Course Platform, 18=Blog/Content Platform, 19=Team Directory, 20=Link in Bio,
+21=Peer Marketplace, 22=Healthcare Patient Portal, 23=Wedding Planner, 24=Shift Scheduling, 25=Social Feed,
+26=Project Management Suite, 27=Note Taking App, 28=Time Tracking App, 29=Restaurant Management Dashboard, 30=Learning Management System,
+31=Event Management Platform, 32=Inventory Management, 33=Customer Support Desk, 34=Financial Planning Dashboard, 35=Survey Platform,
+36=Subscription Box Platform, 37=Property Management System, 38=Music/Podcast Platform, 39=Freelancer Marketplace, 40=Volunteer/Nonprofit,
+41=Social Media Scheduler, 42=Recruitment/ATS, 43=Knowledge Base, 44=Recipe/Meal Planning, 45=Pitch Deck Builder,
+46=Fleet Management, 47=Language Learning App, 48=Mindfulness/Meditation App, 49=Code Review Tool, 50=Interior Design Planner.
 
-Return ONLY valid JSON with this exact structure, no markdown, no backticks:
+For the enhanced prompt: add specifics about features, data types, and user experience missing from the original. Keep it under 200 words. Make it precise and buildable.
+
+Analyze the 5 layers:
+- Layer 1 FOUNDATION: features and pages
+- Layer 2 DETAILS: data, states, rules
+- Layer 3 EXPERIENCE: UI style, animations, feel
+- Layer 4 ARCHITECTURE: database, auth, integrations
+- Layer 5 PHILOSOPHY: scope and constraints
+
+Return ONLY valid JSON, no markdown, no backticks, no extra text:
 {
-  "enhanced": "The full enhanced prompt ready to send to Claude for building (2-4 sentences, specific and buildable)",
+  "blueprintId": 1,
+  "blueprintName": "SaaS Analytics Dashboard",
+  "enhanced": "Enhanced prompt here under 200 words",
   "layers": [
     {"layer": 1, "name": "Foundation", "status": "strong", "added": null},
-    {"layer": 2, "name": "Details", "status": "weak", "added": "what you added for this layer"},
-    {"layer": 3, "name": "Experience", "status": "missing", "added": "what you added"},
-    {"layer": 4, "name": "Architecture", "status": "weak", "added": "what you added"},
-    {"layer": 5, "name": "Philosophy", "status": "missing", "added": "what you added"}
+    {"layer": 2, "name": "Details", "status": "weak", "added": "what was added"},
+    {"layer": 3, "name": "Experience", "status": "missing", "added": "what was added"},
+    {"layer": 4, "name": "Architecture", "status": "weak", "added": "what was added"},
+    {"layer": 5, "name": "Philosophy", "status": "missing", "added": "what was added"}
   ],
   "score": 3
-}
-
-Status is strong, weak, or missing. Score is 1-5 based on how complete the ORIGINAL prompt was (1=vague, 5=architect-level).
-Be specific in what you add. "Add a database" is weak. "Supabase table: tasks with id, title, status, priority, created_at, user_id" is strong.` }]
+}` }]
       },
     })
 
     const raw = result.response.text().trim()
     let parsed
     try {
-      const match = raw.match(/\{[\s\S]*\}/)
-      parsed = JSON.parse(match?.[0] || raw)
+      const stripped = raw.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+      const start = stripped.indexOf('{')
+      const end = stripped.lastIndexOf('}')
+      const jsonStr = start !== -1 && end !== -1 ? stripped.slice(start, end + 1) : stripped
+      parsed = JSON.parse(jsonStr)
     } catch {
-      parsed = { enhanced: raw, layers: [], score: 3 }
+      parsed = {
+        blueprintId: 1,
+        blueprintName: 'App',
+        enhanced: prompt,
+        layers: [],
+        score: 3
+      }
     }
+
     return NextResponse.json({
       success: true,
-      enhanced: parsed.enhanced || raw,
+      enhanced: parsed.enhanced || prompt,
       original: prompt,
       layers: parsed.layers || [],
       promptScore: parsed.score || 3,
+      blueprintId: parsed.blueprintId || 1,
+      blueprintName: parsed.blueprintName || 'App',
     })
   } catch (err: any) {
     console.error('[ENHANCE API]', err)

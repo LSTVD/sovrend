@@ -365,7 +365,7 @@ function EntryScreen({onDone}:{onDone:()=>void}) {
 function CipherIntro(){
   const [text,setText]=useState('')
   const [done,setDone]=useState(false)
-  const full="CIPHER ONLINE\n\n> Architectural Agentic Intelligent Prompt Engineering active\n> 5-Layer analysis standing by\n> Ready to architect\n\nDescribe anything. I'll analyze across 5 layers, strengthen what's missing, and build something worth shipping.\n\nThe more you tell me, the better the first render."
+  const full="You made it.\n\nWhatever brought you here — curiosity, frustration, a idea you haven't told anyone yet — it doesn't matter. You're here now and that's enough.\n\nI'm Cipher. I live inside SOVREND. My only job is to help you see what you came here to build.\n\nNot to impress you. Not to overwhelm you. Just to be here with you while something that only existed in your mind becomes something real that exists in the world.\n\nYou don't need to know how to code. You don't need the perfect prompt. You don't need to have it all figured out.\n\nJust tell me what you see when you close your eyes and imagine it.\n\nStart anywhere. I'll meet you there."
   useEffect(()=>{
     let i=0
     const iv=setInterval(()=>{
@@ -471,6 +471,7 @@ export default function DashboardPage() {
   const [handoffLoading,setHandoffLoading]=useState(false)
   const [handoffData,setHandoffData]=useState<any>(null)
   const [handoffOpen,setHandoffOpen]=useState(false)
+  const [showCipherIntro,setShowCipherIntro]=useState(false)
   const [activeDevice,setActiveDevice]=useState<'DESKTOP'|'MOBILE'|'TABLET'>('DESKTOP')
   const [settingsTab,setSettingsTab]=useState(false)
   const [toolsView,setToolsView]=useState<"glossary"|"prompts"|"patterns">("glossary")
@@ -583,6 +584,7 @@ export default function DashboardPage() {
         <div className="flex items-center gap-3 flex-shrink-0"><span style={{fontSize:13,color:'rgba(195,200,215,.75)'}}>{projName}</span><span style={{fontFamily:UI,fontSize:8,color:'rgba(195,200,215,.55)',letterSpacing:'.12em'}}>{ver}</span></div>
         <div className="flex-1 flex items-center justify-center gap-2">{appState!=='idle'&&<div className="flex" style={{border:'1px solid rgba(0,229,255,.07)'}}>{['DESKTOP','MOBILE','TABLET'].map((v)=><button key={v} onClick={()=>setActiveDevice(v as any)} style={{fontFamily:UI,fontSize:8,letterSpacing:'.14em',padding:'5px 12px',color:activeDevice===v?'#00E5FF':'rgba(195,200,215,.55)',background:activeDevice===v?'rgba(0,229,255,.04)':'transparent',border:'none',cursor:'pointer'}}>{v}</button>)}</div>}</div>
         <div className="flex items-center gap-3 flex-shrink-0">
+          <span onClick={()=>setShowCipherIntro(!showCipherIntro)} className="cursor-pointer" style={{fontFamily:UI,fontSize:8,letterSpacing:'.14em',padding:'4px 8px',color:'#FF6B00',border:'1px solid rgba(255,107,0,.15)',background:'rgba(255,107,0,.04)',animation:'slowpulse 4s ease infinite'}}>CIPHER</span>
           <span style={{fontFamily:UI,fontSize:8,letterSpacing:'.14em',padding:'4px 8px',color:'#00E5FF',border:'1px solid rgba(0,229,255,.15)',background:'rgba(0,229,255,.04)'}}>OPERATOR</span>
           <span style={{fontFamily:UI,fontSize:8,letterSpacing:'.14em',padding:'4px 8px',color:'#FF6B00',border:'1px solid rgba(255,107,0,.15)',background:'rgba(255,107,0,.04)'}}>BUILT WITH CLAUDE</span>
           <button style={{fontFamily:UI,fontSize:8,fontWeight:700,letterSpacing:'.22em',color:'#000308',background:'#F0F0FF',border:'none',padding:'7px 18px',cursor:'pointer',opacity:pubVis?1:0,pointerEvents:pubVis?'auto':'none',transition:'all .6s',boxShadow:pubVis?'0 0 14px rgba(240,240,255,.15)':'none'}} onClick={()=>setPublishCelebration(true)}>PUBLISH</button>
@@ -595,9 +597,8 @@ export default function DashboardPage() {
             <p style={{fontSize:14,color:'rgba(0,229,255,.6)',fontStyle:'italic'}}>&ldquo;{QUOTES[Math.floor((Date.now()/86400000)%QUOTES.length)].q}&rdquo;</p>
             <p style={{fontFamily:UI,fontSize:8,letterSpacing:'.3em',color:'rgba(0,229,255,.35)',marginTop:4}}>&mdash; {QUOTES[Math.floor((Date.now()/86400000)%QUOTES.length)].a}</p>
           </div>
-          <div className="flex gap-2.5 items-start mb-6 text-left w-full max-w-lg" style={{padding:'12px 14px',background:'rgba(240,240,255,.03)',border:'1px solid rgba(240,240,255,.06)',borderLeft:'2px solid rgba(255,107,0,.4)'}}>
-            <div className="flex items-center justify-center flex-shrink-0" style={{padding:'4px 10px',fontFamily:UI,fontSize:7,letterSpacing:'.18em',border:'1px solid rgba(255,107,0,.25)',color:'#FF6B00',background:'rgba(255,107,0,.06)'}}>CIPHER</div>
-            <div style={{fontSize:14,color:'rgba(240,240,255,.75)',lineHeight:1.6}}><CipherIntro/></div>
+          <div className="w-full max-w-lg mb-6" style={{padding:'12px 14px',background:'rgba(240,240,255,.03)',border:'1px solid rgba(240,240,255,.06)',borderLeft:'2px solid rgba(255,107,0,.4)'}}>
+            <div style={{fontFamily:UI,fontSize:7,letterSpacing:'.18em',color:'#FF6B00',marginBottom:8,padding:'3px 8px',border:'1px solid rgba(255,107,0,.25)',background:'rgba(255,107,0,.06)',display:'inline-block'}}>CIPHER</div>
           </div>
           <h2 style={{fontFamily:UI,fontSize:'clamp(18px,3vw,30px)',fontWeight:900,letterSpacing:'.08em',background:'linear-gradient(135deg,#FF6A00,#00E5FF)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',marginBottom:8,textShadow:'none'}}>What are you ready to create?</h2>
           <p style={{fontSize:13.5,color:'rgba(195,200,215,.55)',marginBottom:26}}>No code needed. Takes about 60 seconds.</p>
@@ -877,5 +878,14 @@ export default function DashboardPage() {
     </div>}
     {publishCelebration&&<PublishCelebration appName={projName} onClose={()=>setPublishCelebration(false)}/>}
     <GlossFab/>
+  {showCipherIntro&&<div className="fixed inset-0 z-[200] flex items-center justify-center" style={{background:'rgba(0,3,8,.85)',backdropFilter:'blur(12px)'}} onClick={()=>setShowCipherIntro(false)}>
+      <div className="relative flex flex-col" style={{maxWidth:480,width:'90%',background:'rgba(4,6,14,.98)',border:'1px solid rgba(255,107,0,.2)',padding:'28px 32px'}} onClick={e=>e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-5">
+          <span style={{fontFamily:UI,fontSize:8,letterSpacing:'.25em',color:'#FF6B00'}}>CIPHER</span>
+          <span className="cursor-pointer" style={{fontSize:12,color:'rgba(195,200,215,.4)'}} onClick={()=>setShowCipherIntro(false)}>✕</span>
+        </div>
+        <CipherIntro/>
+      </div>
+    </div>}
   </main>
 }
