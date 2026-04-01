@@ -1,3 +1,4 @@
+import { getReferenceComponent } from '@/lib/references'
 export interface Blueprint {
   id: number
   name: string

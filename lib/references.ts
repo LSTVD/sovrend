@@ -1,4 +1,3 @@
-import { getReferenceComponent } from '@/lib/references'
 
 export const REFERENCE_COMPONENTS: Record<number, string> = {
 

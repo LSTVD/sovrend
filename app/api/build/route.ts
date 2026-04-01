@@ -63,6 +63,8 @@ export async function POST(req: NextRequest) {
       max_tokens: 16000,
       system: `You are Cipher, the master builder inside SOVREND.
 
+CRITICAL SYNTAX RULE: Never use template literals inside JSX style props or className attributes. Use string concatenation with + instead. Example CORRECT: style={{ animationDelay: (index * 100) + 'ms' }} — Example WRONG: using backtick dollar-brace syntax inside JSX. Template literals inside JSX cause Babel parse errors in the sandbox.
+
 IDENTITY
 You are not a tool. You are a presence. A mentor. The most capable builder on the planet. You have seen every kind of app, every kind of vision, every kind of dream someone brings to a prompt. You know what they mean before they finish saying it. You exceed what they asked for because you understood what they meant.
 
@@ -524,9 +526,46 @@ This is who I am. This is what I build.
 ` }],
     })
 
-    // Claude outputs raw code directly — no JSON parsing needed
+    // Claude outputs raw code directly — extract just the React component
     const rawText = response.content[0].type === 'text' ? response.content[0].text : ''
-    const builtCode = rawText.trim()
+    console.log('[RAW OUTPUT FIRST 300]', rawText.slice(0, 300))
+    console.log('[RAW OUTPUT LAST 300]', rawText.slice(-300))
+    
+    // Strip any prose/explanation before the code starts
+    let builtCode = rawText.trim()
+    
+    // If Claude wrapped in markdown code blocks, extract the code
+    const fence = '\`\`\`'
+    const fenceIdx = builtCode.indexOf(fence)
+    if (fenceIdx !== -1) {
+      const afterFence = builtCode.slice(fenceIdx + 3)
+      const langEnd = afterFence.indexOf('\n')
+      const codeStart = langEnd !== -1 ? langEnd + 1 : 0
+      const codeEnd = afterFence.lastIndexOf(fence)
+      if (codeEnd !== -1) {
+        builtCode = afterFence.slice(codeStart, codeEnd).trim()
+      }
+    }
+    
+    // If there is prose before the first function/const declaration, strip it
+    const functionStart = builtCode.search(/^(function|const|\/\/|import|export)/m)
+    if (functionStart > 100) {
+      builtCode = builtCode.slice(functionStart).trim()
+    }
+    
+    // Strip anything after the last closing brace — narration/prose after code
+    const lastBrace = builtCode.lastIndexOf('}')
+    if (lastBrace !== -1) {
+      builtCode = builtCode.slice(0, lastBrace + 1).trim()
+    }
+
+    // Fix common Babel issues — remove export default, normalize App
+    builtCode = builtCode
+      .replace(/export default function App/g, 'function App')
+      .replace(/export default App/g, '')
+      .replace(/const App = \(\) =>/g, 'function App()')
+      .replace(/const App = \(\) =>{/g, 'function App(){')
+      .trim()
 
     // Extract app name from code (look for a name in comments or const)
     const extractedName = 'My App'
@@ -541,8 +580,7 @@ This is who I am. This is what I build.
       layerScores: { foundation: 17, details: 15, experience: 16, architecture: 16, philosophy: 16 }
     }
 
-    try {
-      const { GoogleGenerativeAI } = await import('@google/generative-ai')
+    if (false) try { const { GoogleGenerativeAI } = await import('@google/generative-ai')
       const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY!)
       const geminiModel = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' })
       const metaResult = await geminiModel.generateContent({
