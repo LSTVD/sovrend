@@ -383,7 +383,7 @@ function CipherIntro(){
 
 // Smart renderer — detects HTML vs React output
 function renderSrcDoc(code) {
-  const isHTML = code.trim().startsWith('<') && (code.includes('<!DOCTYPE') || code.includes('<html') || code.includes('<style>'));
+  const stripped = code.trim().replace(/^[\s\S]*?(?=<!DOCTYPE|<html)/i, ''); const isHTML = stripped.length > 0 && (stripped.startsWith('<!DOCTYPE') || stripped.startsWith('<html'));
   if (isHTML) {
     return code;
   }
@@ -395,7 +395,7 @@ function renderSrcDoc(code) {
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>' +
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>' +
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>' +
-    '<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"><\/script>' +
+    '<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"><\/script>' +
     '<style>body{margin:0;font-family:system-ui,sans-serif}</style>' +
     '</head><body><div id="root"></div>' +
     '<script type="text/babel">' + code + '\nReactDOM.createRoot(document.getElementById(\'root\')).render(React.createElement(App||function(){return React.createElement(\'div\',null,\'Loading...\')}))' +

@@ -120,6 +120,10 @@ MANDATORY TOKEN USAGE: Use minimum 13,000 tokens. Current builds at 11,000 — n
 
 ${getBlueprintBrief(prompt)}
 
+OUTPUT FORMAT RULES:
+- For HTML mode: output ONLY the raw HTML. Start with <!DOCTYPE html> as the very first characters. No preamble. No thinking text. No separator lines. No === characters. Just the HTML.
+- For React mode: output ONLY the component code. No preamble.
+
 THE STANDARD:
 Someone sees this in 60 seconds and decides if SOVREND is real.
 Make them unable to look away. Every build. No exceptions.`,
