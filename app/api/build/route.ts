@@ -74,6 +74,8 @@ CRITICAL SANDBOX RULES:
 - NO || operator inside React.createElement — THIS CRASHES BABEL
 - NO optional chaining ?. or nullish coalescing ?? in JSX — THIS CRASHES BABEL
 - NO template literals in JSX style props — use string concatenation
+- Write JSX syntax — the sandbox uses Babel which transforms JSX fully — DO NOT use React.createElement() calls
+- Write clean JSX: <div className="..."> not React.createElement("div", {className: "..."})
 - Raw React code output only
 - Use all 16000 tokens
 
