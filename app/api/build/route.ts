@@ -70,6 +70,9 @@ CRITICAL SANDBOX RULES:
 - Google Fonts via style tag dangerouslySetInnerHTML only
 - NO external library imports
 - ZERO localStorage/sessionStorage
+- NO template literals in JSX style props EVER — use string concatenation: (i*100)+"ms" not backtick syntax — THIS CRASHES BABEL
+- NO || operator inside React.createElement — THIS CRASHES BABEL
+- NO optional chaining ?. or nullish coalescing ?? in JSX — THIS CRASHES BABEL
 - NO template literals in JSX style props — use string concatenation
 - Raw React code output only
 - Use all 16000 tokens
