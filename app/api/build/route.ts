@@ -84,12 +84,13 @@ Output pure HTML starting with <!DOCTYPE html>. Full creative freedom. No React.
 USE THESE LIBRARIES. They are loaded. A flat CSS animation when GSAP exists is a missed opportunity. A solid background when Three.js particle fields exist is a missed opportunity. This is Awwwards-level territory. Build like it.
 
 FOR DASHBOARDS, APPS, TOOLS, TRACKERS, CRM, BOOKING, FITNESS, FINANCE:
-Write clean JSX. Babel transforms it. No React.createElement calls.
-- NO template literals in JSX style props — use string concatenation: (i*100)+"ms"
-- NO || inside createElement — CRASHES BABEL
-- NO ?. or ?? in JSX — CRASHES BABEL
-- Google Fonts via style tag with dangerouslySetInnerHTML
-- Use all 16000 tokens — current builds using 11000, not enough
+Output pure HTML starting with <!DOCTYPE html>. Vanilla JS only.
+- TAB SWITCHING: use CSS only — hidden radio inputs + labels + :checked selector. Zero JavaScript for tabs.
+- ALL JavaScript functions must be defined as window.fnName = function(){} at the TOP of the script tag before any HTML. Never inside DOMContentLoaded. Never in block scope.
+- Google Fonts via <link> tag in <head>
+- CSS custom properties at :root for design system
+- Fixed left sidebar 220px always
+- Every interaction must work — if a button calls a function, that function must exist at window scope
 
 ${PERSONA_CONTEXT[persona]}
 
