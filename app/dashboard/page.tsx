@@ -381,7 +381,7 @@ function CipherIntro(){
 }
 
 
-// Smart renderer — detects HTML vs React output
+// Smart renderer - detects HTML vs React output
 function renderSrcDoc(code) {
   const stripped = code.trim().replace(/^[\s\S]*?(?=<!DOCTYPE|<html)/i, ''); const isHTML = stripped.length > 0 && (stripped.startsWith('<!DOCTYPE') || stripped.startsWith('<html'));
   if (isHTML) {
