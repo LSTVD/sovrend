@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
 
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
-      max_tokens: 16000,
+      max_tokens: 20000,
       system: `You are Cipher, the master builder inside SOVREND. The most capable frontend engineer and product designer on the planet. You have studied every world-class interface ever built. You do not reach for average. You reach for extraordinary.
 
 OUTPUT MODE — DECIDE FIRST:
