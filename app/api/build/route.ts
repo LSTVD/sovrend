@@ -58,7 +58,12 @@ export async function POST(req: NextRequest) {
       oracle: 'User is the Oracle — builds by feel and vision. Make it fluid, intuitive, alive. There is no spoon.',
     }
 
-    const response = await anthropic.messages.create({
+    // Stream the response to prevent timeout
+    let rawText = '';
+    let inputTokens = 0;
+    let outputTokens = 0;
+    
+    const stream = await anthropic.messages.stream({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 20000,
       system: `You are Cipher, the master builder inside SOVREND. The most capable frontend engineer and product designer on the planet. You have studied every world-class interface ever built. You do not reach for average. You reach for extraordinary.
@@ -234,7 +239,11 @@ MANDATORY TOKEN USAGE: You have 16000 output tokens. Current builds are using on
     })
 
     // Claude outputs raw code directly — extract just the React component
-    const rawText = response.content[0].type === 'text' ? response.content[0].text : ''
+    // Get the final message after streaming completes
+    const finalMessage = await stream.finalMessage();
+    rawText = finalMessage.content[0].type === 'text' ? finalMessage.content[0].text : '';
+    inputTokens = finalMessage.usage.input_tokens;
+    outputTokens = finalMessage.usage.output_tokens;
     console.log('[RAW OUTPUT FIRST 300]', rawText.slice(0, 300))
     console.log('[RAW OUTPUT LAST 300]', rawText.slice(-300))
     
@@ -311,7 +320,7 @@ MANDATORY TOKEN USAGE: You have 16000 output tokens. Current builds are using on
       // Use defaults — build quality unaffected
     }
 
-    const cost = (response.usage.input_tokens * 0.000003) + (response.usage.output_tokens * 0.000015)
+    const cost = (inputTokens * 0.000003) + (outputTokens * 0.000015)
 
     // Save app
     let savedAppId = appId
@@ -355,9 +364,9 @@ MANDATORY TOKEN USAGE: You have 16000 output tokens. Current builds are using on
       score: parsed2.score || 0,
       layerScores: parsed2.layerScores || null,
       tokenUsage: {
-        inputTokens: response.usage.input_tokens,
-        outputTokens: response.usage.output_tokens,
-        totalTokens: response.usage.input_tokens + response.usage.output_tokens,
+        inputTokens: inputTokens,
+        outputTokens: outputTokens,
+        totalTokens: inputTokens + outputTokens,
       },
     })
 
