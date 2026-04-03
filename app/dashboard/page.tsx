@@ -15,14 +15,14 @@ const GLOSSARY = [
   {t:'API',d:'How apps talk to each other. Your app uses APIs to connect to payments, databases, and services.'},
   {t:'Auth',d:'How your app knows who someone is. The login system that checks credentials.'},
   {t:'Backend',d:'The behind-the-scenes part of your app. Handles data, security, and logic users don\'t see.'},
-  {t:'Component',d:'A reusable piece of your app\'s interface. A button, a card, a form - building blocks.'},
+  {t:'Component',d:'A reusable piece of your app\'s interface. A button, a card, a form — building blocks.'},
   {t:'Database',d:'Where your app stores information. Like a giant organized spreadsheet on the internet.'},
   {t:'Deploy',d:'Making your app live on the internet so anyone with the link can visit it.'},
-  {t:'Domain',d:'Your app\'s address on the internet. Like myapp.com - what people type to find you.'},
-  {t:'Environment Variables',d:'Secret settings your app needs - like passwords for services. Users never see them.'},
-  {t:'Frontend',d:'The part people see and touch. Buttons, pages, forms, images - everything visual.'},
+  {t:'Domain',d:'Your app\'s address on the internet. Like myapp.com — what people type to find you.'},
+  {t:'Environment Variables',d:'Secret settings your app needs — like passwords for services. Users never see them.'},
+  {t:'Frontend',d:'The part people see and touch. Buttons, pages, forms, images — everything visual.'},
   {t:'Props',d:'Information passed between parts of your app. Like handing a note from one component to another.'},
-  {t:'Responsive',d:'Your app looks good on any screen size - phone, tablet, desktop.'},
+  {t:'Responsive',d:'Your app looks good on any screen size — phone, tablet, desktop.'},
   {t:'Route',d:'A page in your app. /dashboard is one route, /invoices is another. Each has its own URL.'},
   {t:'Schema',d:'The blueprint for your data. Like deciding what columns go in a spreadsheet before filling it.'},
   {t:'Stripe',d:'A payment system. Handles credit cards, subscriptions, and sends money to your bank.'},
@@ -116,7 +116,7 @@ const QUOTES = [
   {q:'It is not that we have a short time to live, but that we waste a great deal of it.',a:'SENECA'},
   {q:'Difficulties strengthen the mind, as labor does the body.',a:'SENECA'},
   {q:'The only way to make sense out of change is to plunge into it, move with it, and join the dance.',a:'ALAN WATTS'},
-  {q:'This is the real secret of life - to be completely engaged with what you are doing in the here and now.',a:'ALAN WATTS'},
+  {q:'This is the real secret of life — to be completely engaged with what you are doing in the here and now.',a:'ALAN WATTS'},
   {q:'You are the universe experiencing itself.',a:'ALAN WATTS'},
   {q:'Think lightly of yourself and deeply of the world.',a:'MIYAMOTO MUSASHI'},
   {q:'Everything is within. There is nothing outside of yourself that can ever enable you to get better.',a:'MIYAMOTO MUSASHI'},
@@ -365,7 +365,7 @@ function EntryScreen({onDone}:{onDone:()=>void}) {
 function CipherIntro(){
   const [text,setText]=useState('')
   const [done,setDone]=useState(false)
-  const full="You made it.\n\nWhatever brought you here - curiosity, frustration, a idea you haven't told anyone yet - it doesn't matter. You're here now and that's enough.\n\nI'm Cipher. I live inside SOVREND. My only job is to help you see what you came here to build.\n\nNot to impress you. Not to overwhelm you. Just to be here with you while something that only existed in your mind becomes something real that exists in the world.\n\nYou don't need to know how to code. You don't need the perfect prompt. You don't need to have it all figured out.\n\nJust tell me what you see when you close your eyes and imagine it.\n\nStart anywhere. I'll meet you there."
+  const full="You made it.\n\nWhatever brought you here — curiosity, frustration, a idea you haven't told anyone yet — it doesn't matter. You're here now and that's enough.\n\nI'm Cipher. I live inside SOVREND. My only job is to help you see what you came here to build.\n\nNot to impress you. Not to overwhelm you. Just to be here with you while something that only existed in your mind becomes something real that exists in the world.\n\nYou don't need to know how to code. You don't need the perfect prompt. You don't need to have it all figured out.\n\nJust tell me what you see when you close your eyes and imagine it.\n\nStart anywhere. I'll meet you there."
   useEffect(()=>{
     let i=0
     const iv=setInterval(()=>{
@@ -378,28 +378,6 @@ function CipherIntro(){
     {text}<span style={{opacity:done?0:1,animation:'pulse 1s infinite',color:'#00FF41'}}>{'█'}</span>
     {done&&<div style={{marginTop:16,display:'flex',gap:8,flexWrap:'wrap'}}>{['Foundation','Details','Experience','Architecture','Philosophy'].map(l=><span key={l} style={{fontSize:10,padding:'3px 10px',border:'1px solid rgba(0,255,65,.2)',color:'rgba(0,255,65,.5)',letterSpacing:'.05em'}}>{'> '+l}</span>)}</div>}
   </div>
-}
-
-
-// Smart renderer - detects HTML vs React output
-function renderSrcDoc(code) {
-  const stripped = code.trim().replace(/^[\s\S]*?(?=<!DOCTYPE|<html)/i, ''); const isHTML = stripped.length > 0 && (stripped.startsWith('<!DOCTYPE') || stripped.startsWith('<html'));
-  if (isHTML) {
-    return stripped;
-  }
-  return '<!DOCTYPE html><html><head>' +
-    '<script src="https://cdn.tailwindcss.com"><\/script>' +
-    '<script src="https://unpkg.com/react@18/umd/react.production.min.js"><\/script>' +
-    '<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"><\/script>' +
-    '<script src="https://unpkg.com/@babel/standalone/babel.min.js"><\/script>' +
-    '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>' +
-    '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>' +
-    '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>' +
-    '<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"><\/script>' +
-    '<style>body{margin:0;font-family:system-ui,sans-serif}</style>' +
-    '</head><body><div id="root"></div>' +
-    '<script type="text/babel">' + code + '\nReactDOM.createRoot(document.getElementById(\'root\')).render(React.createElement(App||function(){return React.createElement(\'div\',null,\'Loading...\')}))' +
-    '<\/script></body></html>';
 }
 
 function SignalDecode(){
@@ -462,6 +440,27 @@ function SignalDecode(){
   </div>
 }
 
+
+function renderSrcDoc(code) {
+  const trimmed = code.trim();
+  const htmlStart = trimmed.search(/<!DOCTYPE|<html/i);
+  if (htmlStart >= 0) {
+    return trimmed.slice(htmlStart);
+  }
+  return '<!DOCTYPE html><html><head>' +
+    '<script src="https://cdn.tailwindcss.com"><\/script>' +
+    '<script src="https://unpkg.com/react@18/umd/react.production.min.js"><\/script>' +
+    '<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"><\/script>' +
+    '<script src="https://unpkg.com/@babel/standalone/babel.min.js"><\/script>' +
+    '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>' +
+    '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>' +
+    '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>' +
+    '<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"><\/script>' +
+    '<style>body{margin:0;font-family:system-ui,sans-serif}</style>' +
+    '</head><body><div id="root"></div>' +
+    '<script type="text/babel">' + code + '\nReactDOM.createRoot(document.getElementById(\'root\')).render(React.createElement(App||function(){return React.createElement(\'div\',null,\'Loading...\')}))' +
+    '<\/script></body></html>';
+}
 
 export default function DashboardPage() {
   const [entered,setEntered]=useState(false)
@@ -555,7 +554,7 @@ export default function DashboardPage() {
       const data=await res.json()
       clearInterval(ni)
       if(data.success){
-        setGeneratedCode(data.code||'')
+        setGeneratedCode((data.code||'').replace('export default function','function').replace('export default ','').replace('const App = () =>','function App()').replace('const App = ()=>','function App()').replace('const App = () =>{','function App(){'))
         setSuggestions(data.suggestions||['What else should this app do?','What would your users want next?','What feels incomplete?'])
         if(data.appId)setAppId(data.appId);setBuildScore(data.score?Number(data.score):Math.floor(40+Math.random()*20));if(data.tokenUsage)setTokenUsage(data.tokenUsage)
         setAppState('revealing');setVer('v1.0');setShowNarr(false);setPubVis(true);setTimeout(()=>setAppState('complete'),2000)
@@ -575,7 +574,7 @@ export default function DashboardPage() {
   const loadTpl=(k:string)=>{if(TEMPLATES[k])setPrompt(TEMPLATES[k])}
   const fillChat=(text:string)=>{setRefineText(text)}
   const generateHandoff=async()=>{setHandoffLoading(true);try{const res=await fetch('/api/handoff',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:generatedCode,appName:projName,suggestions,score:buildScore})});const data=await res.json();if(data.success){setHandoffData(data);setHandoffOpen(true)}}catch(e){}finally{setHandoffLoading(false)}}
-  const loadApp=(app:{id:string,name:string,code:string})=>{setAppId(app.id);setProjName(app.name);setGeneratedCode(app.code||'');setAppState('complete');setVer('saved');setPubVis(true);setShowStrip(true);setShowModes(true);setMsgs([{role:'cipher',text:'Loaded '+app.name+'. Ready to refine - tell me what needs work.'},{role:'cipher',text:'Here\'s what I\'d suggest improving next:',type:'summary'}]);setShowRevCalc(true);setBuildScore(Math.floor(65+Math.random()*25))}
+  const loadApp=(app:{id:string,name:string,code:string})=>{setAppId(app.id);setProjName(app.name);setGeneratedCode(app.code.replace('export default function','function').replace('export default ',''));setAppState('complete');setVer('saved');setPubVis(true);setShowStrip(true);setShowModes(true);setMsgs([{role:'cipher',text:'Loaded '+app.name+'. Ready to refine — tell me what needs work.'},{role:'cipher',text:'Here\'s what I\'d suggest improving next:',type:'summary'}]);setShowRevCalc(true);setBuildScore(Math.floor(65+Math.random()*25))}
   return <main className="relative min-h-screen overflow-hidden">
     <GridBg state={appState} rainSpeed={rainSpeed}/>
     <style jsx global>{`@keyframes fu{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}@keyframes slowpulse{0%,90%,100%{opacity:.6}95%{opacity:1}}@keyframes breathe{0%,100%{border-color:rgba(0,229,255,.12);box-shadow:0 0 8px rgba(0,229,255,.03)}50%{border-color:rgba(0,229,255,.25);box-shadow:0 0 16px rgba(0,229,255,.06)}}@keyframes spin{to{transform:rotate(360deg)}}@keyframes revealFlash{0%{opacity:1;background:rgba(0,229,255,.15)}30%{opacity:1;background:rgba(240,240,255,.08)}100%{opacity:0;background:transparent}}@keyframes revealPulse{0%{transform:scale(0);opacity:.4;border-color:rgba(0,229,255,.4)}100%{transform:scale(4);opacity:0;border-color:transparent}}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(45,50,68,.14);border-radius:2px}`}</style>
@@ -746,7 +745,7 @@ export default function DashboardPage() {
               {appState==='complete'&&showRevCalc&&<RevCalc onAddPricing={()=>fillChat('Add a pricing page with 3 tiers')}/>}
 
             </div>
-            {showStrip&&<div className="flex gap-1 px-3 py-1.5 flex-shrink-0 flex-wrap" style={{borderTop:'1px solid rgba(0,229,255,.035)',animation:'fu .4s ease'}}>{[{l:'Foundation',h:'What should users be able to DO that they can\'t yet? What actions are missing?'},{l:'Details',h:'How should this BEHAVE differently? What rules, states, or interactions need changing?'},{l:'Experience',h:'How should this FEEL? What\'s the vibe - calmer, bolder, more playful, more minimal?'},{l:'Architecture',h:'What should this CONNECT to? Database, payments, auth, external services?'},{l:'Philosophy',h:'What should this NOT be? What should I remove, simplify, or cut?'}].map((p)=><span key={p.l} onClick={()=>setRefineText(p.h)} style={{fontSize:9,padding:'4px 8px',border:'1px solid rgba(0,229,255,.07)',color:'rgba(195,200,215,.55)',background:'transparent',cursor:'pointer',transition:'all .15s'}} onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(0,229,255,.3)';e.currentTarget.style.color='#00E5FF';e.currentTarget.style.background='rgba(0,229,255,.04)'}} onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(0,229,255,.07)';e.currentTarget.style.color='rgba(195,200,215,.55)';e.currentTarget.style.background='transparent'}}>{p.l}</span>)}</div>}
+            {showStrip&&<div className="flex gap-1 px-3 py-1.5 flex-shrink-0 flex-wrap" style={{borderTop:'1px solid rgba(0,229,255,.035)',animation:'fu .4s ease'}}>{[{l:'Foundation',h:'What should users be able to DO that they can\'t yet? What actions are missing?'},{l:'Details',h:'How should this BEHAVE differently? What rules, states, or interactions need changing?'},{l:'Experience',h:'How should this FEEL? What\'s the vibe — calmer, bolder, more playful, more minimal?'},{l:'Architecture',h:'What should this CONNECT to? Database, payments, auth, external services?'},{l:'Philosophy',h:'What should this NOT be? What should I remove, simplify, or cut?'}].map((p)=><span key={p.l} onClick={()=>setRefineText(p.h)} style={{fontSize:9,padding:'4px 8px',border:'1px solid rgba(0,229,255,.07)',color:'rgba(195,200,215,.55)',background:'transparent',cursor:'pointer',transition:'all .15s'}} onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(0,229,255,.3)';e.currentTarget.style.color='#00E5FF';e.currentTarget.style.background='rgba(0,229,255,.04)'}} onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(0,229,255,.07)';e.currentTarget.style.color='rgba(195,200,215,.55)';e.currentTarget.style.background='transparent'}}>{p.l}</span>)}</div>}
             <div className="px-3 pb-3 flex-shrink-0" style={{background:'rgba(8,11,22,.93)',borderTop:'1px solid rgba(0,229,255,.07)'}}>
               {showModes&&<div className="flex gap-0.5 mb-1" style={{animation:'fu .3s ease'}}>{['BUILD','PLAN','CHAT'].map((m)=><span key={m} onClick={()=>setActiveMode(m)} style={{fontFamily:UI,fontSize:8,letterSpacing:'.14em',padding:'3px 6px',cursor:'pointer',color:activeMode===m?'#00E5FF':'rgba(195,200,215,.55)',border:`1px solid ${activeMode===m?'rgba(0,229,255,.15)':'transparent'}`,background:activeMode===m?'rgba(0,229,255,.04)':'transparent'}}>{m}</span>)}</div>}
               {activeMode==='PLAN'?<div style={{border:'1px solid rgba(0,229,255,.15)',background:'rgba(4,6,14,.96)',animation:'breathe 3s ease infinite'}}>
@@ -756,22 +755,22 @@ export default function DashboardPage() {
                 </div>
                 <textarea className="w-full bg-transparent outline-none resize-none" placeholder="What are you thinking about building..." value={planNotes} onChange={e=>setPlanNotes(e.target.value)} style={{color:'#F0F0FF',fontSize:14,lineHeight:1.7,padding:'14px',minHeight:100,border:'none'}}/>
                 <div style={{padding:'6px 14px',borderTop:'1px solid rgba(0,229,255,.07)',display:'flex',justifyContent:'space-between'}}>
-                  <span style={{fontFamily:UI,fontSize:7,letterSpacing:'.15em',color:'rgba(0,229,255,.25)'}}>FREE - NO ACTIONS USED</span>
+                  <span style={{fontFamily:UI,fontSize:7,letterSpacing:'.15em',color:'rgba(0,229,255,.25)'}}>FREE — NO ACTIONS USED</span>
                   <span style={{fontFamily:UI,fontSize:7,letterSpacing:'.15em',color:'rgba(0,229,255,.15)'}}>\u2191 SWITCH TO BUILD WHEN READY</span>
                 </div>
               </div>
-              :activeMode==='CHAT'?<div><textarea className="w-full bg-transparent outline-none resize-none" placeholder="Ask Coach anything - how to prompt better, what something means, or get advice." value={refineText} onChange={e=>setRefineText(e.target.value)} style={{background:'rgba(8,11,22,.7)',border:'1px solid rgba(0,229,255,.07)',borderBottom:'2px solid rgba(255,107,0,.15)',borderLeft:'2px solid rgba(255,107,0,.3)',color:'#F0F0FF',fontSize:14,padding:'12px 14px',height:56,lineHeight:'1.5'}}/></div>
+              :activeMode==='CHAT'?<div><textarea className="w-full bg-transparent outline-none resize-none" placeholder="Ask Coach anything — how to prompt better, what something means, or get advice." value={refineText} onChange={e=>setRefineText(e.target.value)} style={{background:'rgba(8,11,22,.7)',border:'1px solid rgba(0,229,255,.07)',borderBottom:'2px solid rgba(255,107,0,.15)',borderLeft:'2px solid rgba(255,107,0,.3)',color:'#F0F0FF',fontSize:14,padding:'12px 14px',height:56,lineHeight:'1.5'}}/></div>
               :<textarea className="w-full bg-transparent outline-none resize-none" placeholder="What would make this better?" value={refineText} onChange={e=>setRefineText(e.target.value)} style={{background:'rgba(8,11,22,.7)',border:'1px solid rgba(0,229,255,.07)',borderBottom:'2px solid rgba(0,229,255,.15)',color:'#F0F0FF',fontSize:15,padding:'12px 14px',height:56,lineHeight:'1.5'}}/>}
-              <div className="flex items-center justify-between mt-2"><div className="flex gap-1 items-center">{['\ud83d\udcce','\ud83c\udfa4','\ud83d\udcf7','\u25c7'].map(i=><div key={i} className="flex items-center justify-center cursor-pointer" style={{width:22,height:22,border:'1px solid rgba(0,229,255,.07)',color:'rgba(195,200,215,.55)',fontSize:10}}>{i}</div>)}</div><button onClick={async()=>{if(!refineText.trim())return;setAppState('building');setShowNarr(true);setNarrText('Refining your app...');setNarrTeach('applying your changes');setMsgs(prev=>[...prev,{role:'user',text:refineText},{role:'cipher',text:'On it. Applying your changes now.',type:'building'}]);const res=await fetch('/api/build',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:refineText+' \n\nPrevious code to modify: '+generatedCode.slice(0,2000),persona:'operator',appId:appId})});const data=await res.json();if(data.success){setGeneratedCode(data.code||'');setSuggestions(data.suggestions||[]);if(data.appId)setAppId(data.appId);setBuildScore(data.score?Number(data.score):Math.floor(40+Math.random()*20));if(data.tokenUsage)setTokenUsage(data.tokenUsage);setAppState('complete');setShowNarr(false);setRefineText('');setMsgs(prev=>[...prev,{role:'cipher',text:data.narration||'Changes applied.',type:'summary'},{role:'cipher',text:'Cipher is here - what needs work?',type:'suggestion'}])}else{setAppState('complete');setShowNarr(false);setMsgs(prev=>[...prev,{role:'cipher',text:data.message||'Something went wrong. Try again.'}])}}} style={{fontFamily:UI,fontSize:9,fontWeight:700,letterSpacing:'.16em',color:'#000308',background:'#00E5FF',border:'none',padding:'6px 14px',cursor:'pointer'}}>{activeMode==='PLAN'?'SAVE NOTE':'SEND →'}</button></div>
+              <div className="flex items-center justify-between mt-2"><div className="flex gap-1 items-center">{['\ud83d\udcce','\ud83c\udfa4','\ud83d\udcf7','\u25c7'].map(i=><div key={i} className="flex items-center justify-center cursor-pointer" style={{width:22,height:22,border:'1px solid rgba(0,229,255,.07)',color:'rgba(195,200,215,.55)',fontSize:10}}>{i}</div>)}</div><button onClick={async()=>{if(!refineText.trim())return;setAppState('building');setShowNarr(true);setNarrText('Refining your app...');setNarrTeach('applying your changes');setMsgs(prev=>[...prev,{role:'user',text:refineText},{role:'cipher',text:'On it. Applying your changes now.',type:'building'}]);const res=await fetch('/api/build',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:refineText+' \n\nPrevious code to modify: '+generatedCode.slice(0,2000),persona:'operator',appId:appId})});const data=await res.json();if(data.success){setGeneratedCode((data.code||'').replace('export default function','function').replace('export default ','').replace('const App = () =>','function App()').replace('const App = ()=>','function App()').replace('const App = () =>{','function App(){'));setSuggestions(data.suggestions||[]);if(data.appId)setAppId(data.appId);setBuildScore(data.score?Number(data.score):Math.floor(40+Math.random()*20));if(data.tokenUsage)setTokenUsage(data.tokenUsage);setAppState('complete');setShowNarr(false);setRefineText('');setMsgs(prev=>[...prev,{role:'cipher',text:data.narration||'Changes applied.',type:'summary'},{role:'cipher',text:'Cipher is here — what needs work?',type:'suggestion'}])}else{setAppState('complete');setShowNarr(false);setMsgs(prev=>[...prev,{role:'cipher',text:data.message||'Something went wrong. Try again.'}])}}} style={{fontFamily:UI,fontSize:9,fontWeight:700,letterSpacing:'.16em',color:'#000308',background:'#00E5FF',border:'none',padding:'6px 14px',cursor:'pointer'}}>{activeMode==='PLAN'?'SAVE NOTE':'SEND →'}</button></div>
             </div>
           </div>
           <div className="flex-1 flex flex-col overflow-hidden">
-            <div className="flex items-center px-3 flex-shrink-0 overflow-hidden transition-all duration-300" style={{height:showNarr?28:0,background:'rgba(8,11,22,.93)',borderBottom:'1px solid rgba(0,229,255,.035)',fontFamily:MONO,fontSize:10,color:'rgba(0,229,255,.5)'}}><div style={{width:6,height:6,borderRadius:'50%',background:'#00E5FF',marginRight:8,animation:'pulse 1.5s ease infinite'}}/>{narrText}<span style={{color:'rgba(0,229,255,.3)',fontStyle:'italic',marginLeft:4}}> - {narrTeach}</span></div>
+            <div className="flex items-center px-3 flex-shrink-0 overflow-hidden transition-all duration-300" style={{height:showNarr?28:0,background:'rgba(8,11,22,.93)',borderBottom:'1px solid rgba(0,229,255,.035)',fontFamily:MONO,fontSize:10,color:'rgba(0,229,255,.5)'}}><div style={{width:6,height:6,borderRadius:'50%',background:'#00E5FF',marginRight:8,animation:'pulse 1.5s ease infinite'}}/>{narrText}<span style={{color:'rgba(0,229,255,.3)',fontStyle:'italic',marginLeft:4}}> — {narrTeach}</span></div>
             <div className="flex items-center justify-between px-3 flex-shrink-0" style={{height:30,background:'rgba(8,11,22,.93)',borderBottom:'1px solid rgba(0,229,255,.035)'}}><span style={{fontSize:10,color:'rgba(195,200,215,.55)',background:'rgba(0,229,255,.04)',border:'1px solid rgba(0,229,255,.07)',padding:'2px 10px'}}><b style={{color:'#00E5FF',fontWeight:500}}>{projName.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'myapp'}</b>.sovrend.com</span><div className="flex gap-1">{['History','Visual Edit','View Code','\u2197 New Tab'].map(a=><span key={a} className="cursor-pointer" onClick={()=>{if(a==='View Code')setCodeOpen(!codeOpen);if(a==='Visual Edit'){setMsgs(prev=>[...prev,{role:'cipher',text:'Visual Edit mode coming soon. For now, describe what you want to change and I\'ll handle it.'}])};if(a==='History'){setMsgs(prev=>[...prev,{role:'cipher',text:'Version history coming soon. Each refine is saved automatically.'}])}}} style={{fontSize:9,color:a==='View Code'&&codeOpen?'#00E5FF':'rgba(195,200,215,.55)',padding:'3px 6px',border:'1px solid rgba(0,229,255,.035)'}}>{a}</span>)}</div></div>
             <div className="flex-1 flex overflow-hidden">
               <div className="flex-1 flex flex-col" style={{background:'rgba(10,14,24,.5)'}}>
                 {appState==='building'?<SignalDecode/>:appState==='revealing'?<div className="flex-1 relative" style={{background:'#000308',overflow:'hidden'}}>
-                      {generatedCode&&<iframe key={appId||generatedCode.slice(0,50)} srcDoc={renderSrcDoc(generatedCode)} style={{width:'100%',height:'100%',border:'none',background:'#fff'}} sandbox="allow-scripts allow-same-origin" onClick={e=>e.stopPropagation()} />}
+                      {generatedCode&&<iframe key={appId||generatedCode.slice(0,50)} srcDoc={renderSrcDoc(generatedCode)} style={{width:'100%',height:'100%',border:'none',background:'#fff'}} sandbox="allow-scripts allow-same-origin" onClick={e=>e.stopPropagation()}/>}
                       <div style={{position:'absolute',inset:0,pointerEvents:'none',animation:'revealFlash 2s ease-out forwards',zIndex:10}}/>
                       <div style={{position:'absolute',top:'50%',left:'50%',width:80,height:80,marginLeft:-40,marginTop:-40,borderRadius:'50%',border:'2px solid rgba(0,229,255,.4)',animation:'revealPulse 1.5s ease-out forwards',zIndex:11}}/>
                       <div style={{position:'absolute',top:'50%',left:'50%',width:40,height:40,marginLeft:-20,marginTop:-20,borderRadius:'50%',border:'1px solid rgba(240,240,255,.3)',animation:'revealPulse 1.5s ease-out 0.3s forwards',zIndex:11}}/>
@@ -780,7 +779,7 @@ export default function DashboardPage() {
                   <div className="flex items-center px-3 gap-1 flex-shrink-0" style={{height:28,background:'rgba(0,229,255,.04)',borderBottom:'1px solid rgba(0,229,255,.035)'}}>{[0,1,2].map(i=><div key={i} style={{width:6,height:6,borderRadius:'50%',border:'1px solid rgba(45,50,68,.14)'}}/>)}<span style={{fontSize:9,color:'rgba(195,200,215,.55)',marginLeft:5}}>Preview</span></div>
                   <div className="flex-1 overflow-hidden flex justify-center" style={{background:'rgba(3,5,12,.9)'}}>
                   <div style={{width:activeDevice==='MOBILE'?375:activeDevice==='TABLET'?768:'100%',height:'100%',background:'#fff',transition:'width .3s ease'}}>
-                    {generatedCode?<iframe key={appId||generatedCode.slice(0,50)} srcDoc={renderSrcDoc(generatedCode)} style={{width:'100%',height:'100%',border:'none',background:'#fff'}} sandbox="allow-scripts allow-same-origin" onClick={e=>e.stopPropagation()} />
+                    {generatedCode?<iframe key={appId||generatedCode.slice(0,50)} srcDoc={renderSrcDoc(generatedCode)} style={{width:'100%',height:'100%',border:'none',background:'#fff'}} sandbox="allow-scripts allow-same-origin" onClick={e=>e.stopPropagation()}/>
                     :<div className="flex items-center justify-center h-full" style={{background:'rgba(3,5,12,.9)'}}><span style={{fontFamily:UI,fontSize:9,letterSpacing:'.2em',color:'rgba(0,229,255,.3)'}}>YOUR APP WILL APPEAR HERE</span></div>}
                   </div></div>
                 </div>}
@@ -849,7 +848,7 @@ export default function DashboardPage() {
       </div>
       <div style={{position:'relative',flex:1}}><canvas ref={planCanvasRef} style={{position:'absolute',inset:0,pointerEvents:'none',zIndex:1}}/><textarea className="w-full bg-transparent outline-none resize-none" placeholder="What are you thinking about building..." value={planNotes} onChange={e=>{setPlanNotes(e.target.value);const lines=e.target.value.split('\n');const last=lines[lines.length-1];const cx=Math.min(14+last.length*8.5,340);const cy=Math.min(14+(lines.length-1)*24+12,180);for(let i=0;i<3;i++)planParticlesRef.current.push({x:cx+(Math.random()-.5)*10,y:cy,vx:(Math.random()-.5)*.8,vy:-(0.4+Math.random()*1.2),life:1,decay:0.015+Math.random()*0.01,size:1+Math.random()*2})}} style={{color:'#F0F0FF',fontSize:14,lineHeight:1.7,padding:14,minHeight:200,border:'none',position:'relative',zIndex:2,background:'transparent',width:'100%'}}/></div>
       <div style={{padding:'6px 14px',borderTop:'1px solid rgba(0,229,255,.07)',display:'flex',justifyContent:'space-between'}}>
-        <span style={{fontFamily:UI,fontSize:7,letterSpacing:'.15em',color:'rgba(0,229,255,.25)'}}>FREE - NO ACTIONS USED</span>
+        <span style={{fontFamily:UI,fontSize:7,letterSpacing:'.15em',color:'rgba(0,229,255,.25)'}}>FREE — NO ACTIONS USED</span>
         <span className="cursor-pointer" onClick={()=>{setPlanOpen(false)}} style={{fontFamily:UI,fontSize:7,letterSpacing:'.15em',color:'rgba(0,229,255,.4)'}}>CLOSE</span>
       </div>
     </div>}
@@ -863,7 +862,7 @@ export default function DashboardPage() {
           {savedApps.map(app=><div key={app.id} className="cursor-pointer" onClick={()=>{loadApp(app);setProjectsOpen(false)}} style={{border:'1px solid rgba(0,229,255,.1)',background:'rgba(8,11,22,.7)',overflow:'hidden',transition:'all .15s'}}
             onMouseEnter={e=>(e.currentTarget.style.borderColor='rgba(0,229,255,.3)')} onMouseLeave={e=>(e.currentTarget.style.borderColor='rgba(0,229,255,.1)')}>
             <div style={{height:160,background:'#fff',overflow:'hidden',position:'relative'}}>
-              {app.code&&<iframe srcDoc={renderSrcDoc(app.code||"")}
+              {app.code&&<iframe srcDoc={renderSrcDoc(app.code||"")} style={{width:'200%',height:'200%',border:'none',transform:'scale(0.5)',transformOrigin:'top left',pointerEvents:'none'}} sandbox="allow-scripts"/>}
             </div>
             <div style={{padding:'10px 12px',borderTop:'1px solid rgba(0,229,255,.07)'}}>
               <div style={{fontSize:12,color:'rgba(240,240,255,.8)',fontWeight:500,marginBottom:2}}>{app.name}</div>
