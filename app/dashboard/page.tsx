@@ -555,7 +555,7 @@ export default function DashboardPage() {
       const data=await res.json()
       clearInterval(ni)
       if(data.success){
-        setGeneratedCode(()=>{const raw=data.code||'';const isHTML=raw.trimStart().match(/^<!DOCTYPE|^<html/i);if(isHTML)return raw.trim();return raw.replace('export default function','function').replace('export default ','').replace('const App = () =>','function App()').replace('const App = ()=>','function App()').replace('const App = () =>{','function App(){')})
+        setGeneratedCode(data.code||'')
         setSuggestions(data.suggestions||['What else should this app do?','What would your users want next?','What feels incomplete?'])
         if(data.appId)setAppId(data.appId);setBuildScore(data.score?Number(data.score):Math.floor(40+Math.random()*20));if(data.tokenUsage)setTokenUsage(data.tokenUsage)
         setAppState('revealing');setVer('v1.0');setShowNarr(false);setPubVis(true);setTimeout(()=>setAppState('complete'),2000)
