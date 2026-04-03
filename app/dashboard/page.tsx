@@ -395,7 +395,7 @@ function renderSrcDoc(code) {
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>' +
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>' +
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>' +
-    '<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"><\/script>' +
+    '<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"><\/script>' +
     '<style>body{margin:0;font-family:system-ui,sans-serif}</style>' +
     '</head><body><div id="root"></div>' +
     '<script type="text/babel">' + code + '\nReactDOM.createRoot(document.getElementById(\'root\')).render(React.createElement(App||function(){return React.createElement(\'div\',null,\'Loading...\')}))' +
