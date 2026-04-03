@@ -863,7 +863,7 @@ export default function DashboardPage() {
           {savedApps.map(app=><div key={app.id} className="cursor-pointer" onClick={()=>{loadApp(app);setProjectsOpen(false)}} style={{border:'1px solid rgba(0,229,255,.1)',background:'rgba(8,11,22,.7)',overflow:'hidden',transition:'all .15s'}}
             onMouseEnter={e=>(e.currentTarget.style.borderColor='rgba(0,229,255,.3)')} onMouseLeave={e=>(e.currentTarget.style.borderColor='rgba(0,229,255,.1)')}>
             <div style={{height:160,background:'#fff',overflow:'hidden',position:'relative'}}>
-              {app.code&&<iframe srcDoc={'<!DOCTYPE html><html><head><script src="https://cdn.tailwindcss.com"><\/script><script src="https://unpkg.com/react@18/umd/react.production.min.js"><\/script><script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"><\/script><script src="https://unpkg.com/@babel/standalone/babel.min.js"><\/script><style>body{margin:0;font-family:system-ui,sans-serif}</style></head><body><div id="root"></div><script type="text/babel">'+app.code.replace('export default function','function').replace('export default ','')+'\nReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App||function(){return React.createElement("div","Loading...")}))<\/script></body></html>'} style={{width:'200%',height:'200%',border:'none',transform:'scale(0.5)',transformOrigin:'top left',pointerEvents:'none'}} sandbox="allow-scripts"/>}
+              {app.code&&<iframe srcDoc={renderSrcDoc(app.code||"")}
             </div>
             <div style={{padding:'10px 12px',borderTop:'1px solid rgba(0,229,255,.07)'}}>
               <div style={{fontSize:12,color:'rgba(240,240,255,.8)',fontWeight:500,marginBottom:2}}>{app.name}</div>
