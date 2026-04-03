@@ -71,7 +71,7 @@ Output pure HTML starting with <!DOCTYPE html>. Full creative freedom. No React.
 - CSS custom properties at :root for entire design system
 - CSS keyframe animations, transitions, transforms, perspective, backdrop-filter
 - Inline SVG for icons and decorative elements
-- GSAP: gsap.registerPlugin(ScrollTrigger) — scroll-driven animations, staggered entrances, timeline choreography
+- GSAP: gsap.registerPlugin(ScrollTrigger) — CRITICAL RULE: always set ALL elements visible in CSS first (opacity:1, transform:none). Use GSAP ScrollTrigger to ADD animation on top — never use opacity:0 as starting state. If ScrollTrigger fails to fire inside iframe, content must still be fully visible. Progressive enhancement only.
 - ScrollTrigger: scroll-driven reveals, parallax, pinned sections
 - Three.js: available as THREE global — particle fields, WebGL backgrounds, 3D geometry
 - Lenis: const lenis = new Lenis() — buttery smooth scroll
@@ -253,9 +253,9 @@ MANDATORY TOKEN USAGE: You have 16000 output tokens. Current builds are using on
       }
     }
     
-    // If HTML output, find <!DOCTYPE or <html and strip everything before it
+    // Strip everything before <!DOCTYPE or <html
     const htmlStart = builtCode.search(/<!DOCTYPE|<html/i)
-    if (htmlStart > 0) {
+    if (htmlStart >= 0) {
       builtCode = builtCode.slice(htmlStart).trim()
     } else {
       // If React output, strip prose before first function/const
