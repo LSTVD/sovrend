@@ -385,7 +385,7 @@ function CipherIntro(){
 function renderSrcDoc(code) {
   const stripped = code.trim().replace(/^[\s\S]*?(?=<!DOCTYPE|<html)/i, ''); const isHTML = stripped.length > 0 && (stripped.startsWith('<!DOCTYPE') || stripped.startsWith('<html'));
   if (isHTML) {
-    return code;
+    return stripped;
   }
   return '<!DOCTYPE html><html><head>' +
     '<script src="https://cdn.tailwindcss.com"><\/script>' +
