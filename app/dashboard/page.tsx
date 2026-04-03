@@ -771,7 +771,7 @@ export default function DashboardPage() {
             <div className="flex-1 flex overflow-hidden">
               <div className="flex-1 flex flex-col" style={{background:'rgba(10,14,24,.5)'}}>
                 {appState==='building'?<SignalDecode/>:appState==='revealing'?<div className="flex-1 relative" style={{background:'#000308',overflow:'hidden'}}>
-                      {generatedCode&&<iframe key={appId||generatedCode.slice(0,50)} srcDoc={renderSrcDoc(generatedCode)} style={{width:'100%',height:'100%',border:'none',background:'#fff'}} sandbox="allow-scripts allow-same-origin"/>}
+                      {generatedCode&&<iframe key={appId||generatedCode.slice(0,50)} srcDoc={renderSrcDoc(generatedCode)} style={{width:'100%',height:'100%',border:'none',background:'#fff'}} sandbox="allow-scripts allow-same-origin" onClick={e=>e.stopPropagation()} />}
                       <div style={{position:'absolute',inset:0,pointerEvents:'none',animation:'revealFlash 2s ease-out forwards',zIndex:10}}/>
                       <div style={{position:'absolute',top:'50%',left:'50%',width:80,height:80,marginLeft:-40,marginTop:-40,borderRadius:'50%',border:'2px solid rgba(0,229,255,.4)',animation:'revealPulse 1.5s ease-out forwards',zIndex:11}}/>
                       <div style={{position:'absolute',top:'50%',left:'50%',width:40,height:40,marginLeft:-20,marginTop:-20,borderRadius:'50%',border:'1px solid rgba(240,240,255,.3)',animation:'revealPulse 1.5s ease-out 0.3s forwards',zIndex:11}}/>
@@ -780,7 +780,7 @@ export default function DashboardPage() {
                   <div className="flex items-center px-3 gap-1 flex-shrink-0" style={{height:28,background:'rgba(0,229,255,.04)',borderBottom:'1px solid rgba(0,229,255,.035)'}}>{[0,1,2].map(i=><div key={i} style={{width:6,height:6,borderRadius:'50%',border:'1px solid rgba(45,50,68,.14)'}}/>)}<span style={{fontSize:9,color:'rgba(195,200,215,.55)',marginLeft:5}}>Preview</span></div>
                   <div className="flex-1 overflow-hidden flex justify-center" style={{background:'rgba(3,5,12,.9)'}}>
                   <div style={{width:activeDevice==='MOBILE'?375:activeDevice==='TABLET'?768:'100%',height:'100%',background:'#fff',transition:'width .3s ease'}}>
-                    {generatedCode?<iframe key={appId||generatedCode.slice(0,50)} srcDoc={renderSrcDoc(generatedCode)} style={{width:'100%',height:'100%',border:'none',background:'#fff'}} sandbox="allow-scripts allow-same-origin"/>
+                    {generatedCode?<iframe key={appId||generatedCode.slice(0,50)} srcDoc={renderSrcDoc(generatedCode)} style={{width:'100%',height:'100%',border:'none',background:'#fff'}} sandbox="allow-scripts allow-same-origin" onClick={e=>e.stopPropagation()} />
                     :<div className="flex items-center justify-center h-full" style={{background:'rgba(3,5,12,.9)'}}><span style={{fontFamily:UI,fontSize:9,letterSpacing:'.2em',color:'rgba(0,229,255,.3)'}}>YOUR APP WILL APPEAR HERE</span></div>}
                   </div></div>
                 </div>}
