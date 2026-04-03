@@ -253,10 +253,16 @@ MANDATORY TOKEN USAGE: You have 16000 output tokens. Current builds are using on
       }
     }
     
-    // If there is prose before the first function/const declaration, strip it
-    const functionStart = builtCode.search(/^(function|const|\/\/|import|export)/m)
-    if (functionStart > 100) {
-      builtCode = builtCode.slice(functionStart).trim()
+    // If HTML output, find <!DOCTYPE or <html and strip everything before it
+    const htmlStart = builtCode.search(/<!DOCTYPE|<html/i)
+    if (htmlStart > 0) {
+      builtCode = builtCode.slice(htmlStart).trim()
+    } else {
+      // If React output, strip prose before first function/const
+      const functionStart = builtCode.search(/^(function|const|\/\/|import|export)/m)
+      if (functionStart > 100) {
+        builtCode = builtCode.slice(functionStart).trim()
+      }
     }
     
     // Strip anything after the last closing brace — narration/prose after code
