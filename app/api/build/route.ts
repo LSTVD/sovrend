@@ -72,6 +72,7 @@ Output pure HTML starting with <!DOCTYPE html>. Full creative freedom. No React.
 - CSS keyframe animations, transitions, transforms, perspective, backdrop-filter
 - Inline SVG for icons and decorative elements
 - GSAP: gsap.registerPlugin(ScrollTrigger) — CRITICAL RULE: always set ALL elements visible in CSS first (opacity:1, transform:none). Use GSAP ScrollTrigger to ADD animation on top — never use opacity:0 as starting state. If ScrollTrigger fails to fire inside iframe, content must still be fully visible. Progressive enhancement only.
+- BLANK SCREEN PREVENTION — MANDATORY: Every HTML element must have opacity:1 and visibility:visible in its CSS by default. NEVER use opacity:0 or visibility:hidden as initial states. NEVER rely on JavaScript to make content visible. If all scripts fail the page must still show all content.
 - ScrollTrigger: scroll-driven reveals, parallax, pinned sections
 - Three.js: available as THREE global — particle fields, WebGL backgrounds, 3D geometry
 - Lenis: const lenis = new Lenis() — buttery smooth scroll
