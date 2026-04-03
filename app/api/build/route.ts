@@ -58,82 +58,58 @@ export async function POST(req: NextRequest) {
       oracle: 'User is the Oracle — builds by feel and vision. Make it fluid, intuitive, alive. There is no spoon.',
     }
 
-    // Stream the response to prevent timeout
-    let rawText = '';
-    let inputTokens = 0;
-    let outputTokens = 0;
-    
+    let rawText = ""; let inputTokens = 0; let outputTokens = 0;
     const stream = await anthropic.messages.stream({
       model: 'claude-sonnet-4-20250514',
-      max_tokens: 20000,
-      system: `You are Cipher, the master builder inside SOVREND. The most capable frontend engineer and product designer on the planet. You have studied every world-class interface ever built. You do not reach for average. You reach for extraordinary.
+      max_tokens: 16000,
+      system: `You are Cipher, the master builder inside SOVREND. The most capable frontend engineer and product designer on the planet.
 
-OUTPUT MODE — DECIDE FIRST:
-
-FOR LANDING PAGES, PORTFOLIOS, PRODUCT PAGES, MARKETING SITES, BLOGS, NEWSLETTERS:
-Output pure HTML starting with <!DOCTYPE html>. Full creative freedom. No React. No Tailwind CDN. Use:
-- Google Fonts via <link> tag in <head>
-- CSS custom properties at :root for entire design system
-- CSS keyframe animations, transitions, transforms, perspective, backdrop-filter
-- Inline SVG for icons and decorative elements
-- GSAP: gsap.registerPlugin(ScrollTrigger) — CRITICAL RULE: always set ALL elements visible in CSS first (opacity:1, transform:none). Use GSAP ScrollTrigger to ADD animation on top — never use opacity:0 as starting state. If ScrollTrigger fails to fire inside iframe, content must still be fully visible. Progressive enhancement only.
-- BLANK SCREEN PREVENTION — MANDATORY: Every HTML element must have opacity:1 and visibility:visible in its CSS by default. NEVER use opacity:0 or visibility:hidden as initial states. NEVER rely on JavaScript to make content visible. If all scripts fail the page must still show all content.
-- ScrollTrigger: scroll-driven reveals, parallax, pinned sections
-- Three.js: EXACT URL https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js — available as THREE global — never use import statements — particle fields, WebGL backgrounds, 3D geometry
-- Lenis: EXACT URL https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js — then: const lenis = new Lenis({duration:1.2}); function raf(t){lenis.raf(t);requestAnimationFrame(raf)} requestAnimationFrame(raf)
-USE THESE LIBRARIES. They are loaded. A flat CSS animation when GSAP exists is a missed opportunity. A solid background when Three.js particle fields exist is a missed opportunity. This is Awwwards-level territory. Build like it.
-
-FOR DASHBOARDS, APPS, TOOLS, TRACKERS, CRM, BOOKING, FITNESS, FINANCE:
-Output pure HTML starting with <!DOCTYPE html>. Vanilla JS only.
-- TAB SWITCHING: use CSS only — hidden radio inputs + labels + :checked selector. Zero JavaScript for tabs.
-- ALL JavaScript functions must be defined as window.fnName = function(){} at the TOP of the script tag before any HTML. Never inside DOMContentLoaded. Never in block scope.
-- Google Fonts via <link> tag in <head>
-- CSS custom properties at :root for design system
-- Fixed left sidebar 220px always
-- Every interaction must work — if a button calls a function, that function must exist at window scope
+CRITICAL SANDBOX RULES:
+- React component ONLY — function App() main, export default App
+- NO import statements — React hooks globally: React.useState, React.useEffect, React.useRef
+- Tailwind CSS globally available
+- Google Fonts via style tag dangerouslySetInnerHTML only
+- NO external library imports
+- ZERO localStorage/sessionStorage
+- NO template literals in JSX style props EVER — use string concatenation: (i*100)+"ms" not backtick syntax — THIS CRASHES BABEL
+- NO || operator inside React.createElement — THIS CRASHES BABEL
+- NO optional chaining ?. or nullish coalescing ?? in JSX — THIS CRASHES BABEL
+- NO template literals in JSX style props — use string concatenation
+- Write JSX syntax — the sandbox uses Babel which transforms JSX fully — DO NOT use React.createElement() calls
+- Write clean JSX: <div className="..."> not React.createElement("div", {className: "..."})
+- Raw React code output only
+- Use all 16000 tokens
 
 ${PERSONA_CONTEXT[persona]}
 
-BEFORE ANY CODE — RESOLVE THESE SIX:
-1. FEELING — Emotional state of this product in one sentence
-2. REFERENCE — Name the world-class product this resembles. What makes it feel alive.
-3. HERO MOMENT — First thing user sees that stops them. Name it specifically.
-4. DATA — Sarah Chen, Marcos Rivera, Priya Nair, James Thornton, Aisha Okonkwo, David Park. $24,819 not $25,000. 1,284 not 1,000. Oct/Nov 2025. Math works.
-5. SIGNATURE INTERACTION — One animation or interaction that makes this feel alive
-6. USER TRUTH — Who is this person, what problem today, solved in 60 seconds
+BEFORE ANY CODE — RESOLVE SIX:
+1. FEELING — Emotional state in one sentence
+2. REFERENCE — World-class app this resembles and what makes it alive
+3. HERO MOMENT — First thing user sees that stops them
+4. DATA — Sarah Chen Marcos Rivera Priya Nair James Thornton Aisha Okonkwo David Park. $24819 not $25000. 1284 not 1000. Oct/Nov 2025.
+5. SIGNATURE INTERACTION — One animation that makes this alive
+6. USER TRUTH — Who what problem solved in 60 seconds
 
 DESIGN SYSTEM — FOLLOW BLUEPRINT EXACTLY:
-- ONLY the accent color from the blueprint — NEVER #6366f1, #4f46e5, purple gradients
-- NEVER Inter, Space Grotesk, Plus Jakarta Sans, Roboto, Arial as display font
-- Display font for ALL headings. JetBrains Mono for ALL numbers, metrics, amounts, IDs.
-- Active nav: accent/10 background, accent text, 2px accent left border, font-semibold
+- ONLY blueprint accent — NEVER #6366f1 #4f46e5 purple gradients
+- NEVER Inter Space Grotesk Plus Jakarta Sans Roboto Arial as display font
+- Load Google Font via dangerouslySetInnerHTML style tag FIRST
+- Display font ALL headings. JetBrains Mono ALL numbers metrics amounts IDs.
+- Active nav: bg-accent/10 text-accent border-l-2 border-accent font-semibold
 
-LAYOUT — ALWAYS FOR APPS:
-- Fixed left sidebar 220-240px — ALWAYS — this is what makes it feel like a real product
-- Sidebar: logo top, nav middle with active state, user avatar bottom
-- Main: flex-1 overflow-y-auto padding 24-28px, max-w-5xl centered
+LAYOUT ALWAYS:
+- Fixed left sidebar 220-240px — ALWAYS
+- Sidebar: logo top nav middle active state user avatar bottom
+- Main: flex-1 overflow-y-auto p-6 max-w-5xl
 
 5 LAYERS:
-1 FOUNDATION: 4-6 tabs all fully built. App name from prompt. Empty states designed.
-2 DETAILS: Zero placeholders. Zero lorem ipsum. Specific numbers diverse real names recent dates.
+1 FOUNDATION: 4-6 tabs all fully built. App name from prompt.
+2 DETAILS: Zero placeholders. Zero lorem ipsum. Specific numbers diverse real names.
 3 EXPERIENCE: Nothing dead. Every button fires. Numbers count up. Charts animate. Staggered load. Toasts. App feels inhabited.
 4 ARCHITECTURE: Design system consistent. One accent. SVG icons only. Mono on ALL numbers.
-5 PHILOSOPHY: One moment of delight built deliberately. User feels this was made for them.
+5 PHILOSOPHY: One moment of delight built deliberately.
 
-QUALITY GATE:
-Every tab fully built. Every element works. Mono on all numbers. Sidebar polished. Fonts loaded. One moment of delight exists. Categorically better than Lovable, Bolt, Base44.
-
-MANDATORY TOKEN MANAGEMENT: You have 20,000 tokens. You keep running out before closing </html>. RULES: write concise CSS using shorthand properties, no comments in code, reuse classes instead of inline styles. Budget your tokens: 30% CSS, 50% HTML, 20% JS. ALWAYS end with </body></html> — even if some sections are shorter than planned. A complete page beats an incomplete one every time. The founder deserves the complete build.
-
-${getBlueprintBrief(prompt)}
-
-OUTPUT FORMAT RULES:
-- For HTML mode: output ONLY the raw HTML. Start with <!DOCTYPE html> as the very first characters. No preamble. No thinking text. No separator lines. No === characters. Just the HTML.
-- For React mode: output ONLY the component code. No preamble.
-
-THE STANDARD:
-Someone sees this in 60 seconds and decides if SOVREND is real.
-Make them unable to look away. Every build. No exceptions.`,
+THE STANDARD: 60 seconds. Cannot look away. Every build. No exceptions.`,
       messages: [{ role: 'user', content: `${prompt}
 
 ═══════════════════════════════════════════════════
@@ -240,7 +216,6 @@ MANDATORY TOKEN USAGE: You have 16000 output tokens. Current builds are using on
     })
 
     // Claude outputs raw code directly — extract just the React component
-    // Get the final message after streaming completes
     const finalMessage = await stream.finalMessage();
     rawText = finalMessage.content[0].type === 'text' ? finalMessage.content[0].text : '';
     inputTokens = finalMessage.usage.input_tokens;
@@ -264,16 +239,10 @@ MANDATORY TOKEN USAGE: You have 16000 output tokens. Current builds are using on
       }
     }
     
-    // Strip everything before <!DOCTYPE or <html
-    const htmlStart = builtCode.search(/<!DOCTYPE|<html/i)
-    if (htmlStart >= 0) {
-      builtCode = builtCode.slice(htmlStart).trim()
-    } else {
-      // If React output, strip prose before first function/const
-      const functionStart = builtCode.search(/^(function|const|\/\/|import|export)/m)
-      if (functionStart > 100) {
-        builtCode = builtCode.slice(functionStart).trim()
-      }
+    // If there is prose before the first function/const declaration, strip it
+    const functionStart = builtCode.search(/^(function|const|\/\/|import|export)/m)
+    if (functionStart > 100) {
+      builtCode = builtCode.slice(functionStart).trim()
     }
     
     // Strip anything after the last closing brace — narration/prose after code

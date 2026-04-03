@@ -444,9 +444,7 @@ function SignalDecode(){
 function renderSrcDoc(code) {
   const trimmed = code.trim();
   const htmlStart = trimmed.search(/<!DOCTYPE|<html/i);
-  if (htmlStart >= 0) {
-    return trimmed.slice(htmlStart);
-  }
+  if (htmlStart >= 0) return trimmed.slice(htmlStart);
   return '<!DOCTYPE html><html><head>' +
     '<script src="https://cdn.tailwindcss.com"><\/script>' +
     '<script src="https://unpkg.com/react@18/umd/react.production.min.js"><\/script>' +
