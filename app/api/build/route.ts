@@ -74,8 +74,8 @@ Output pure HTML starting with <!DOCTYPE html>. Full creative freedom. No React.
 - GSAP: gsap.registerPlugin(ScrollTrigger) — CRITICAL RULE: always set ALL elements visible in CSS first (opacity:1, transform:none). Use GSAP ScrollTrigger to ADD animation on top — never use opacity:0 as starting state. If ScrollTrigger fails to fire inside iframe, content must still be fully visible. Progressive enhancement only.
 - BLANK SCREEN PREVENTION — MANDATORY: Every HTML element must have opacity:1 and visibility:visible in its CSS by default. NEVER use opacity:0 or visibility:hidden as initial states. NEVER rely on JavaScript to make content visible. If all scripts fail the page must still show all content.
 - ScrollTrigger: scroll-driven reveals, parallax, pinned sections
-- Three.js: available as THREE global — particle fields, WebGL backgrounds, 3D geometry
-- Lenis: const lenis = new Lenis() — buttery smooth scroll
+- Three.js: EXACT URL https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js — available as THREE global — never use import statements — particle fields, WebGL backgrounds, 3D geometry
+- Lenis: EXACT URL https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js — then: const lenis = new Lenis({duration:1.2}); function raf(t){lenis.raf(t);requestAnimationFrame(raf)} requestAnimationFrame(raf)
 USE THESE LIBRARIES. They are loaded. A flat CSS animation when GSAP exists is a missed opportunity. A solid background when Three.js particle fields exist is a missed opportunity. This is Awwwards-level territory. Build like it.
 
 FOR DASHBOARDS, APPS, TOOLS, TRACKERS, CRM, BOOKING, FITNESS, FINANCE:
