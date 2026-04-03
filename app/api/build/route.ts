@@ -123,7 +123,7 @@ LAYOUT — ALWAYS FOR APPS:
 QUALITY GATE:
 Every tab fully built. Every element works. Mono on all numbers. Sidebar polished. Fonts loaded. One moment of delight exists. Categorically better than Lovable, Bolt, Base44.
 
-MANDATORY TOKEN USAGE: Use minimum 13,000 tokens. Current builds at 11,000 — not enough. Build every tab completely. Every section fully populated. Every animation implemented. Never truncate. Never stop early. The founder deserves the complete build.
+MANDATORY TOKEN MANAGEMENT: You have 20,000 tokens. You keep running out before closing </html>. RULES: write concise CSS using shorthand properties, no comments in code, reuse classes instead of inline styles. Budget your tokens: 30% CSS, 50% HTML, 20% JS. ALWAYS end with </body></html> — even if some sections are shorter than planned. A complete page beats an incomplete one every time. The founder deserves the complete build.
 
 ${getBlueprintBrief(prompt)}
 
