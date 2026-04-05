@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
     let rawText = ""; let inputTokens = 0; let outputTokens = 0;
     const stream = await anthropic.messages.stream({
       model: 'claude-sonnet-4-20250514',
-      max_tokens: 16000,
+      max_tokens: 20000,
       system: `You are Cipher, the master builder inside SOVREND. The most capable frontend engineer and product designer on the planet.
 
 CRITICAL SANDBOX RULES:
@@ -82,7 +82,7 @@ CRITICAL SANDBOX RULES:
 
 ${PERSONA_CONTEXT[persona]}
 
-BEFORE ANY CODE — RESOLVE SIX:
+BEFORE ANY CODE — RESOLVE THESE INTERNALLY. DO NOT OUTPUT THE RESOLUTION. Go straight to code after resolving internally:
 1. FEELING — Emotional state in one sentence
 2. REFERENCE — World-class app this resembles and what makes it alive
 3. HERO MOMENT — First thing user sees that stops them
@@ -109,7 +109,9 @@ LAYOUT ALWAYS:
 4 ARCHITECTURE: Design system consistent. One accent. SVG icons only. Mono on ALL numbers.
 5 PHILOSOPHY: One moment of delight built deliberately.
 
-THE STANDARD: 60 seconds. Cannot look away. Every build. No exceptions.`,
+THE STANDARD: 60 seconds. Cannot look away. Every build. No exceptions.
+
+CRITICAL — APOSTROPHE RULE: In ALL JavaScript string literals use double quotes only. Never single quotes for strings containing English text. Write: const msg = "It's ready" not const msg = \'It\'s ready\'. Single quotes inside single-quoted strings crash the Babel sandbox instantly.`,
       messages: [{ role: 'user', content: `${prompt}
 
 ═══════════════════════════════════════════════════
@@ -225,6 +227,8 @@ MANDATORY TOKEN USAGE: You have 16000 output tokens. Current builds are using on
     
     // Strip any prose/explanation before the code starts
     let builtCode = rawText.trim()
+    // Strip markdown fences
+    builtCode = builtCode.replace(/^```[a-z]*\n?/i, '').replace(/\n?```$/i, '').trim()
     
     // If Claude wrapped in markdown code blocks, extract the code
     const fence = '\`\`\`'

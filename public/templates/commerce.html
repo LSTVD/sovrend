@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LOFTY AZUL - Single Origin Coffee</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,200;1,9..144,300&family=DM+Sans:wght@200;300;400&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --cream:#FAF8F4;--warm:#F2EDE3;--surface:#EEEAE1;
+  --charcoal:#1A1814;--smoke:#6B6560;--mist:#9A9590;
+  --border:rgba(26,24,20,0.1);--border2:rgba(26,24,20,0.2);
+  --azul:#1B4B8A;--azul2:#2E6BC4;--azulg:rgba(27,75,138,0.08);
+  --amber:#C4622D;--green:#3D5A3E;
+}
+html{scroll-behavior:smooth}
+body{background:var(--cream);color:var(--charcoal);font-family:"DM Sans",sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button{cursor:pointer;font-family:inherit}
+a{text-decoration:none;color:inherit}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:300;height:68px;display:flex;align-items:center;padding:0 56px;transition:all 0.5s}
+.nav.solid{background:rgba(250,248,244,0.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:"Fraunces",serif;font-size:18px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;flex-shrink:0;transition:letter-spacing 0.4s}
+.nav-logo:hover{letter-spacing:0.14em}
+.nav-logo .az{color:var(--azul)}
+.nav-links{flex:1;display:flex;justify-content:center;gap:44px}
+.nav-links a{font-size:12px;font-weight:300;letter-spacing:0.08em;color:var(--smoke);transition:color 0.25s}
+.nav-links a:hover{color:var(--charcoal)}
+.nav-right{display:flex;align-items:center;gap:16px;flex-shrink:0}
+.cart-btn{background:none;border:none;color:var(--smoke);padding:8px;position:relative;transition:color 0.25s}
+.cart-btn:hover{color:var(--charcoal)}
+.badge{position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:50%;background:var(--azul);color:#fff;font-size:9px;font-weight:500;display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(0);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1)}
+.badge.show{opacity:1;transform:scale(1)}
+
+/* HERO */
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;overflow:hidden}
+.hero-left{display:flex;flex-direction:column;justify-content:flex-end;padding:140px 64px 80px;position:relative;z-index:2}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:0.26em;text-transform:uppercase;color:var(--azul);display:flex;align-items:center;gap:14px;margin-bottom:32px;opacity:0;animation:rise 1s ease 0.3s forwards}
+.eyebrow-line{width:44px;height:1px;background:var(--azul)}
+.h1{font-family:"Fraunces",serif;font-size:clamp(48px,7vw,100px);font-weight:900;line-height:0.88;letter-spacing:-0.05em;margin-bottom:32px;opacity:0;animation:rise 1s ease 0.5s forwards}
+.h1 em{font-style:italic;font-weight:200;color:var(--azul)}
+.hero-sub{font-size:17px;font-weight:200;color:var(--smoke);line-height:1.78;max-width:440px;margin-bottom:48px;opacity:0;animation:rise 1s ease 0.7s forwards}
+.hero-sub strong{color:var(--charcoal);font-weight:400}
+.hero-btns{display:flex;align-items:center;gap:20px;flex-wrap:wrap;opacity:0;animation:rise 1s ease 0.9s forwards}
+.btn-dark{font-size:13px;font-weight:400;letter-spacing:0.12em;text-transform:uppercase;padding:16px 42px;background:var(--charcoal);color:var(--cream);border:1px solid var(--charcoal);transition:all 0.4s}
+.btn-dark:hover{background:var(--azul);border-color:var(--azul);transform:translateY(-2px);box-shadow:0 8px 32px rgba(27,75,138,0.25)}
+.btn-text{font-size:13px;font-weight:300;letter-spacing:0.08em;color:var(--smoke);background:none;border:none;display:flex;align-items:center;gap:8px;transition:color 0.25s}
+.btn-text:hover{color:var(--charcoal)}
+.btn-text .arr{transition:transform 0.3s}
+.btn-text:hover .arr{transform:translateX(4px)}
+.hero-right{position:relative;overflow:hidden}
+.hero-right img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero-right::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(to right,var(--cream) 0%,transparent 20%)}
+.hero-float{position:absolute;z-index:3;bottom:80px;right:56px;background:rgba(250,248,244,0.94);backdrop-filter:blur(12px);border:1px solid var(--border);padding:20px 24px;opacity:0;animation:rise 1.2s ease 1.1s forwards}
+.float-lbl{font-family:"JetBrains Mono",monospace;font-size:8px;letter-spacing:0.20em;text-transform:uppercase;color:var(--mist);margin-bottom:8px}
+.float-name{font-family:"Fraunces",serif;font-size:17px;font-weight:700;letter-spacing:-0.03em;margin-bottom:4px}
+.float-note{font-size:12px;font-weight:200;color:var(--smoke);font-style:italic}
+.float-price{font-family:"JetBrains Mono",monospace;font-size:15px;margin-top:10px}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+
+/* MARQUEE */
+.marquee{background:var(--azul);padding:14px 0;overflow:hidden}
+.m-track{display:flex;gap:48px;animation:scroll 30s linear infinite;white-space:nowrap}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.m-item{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.45);display:flex;align-items:center;gap:20px;flex-shrink:0}
+.m-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.5);flex-shrink:0}
+
+/* ORIGINS */
+.origins{padding:110px 56px}
+.sec-eyebrow{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:0.24em;text-transform:uppercase;color:var(--azul);display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.sec-eyebrow::before{content:"";width:1px;height:20px;background:linear-gradient(var(--azul),transparent)}
+.sec-h2{font-family:"Fraunces",serif;font-size:clamp(36px,5.5vw,64px);font-weight:700;line-height:0.95;letter-spacing:-0.04em}
+.sec-h2 em{font-style:italic;font-weight:200;color:var(--azul)}
+.orig-top{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:60px;gap:40px}
+.view-all{font-size:12px;font-weight:300;letter-spacing:0.10em;color:var(--smoke);border-bottom:1px solid var(--border);padding-bottom:2px;transition:color 0.25s,border-color 0.25s;white-space:nowrap;flex-shrink:0}
+.view-all:hover{color:var(--charcoal);border-color:var(--charcoal)}
+.orig-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.o-card{position:relative;overflow:hidden;cursor:pointer;aspect-ratio:4/5}
+.o-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 0.7s cubic-bezier(0.16,1,0.3,1)}
+.o-card:hover img{transform:scale(1.05)}
+.o-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,transparent 55%);display:flex;flex-direction:column;justify-content:flex-end;padding:32px}
+.o-num{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:0.20em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:8px}
+.o-name{font-family:"Fraunces",serif;font-size:26px;font-weight:700;color:#fff;letter-spacing:-0.03em;line-height:1.1;margin-bottom:6px}
+.o-region{font-size:13px;font-weight:200;color:rgba(255,255,255,0.55);margin-bottom:16px}
+.o-cta{font-size:11px;font-weight:300;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.55);display:flex;align-items:center;gap:8px;transition:color 0.25s,gap 0.25s}
+.o-card:hover .o-cta{color:#fff;gap:12px}
+
+/* SHOP */
+.shop{padding:0 56px 130px}
+.filter-bar{display:flex;margin-bottom:48px;border-bottom:1px solid var(--border)}
+.fb{font-size:12px;font-weight:300;letter-spacing:0.08em;padding:14px 24px;background:none;border:none;color:var(--mist);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.25s}
+.fb.on{color:var(--charcoal);font-weight:400;border-bottom-color:var(--charcoal)}
+.fb:hover:not(.on){color:var(--smoke)}
+.shop-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px}
+.pc{cursor:pointer;position:relative;overflow:hidden;background:var(--warm);transition:transform 0.3s}
+.pc:hover{transform:translateY(-4px)}
+.pc-img{aspect-ratio:3/4;overflow:hidden;position:relative}
+.pc-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.65s cubic-bezier(0.16,1,0.3,1)}
+.pc:hover .pc-img img{transform:scale(1.06)}
+.pc-badge{position:absolute;top:14px;left:14px;z-index:2;font-family:"JetBrains Mono",monospace;font-size:8px;letter-spacing:0.16em;text-transform:uppercase;padding:5px 10px;background:var(--charcoal);color:var(--cream)}
+.pc-badge.new{background:var(--azul)}
+.pc-badge.best{background:var(--green);color:#fff}
+.pc-info{padding:18px 18px 22px}
+.pc-cat{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:var(--mist);margin-bottom:7px}
+.pc-name{font-family:"Fraunces",serif;font-size:19px;font-weight:700;letter-spacing:-0.025em;margin-bottom:4px;line-height:1.15}
+.pc-notes{font-size:13px;font-weight:200;color:var(--smoke);line-height:1.6;margin-bottom:14px}
+.pc-foot{display:flex;align-items:center;justify-content:space-between}
+.pc-price{font-family:"JetBrains Mono",monospace;font-size:14px}
+.pc-price .was{font-size:11px;color:var(--mist);text-decoration:line-through;margin-right:6px}
+.pc-add{width:36px;height:36px;background:var(--charcoal);color:var(--cream);border:none;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:200;transition:all 0.3s;flex-shrink:0}
+.pc-add:hover{background:var(--azul);transform:scale(1.1)}
+
+/* CRAFT */
+.craft{display:grid;grid-template-columns:1fr 1fr;min-height:72vh;background:var(--charcoal);overflow:hidden}
+.craft-img{position:relative;overflow:hidden}
+.craft-img img{width:100%;height:100%;object-fit:cover;opacity:0.7}
+.craft-img::after{content:"";position:absolute;inset:0;background:linear-gradient(to right,transparent 65%,var(--charcoal) 100%)}
+.craft-body{padding:100px 80px;display:flex;flex-direction:column;justify-content:center}
+.craft-ey{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:0.24em;text-transform:uppercase;color:rgba(46,107,196,0.7);margin-bottom:28px;display:flex;align-items:center;gap:14px}
+.craft-ey::before{content:"";width:1px;height:20px;background:linear-gradient(rgba(46,107,196,0.7),transparent)}
+.craft-h2{font-family:"Fraunces",serif;font-size:clamp(34px,5vw,58px);font-weight:700;line-height:0.95;letter-spacing:-0.04em;color:var(--cream);margin-bottom:26px}
+.craft-h2 em{font-style:italic;font-weight:200;color:rgba(46,107,196,0.9)}
+.craft-p{font-size:16px;font-weight:200;color:rgba(250,248,244,0.48);line-height:1.88;margin-bottom:40px;max-width:460px}
+.craft-p strong{color:rgba(250,248,244,0.8);font-weight:300}
+.craft-stats{display:flex;gap:48px;padding-top:40px;border-top:1px solid rgba(255,255,255,0.06)}
+.stat-n{font-family:"Fraunces",serif;font-size:44px;font-weight:900;letter-spacing:-0.04em;color:var(--azul2);line-height:1;margin-bottom:6px}
+.stat-l{font-size:12px;font-weight:200;color:rgba(250,248,244,0.32);letter-spacing:0.06em}
+
+/* SUBSCRIPTION */
+.sub-sec{padding:120px 56px;background:var(--surface)}
+.sub-in{max-width:920px;margin:0 auto;text-align:center}
+.sub-ey{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:0.24em;text-transform:uppercase;color:var(--azul);margin-bottom:24px;display:flex;align-items:center;justify-content:center;gap:14px}
+.sub-ey::before,.sub-ey::after{content:"";flex:1;max-width:60px;height:1px;background:linear-gradient(var(--azul),transparent)}
+.sub-h2{font-family:"Fraunces",serif;font-size:clamp(38px,6vw,72px);font-weight:700;line-height:0.92;letter-spacing:-0.045em;margin-bottom:22px}
+.sub-h2 em{font-style:italic;font-weight:200;color:var(--azul)}
+.sub-p{font-size:17px;font-weight:200;color:var(--smoke);line-height:1.8;margin-bottom:56px;max-width:520px;margin-left:auto;margin-right:auto}
+.sub-plans{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-bottom:44px}
+.sp{background:var(--cream);padding:40px 32px;position:relative;cursor:pointer;border:2px solid transparent;transition:all 0.3s}
+.sp:hover,.sp.on{border-color:var(--azul);transform:translateY(-4px);box-shadow:0 16px 48px rgba(27,75,138,0.12)}
+.sp-freq{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:0.20em;text-transform:uppercase;color:var(--mist);margin-bottom:16px}
+.sp-price{font-family:"Fraunces",serif;font-size:48px;font-weight:900;letter-spacing:-0.04em;line-height:1;margin-bottom:4px}
+.sp-price span{font-size:18px;font-weight:200;color:var(--smoke);vertical-align:super;font-family:"DM Sans",sans-serif;letter-spacing:0}
+.sp-period{font-size:12px;font-weight:200;color:var(--mist);margin-bottom:18px}
+.sp-save{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;padding:4px 10px;background:var(--azulg);color:var(--azul);margin-bottom:16px}
+.sp-feats{font-size:13px;font-weight:200;color:var(--smoke);line-height:2;text-align:left;list-style:none}
+.sp-feats li{display:flex;gap:8px;align-items:flex-start}
+.sp-feats li::before{content:"--";color:var(--azul);flex-shrink:0}
+.sub-cta{font-size:14px;font-weight:400;letter-spacing:0.14em;text-transform:uppercase;padding:18px 60px;background:var(--charcoal);color:var(--cream);border:1px solid var(--charcoal);transition:all 0.4s}
+.sub-cta:hover{background:var(--azul);border-color:var(--azul);box-shadow:0 8px 32px rgba(27,75,138,0.25);transform:translateY(-2px)}
+.sub-trust{display:flex;align-items:center;justify-content:center;gap:24px;margin-top:28px;font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--mist);flex-wrap:wrap}
+.sub-trust .sep{opacity:0.4}
+
+/* OVERLAY + CART */
+.overlay{position:fixed;inset:0;z-index:400;background:rgba(26,24,20,0);pointer-events:none;transition:background 0.4s}
+.overlay.show{background:rgba(26,24,20,0.5);pointer-events:all}
+.cart{position:fixed;right:0;top:0;bottom:0;width:min(480px,100vw);z-index:500;background:var(--cream);transform:translateX(100%);transition:transform 0.45s cubic-bezier(0.16,1,0.3,1);display:flex;flex-direction:column;box-shadow:-16px 0 64px rgba(0,0,0,0.1)}
+.cart.open{transform:translateX(0)}
+.cart-head{padding:28px 32px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.cart-title{font-family:"Fraunces",serif;font-size:24px;font-weight:700;letter-spacing:-0.03em}
+.xbtn{background:none;border:1px solid var(--border);width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--smoke);transition:all 0.25s}
+.xbtn:hover{border-color:var(--charcoal);color:var(--charcoal)}
+.cart-body{flex:1;overflow-y:auto;padding:24px 32px}
+.cart-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;gap:16px}
+.ce-icon{font-family:"Fraunces",serif;font-size:48px;color:var(--border);font-style:italic}
+.ce-txt{font-size:15px;font-weight:200;color:var(--mist)}
+.ci{display:flex;gap:16px;padding:20px 0;border-bottom:1px solid var(--border)}
+.ci-img{width:80px;height:100px;flex-shrink:0;overflow:hidden}
+.ci-img img{width:100%;height:100%;object-fit:cover}
+.ci-info{flex:1;min-width:0}
+.ci-name{font-family:"Fraunces",serif;font-size:16px;font-weight:700;letter-spacing:-0.02em;margin-bottom:4px}
+.ci-var{font-size:12px;font-weight:200;color:var(--smoke);margin-bottom:12px}
+.ci-ctrl{display:flex;align-items:center;gap:10px}
+.qbtn{width:28px;height:28px;border:1px solid var(--border);background:none;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.qbtn:hover{border-color:var(--charcoal);background:var(--charcoal);color:var(--cream)}
+.qnum{font-family:"JetBrains Mono",monospace;font-size:13px;min-width:20px;text-align:center}
+.rmbtn{background:none;border:none;font-size:11px;font-weight:200;letter-spacing:0.08em;color:var(--mist);margin-left:auto;transition:color 0.25s}
+.rmbtn:hover{color:var(--charcoal)}
+.ci-price{font-family:"JetBrains Mono",monospace;font-size:14px;flex-shrink:0;align-self:flex-start;margin-top:2px}
+.cart-foot{padding:24px 32px;border-top:1px solid var(--border);flex-shrink:0}
+.cart-sub{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.cart-sub-lbl{font-size:13px;font-weight:200;color:var(--smoke)}
+.cart-sub-price{font-family:"JetBrains Mono",monospace;font-size:18px}
+.cart-ship{font-size:12px;font-weight:200;color:var(--mist);margin-bottom:20px;font-style:italic}
+.cart-ck{width:100%;padding:18px;background:var(--charcoal);color:var(--cream);border:none;font-size:13px;font-weight:400;letter-spacing:0.14em;text-transform:uppercase;transition:all 0.4s;margin-bottom:12px}
+.cart-ck:hover{background:var(--azul)}
+.cart-cont{width:100%;padding:12px;background:none;border:1px solid var(--border);font-size:12px;font-weight:200;letter-spacing:0.10em;text-transform:uppercase;color:var(--smoke);transition:all 0.25s}
+.cart-cont:hover{border-color:var(--charcoal);color:var(--charcoal)}
+
+/* PRODUCT MODAL */
+.modal{position:fixed;inset:0;z-index:600;display:flex;align-items:center;justify-content:center;padding:20px;pointer-events:none;opacity:0;transition:opacity 0.35s}
+.modal.open{pointer-events:all;opacity:1}
+.modal-bg{position:absolute;inset:0;background:rgba(26,24,20,0.6)}
+.modal-card{position:relative;z-index:1;background:var(--cream);width:100%;max-width:900px;max-height:90vh;overflow-y:auto;display:grid;grid-template-columns:1fr 1fr;transform:translateY(20px);transition:transform 0.35s cubic-bezier(0.16,1,0.3,1)}
+.modal.open .modal-card{transform:translateY(0)}
+.modal-img{position:sticky;top:0;height:100%;min-height:440px;max-height:90vh;overflow:hidden}
+.modal-img img{width:100%;height:100%;object-fit:cover;min-height:440px}
+.modal-body{padding:48px 40px}
+.xbtn2{position:absolute;top:16px;right:16px;z-index:10;background:rgba(250,248,244,0.92);border:1px solid var(--border);width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--smoke);transition:all 0.25s}
+.xbtn2:hover{background:var(--charcoal);color:var(--cream);border-color:var(--charcoal)}
+.m-cat{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:0.20em;text-transform:uppercase;color:var(--azul);margin-bottom:12px}
+.m-name{font-family:"Fraunces",serif;font-size:clamp(26px,3.5vw,38px);font-weight:900;letter-spacing:-0.04em;line-height:1;margin-bottom:8px}
+.m-tag{font-size:15px;font-weight:200;font-style:italic;color:var(--smoke);margin-bottom:24px}
+.m-price-row{display:flex;align-items:center;gap:12px;margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.m-price{font-family:"JetBrains Mono",monospace;font-size:24px}
+.m-was{font-family:"JetBrains Mono",monospace;font-size:14px;color:var(--mist);text-decoration:line-through}
+.m-save{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;padding:4px 8px;background:var(--azulg);color:var(--azul)}
+.m-desc{font-size:15px;font-weight:200;color:var(--smoke);line-height:1.82;margin-bottom:28px}
+.opt-lbl{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--charcoal);margin-bottom:12px}
+.opts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px}
+.opt{padding:9px 18px;border:1px solid var(--border);font-size:13px;font-weight:200;color:var(--smoke);background:none;transition:all 0.2s}
+.opt.on,.opt:hover{border-color:var(--charcoal);color:var(--charcoal);background:var(--warm)}
+.qty-row{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.qty-lbl{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase}
+.qty-ctrl{display:flex;align-items:center;margin-left:auto}
+.qb{width:40px;height:40px;border:1px solid var(--border);background:none;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.qb:hover{background:var(--charcoal);color:var(--cream);border-color:var(--charcoal)}
+.qv{width:48px;height:40px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:"JetBrains Mono",monospace;font-size:14px}
+.m-add{width:100%;padding:18px;background:var(--charcoal);color:var(--cream);border:none;font-size:13px;font-weight:400;letter-spacing:0.16em;text-transform:uppercase;transition:all 0.4s;margin-bottom:12px}
+.m-add:hover{background:var(--azul)}
+.m-sub-btn{width:100%;padding:14px;background:var(--azulg);color:var(--azul);border:1px solid rgba(27,75,138,0.2);font-size:12px;font-weight:300;letter-spacing:0.12em;text-transform:uppercase;transition:all 0.3s}
+.m-sub-btn:hover{background:var(--azul);color:#fff;border-color:var(--azul)}
+.m-dets{margin-top:28px;padding-top:28px;border-top:1px solid var(--border)}
+.m-det-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.m-det-k{font-weight:200;color:var(--smoke)}
+.m-det-v{font-weight:300;text-align:right}
+
+/* CHECKOUT */
+.ck{position:fixed;inset:0;z-index:700;display:flex;align-items:center;justify-content:center;padding:20px;pointer-events:none;opacity:0;transition:opacity 0.35s}
+.ck.open{pointer-events:all;opacity:1}
+.ck-bg{position:absolute;inset:0;background:rgba(26,24,20,0.7)}
+.ck-card{position:relative;z-index:1;background:var(--cream);width:100%;max-width:640px;max-height:90vh;overflow-y:auto;padding:48px;transform:translateY(30px);transition:transform 0.35s cubic-bezier(0.16,1,0.3,1)}
+.ck.open .ck-card{transform:translateY(0)}
+.ck-logo{font-family:"Fraunces",serif;font-size:18px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:32px}
+.ck-logo .az{color:var(--azul)}
+.ck-steps{display:flex;margin-bottom:40px;border-bottom:1px solid var(--border)}
+.ck-step{flex:1;text-align:center;padding:12px 0;font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:var(--mist);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.3s}
+.ck-step.active{color:var(--charcoal);border-bottom-color:var(--charcoal)}
+.ck-step.done{color:var(--azul);border-bottom-color:var(--azul)}
+.ck-sec{display:none}
+.ck-sec.active{display:block}
+.ck-sec-t{font-family:"Fraunces",serif;font-size:22px;font-weight:700;letter-spacing:-0.03em;margin-bottom:24px}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.fr.full{grid-template-columns:1fr}
+.fg{display:flex;flex-direction:column;gap:6px}
+.fl{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:0.16em;text-transform:uppercase}
+.fi{padding:13px 16px;border:1px solid var(--border);background:var(--warm);font-family:"DM Sans",sans-serif;font-size:14px;font-weight:300;color:var(--charcoal);transition:border-color 0.25s;outline:none}
+.fi:focus{border-color:var(--azul)}
+.fi::placeholder{color:var(--mist)}
+.so{padding:18px 22px;border:1px solid var(--border);cursor:pointer;transition:all 0.25s;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.so:hover,.so.on{border-color:var(--azul)}
+.so-name{font-size:14px;font-weight:400}
+.so-days{font-size:12px;font-weight:200;color:var(--smoke);margin-top:3px}
+.so-price{font-family:"JetBrains Mono",monospace;font-size:14px}
+.so-free{color:var(--green)}
+.pm-row{display:flex;gap:10px;margin-bottom:20px}
+.pm{flex:1;padding:13px 8px;text-align:center;border:1px solid var(--border);font-size:12px;font-weight:200;color:var(--smoke);cursor:pointer;transition:all 0.25s}
+.pm.on{border-color:var(--azul);color:var(--azul)}
+.osum{background:var(--warm);padding:24px;margin-bottom:20px}
+.osum-t{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:16px}
+.osum-row{display:flex;justify-content:space-between;padding:7px 0;font-size:13px;border-bottom:1px solid var(--border)}
+.osum-row.total{border:none;border-top:1px solid var(--border2);font-size:15px;font-weight:500;padding-top:14px;margin-top:6px}
+.osum-lbl{font-weight:200;color:var(--smoke)}
+.osum-val{font-family:"JetBrains Mono",monospace}
+.ck-nav{display:flex;gap:12px;margin-top:28px}
+.ck-back{padding:16px 28px;background:none;border:1px solid var(--border);font-size:12px;font-weight:200;letter-spacing:0.12em;text-transform:uppercase;color:var(--smoke);transition:all 0.25s}
+.ck-back:hover{border-color:var(--charcoal);color:var(--charcoal)}
+.ck-next{flex:1;padding:16px;background:var(--charcoal);color:var(--cream);border:none;font-size:13px;font-weight:400;letter-spacing:0.14em;text-transform:uppercase;transition:all 0.4s}
+.ck-next:hover{background:var(--azul)}
+.ok-wrap{text-align:center;padding:48px 0}
+.ok-icon{font-family:"Fraunces",serif;font-size:64px;color:var(--azul);margin-bottom:24px}
+.ok-title{font-family:"Fraunces",serif;font-size:32px;font-weight:700;letter-spacing:-0.04em;margin-bottom:14px}
+.ok-body{font-size:15px;font-weight:200;color:var(--smoke);line-height:1.75;max-width:380px;margin:0 auto 32px}
+
+/* FOOTER */
+.footer{background:var(--charcoal);padding:84px 56px 40px}
+.ft-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:60px;margin-bottom:64px}
+.ft-logo{font-family:"Fraunces",serif;font-size:22px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--cream);margin-bottom:16px}
+.ft-logo .az{color:var(--azul2)}
+.ft-tag{font-size:14px;font-weight:200;color:rgba(250,248,244,0.4);line-height:1.72;max-width:280px;margin-bottom:28px}
+.ft-email{display:flex}
+.ft-ei{flex:1;padding:12px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-right:none;color:var(--cream);font-size:13px;font-weight:200;outline:none;font-family:"DM Sans",sans-serif}
+.ft-ei::placeholder{color:rgba(250,248,244,0.25)}
+.ft-eb{padding:12px 20px;background:var(--azul);color:#fff;border:none;font-size:11px;font-weight:400;letter-spacing:0.14em;text-transform:uppercase;transition:background 0.3s;flex-shrink:0}
+.ft-eb:hover{background:var(--azul2)}
+.ft-col-t{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:0.20em;text-transform:uppercase;color:rgba(250,248,244,0.3);margin-bottom:20px}
+.ft-links{display:flex;flex-direction:column;gap:13px}
+.ft-links a{font-size:13px;font-weight:200;color:rgba(250,248,244,0.42);transition:color 0.25s}
+.ft-links a:hover{color:var(--cream)}
+.ft-bot{display:flex;justify-content:space-between;align-items:center;padding-top:32px;border-top:1px solid rgba(255,255,255,0.06);flex-wrap:wrap;gap:16px}
+.ft-copy{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(250,248,244,0.16)}
+.ft-blinks{display:flex;gap:24px}
+.ft-blinks a{font-size:11px;font-weight:200;color:rgba(250,248,244,0.2);transition:color 0.25s}
+.ft-blinks a:hover{color:var(--cream)}
+
+/* REVEAL */
+.rv{opacity:0;transform:translateY(32px);transition:opacity 1s cubic-bezier(0.16,1,0.3,1),transform 1s cubic-bezier(0.16,1,0.3,1)}
+.rv.in{opacity:1;transform:none}
+.rv:nth-child(2){transition-delay:0.1s}.rv:nth-child(3){transition-delay:0.2s}.rv:nth-child(4){transition-delay:0.3s}
+.d1{transition-delay:0.1s}.d2{transition-delay:0.2s}
+
+/* TOAST */
+.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);z-index:900;background:var(--charcoal);color:var(--cream);padding:14px 28px;font-size:13px;font-weight:300;letter-spacing:0.06em;opacity:0;transition:all 0.35s;white-space:nowrap;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:900px){
+  .nav{padding:0 24px}.nav-links{display:none}
+  .hero{grid-template-columns:1fr;min-height:auto}.hero-left{padding:120px 24px 60px}.hero-right{min-height:70vw}
+  .origins{padding:60px 24px}.orig-grid{grid-template-columns:1fr 1fr}
+  .shop{padding:0 24px 80px}.shop-grid{grid-template-columns:1fr 1fr}
+  .craft{grid-template-columns:1fr}.craft-img{min-height:280px}.craft-body{padding:60px 32px}
+  .sub-sec{padding:60px 24px}.sub-plans{grid-template-columns:1fr}
+  .footer{padding:60px 24px 32px}.ft-top{grid-template-columns:1fr 1fr;gap:40px}
+  .modal-card{grid-template-columns:1fr}.modal-img{min-height:280px;max-height:300px;position:relative}
+  .modal-body{padding:28px 24px}.ck-card{padding:28px 24px}.fr{grid-template-columns:1fr}
+}
+
+/* ── SKELETON LOADERS ─────────────────────────────────── */
+.img-wrap{position:relative;overflow:hidden;background:#1a1814}
+.img-wrap img{transition:opacity 0.4s ease}
+.img-wrap img.loading{opacity:0}
+.img-wrap img.loaded{opacity:1}
+.img-wrap::before{
+  content:"";position:absolute;inset:0;z-index:1;
+  background:linear-gradient(90deg,
+    transparent 0%,rgba(232,228,216,0.04) 50%,transparent 100%);
+  background-size:200% 100%;
+  animation:shimmer 1.4s ease-in-out infinite;
+  pointer-events:none;
+  transition:opacity 0.4s;
+}
+.img-wrap.img-ready::before{opacity:0}
+@keyframes shimmer{
+  0%{background-position:200% 0}
+  100%{background-position:-200% 0}
+}
+
+/* ── MOBILE NAV ───────────────────────────────────────── */
+.nav-hamburger{
+  display:none;background:none;border:1px solid var(--border);
+  width:36px;height:36px;align-items:center;justify-content:center;
+  cursor:none;transition:border-color 0.25s;flex-direction:column;gap:5px;
+  padding:0;flex-shrink:0;
+}
+.nav-hamburger:hover{border-color:rgba(232,228,216,0.2)}
+.ham-line{width:16px;height:1px;background:var(--smoke);transition:all 0.3s;display:block}
+.nav-mobile-drawer{
+  position:fixed;top:0;right:0;bottom:0;width:min(320px,85vw);
+  background:var(--charcoal);z-index:400;
+  transform:translateX(100%);
+  transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  display:flex;flex-direction:column;padding:80px 32px 40px;
+  border-left:1px solid var(--border);
+}
+.nav-mobile-drawer.open{transform:translateX(0)}
+.mob-nav-logo{
+  font-family:"Fraunces",serif;font-size:18px;font-weight:700;
+  letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--cream);margin-bottom:48px;
+}
+.mob-nav-logo .az{color:var(--azul2)}
+.mob-nav-links{display:flex;flex-direction:column;gap:0}
+.mob-nav-link{
+  font-size:22px;font-weight:200;color:rgba(250,248,244,0.45);
+  padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.06);
+  text-decoration:none;font-family:"Fraunces",serif;letter-spacing:-0.02em;
+  transition:color 0.25s;cursor:none;background:none;border-top:none;
+  border-left:none;border-right:none;text-align:left;
+}
+.mob-nav-link:hover{color:var(--cream)}
+.mob-nav-close{
+  position:absolute;top:20px;right:20px;
+  background:none;border:1px solid rgba(255,255,255,0.1);
+  width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+  font-size:16px;color:rgba(250,248,244,0.4);cursor:none;transition:all 0.25s;
+}
+.mob-nav-close:hover{border-color:rgba(255,255,255,0.25);color:var(--cream)}
+.mob-overlay{
+  position:fixed;inset:0;z-index:399;
+  background:rgba(26,24,20,0);pointer-events:none;transition:background 0.4s;
+}
+.mob-overlay.show{background:rgba(26,24,20,0.6);pointer-events:all}
+
+/* ── ADD TO CART PULSE ────────────────────────────────── */
+@keyframes cart-pulse{
+  0%{transform:scale(1)}
+  40%{transform:scale(1.25);background:var(--azul)}
+  100%{transform:scale(1);background:var(--charcoal)}
+}
+.pc-add.pulse{animation:cart-pulse 0.45s cubic-bezier(0.34,1.56,0.64,1) forwards}
+
+/* ── SUB SECTION IMAGE ────────────────────────────────── */
+.sub-bg{
+  position:absolute;inset:0;overflow:hidden;pointer-events:none;
+}
+.sub-bg img{
+  width:100%;height:100%;object-fit:cover;
+  opacity:0.04;filter:grayscale(30%);
+}
+
+@media(max-width:900px){
+  .nav-links{display:none !important}
+  .nav-hamburger{display:flex !important}
+}
+
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+<div class="overlay" id="overlay" onclick="closeAll()"></div>
+
+<nav class="nav" id="nav">
+  <a href="#" class="nav-logo">LOFTY <span class="az">AZUL</span></a>
+  <div class="nav-links">
+    <a href="#" onclick="filterP('all'); return false;">Shop All</a>
+    <a href="#" onclick="filterP('single-origin'); return false;">Single Origin</a>
+    <a href="#" onclick="filterP('rare'); return false;">Rare Lots</a>
+    <a href="#sub-sec">Subscribe</a>
+    <a href="#craft">Our Story</a>
+  </div>
+  <button class="nav-hamburger" id="hamburgBtn" onclick="openMobNav()" aria-label="Menu">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+  <div class="nav-right">
+    <button class="cart-btn" onclick="openCart()">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <span class="badge" id="badge">0</span>
+    </button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-left">
+    <div class="eyebrow"><div class="eyebrow-line"></div>Direct Trade &#183; Single Origin</div>
+    <h1 class="h1">The world's<br>finest origins.<br><em>In your cup.</em></h1>
+    <p class="hero-sub">Every bag comes from a farm we've visited, a relationship we've built. <strong>Roasted to order. Shipped within 48 hours.</strong></p>
+    <div class="hero-btns">
+      <button class="btn-dark" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">Shop the collection</button>
+      <button class="btn-text" onclick="document.getElementById('craft').scrollIntoView({behavior:'smooth'})">Our story <span class="arr">&#8594;</span></button>
+    </div>
+  </div>
+  <div class="hero-right">
+    <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=1400&q=90&fit=crop&crop=center" alt="Coffee beans" loading="eager" onerror="this.style.background='#3A2010'">
+    <div class="hero-float">
+    <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=180&q=85&fit=crop" alt="Ethiopia Yirgacheffe" style="width:100%;height:80px;object-fit:cover;margin-bottom:12px;display:block">
+      <div class="float-lbl">Featured origin</div>
+      <div class="float-name">Ethiopia Yirgacheffe</div>
+      <div class="float-note">Jasmine &#183; Bergamot &#183; Stone fruit</div>
+      <div class="float-price">$28.00 / 340g</div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee">
+  <div class="m-track">
+    <div class="m-item"><div class="m-dot"></div>Ethiopia &#183; Yirgacheffe</div>
+    <div class="m-item"><div class="m-dot"></div>Kenya &#183; Kirinyaga AA</div>
+    <div class="m-item"><div class="m-dot"></div>Colombia &#183; Huila</div>
+    <div class="m-item"><div class="m-dot"></div>Guatemala &#183; Antigua</div>
+    <div class="m-item"><div class="m-dot"></div>Panama &#183; Geisha</div>
+    <div class="m-item"><div class="m-dot"></div>Peru &#183; Cajamarca</div>
+    <div class="m-item"><div class="m-dot"></div>Roasted to Order</div>
+    <div class="m-item"><div class="m-dot"></div>Direct Trade Always</div>
+    <div class="m-item"><div class="m-dot"></div>Ethiopia &#183; Yirgacheffe</div>
+    <div class="m-item"><div class="m-dot"></div>Kenya &#183; Kirinyaga AA</div>
+    <div class="m-item"><div class="m-dot"></div>Colombia &#183; Huila</div>
+    <div class="m-item"><div class="m-dot"></div>Guatemala &#183; Antigua</div>
+    <div class="m-item"><div class="m-dot"></div>Panama &#183; Geisha</div>
+    <div class="m-item"><div class="m-dot"></div>Peru &#183; Cajamarca</div>
+    <div class="m-item"><div class="m-dot"></div>Roasted to Order</div>
+    <div class="m-item"><div class="m-dot"></div>Direct Trade Always</div>
+  </div>
+</div>
+
+<section class="origins">
+  <div class="orig-top rv">
+    <div><div class="sec-eyebrow">Explore by origin</div><h2 class="sec-h2">Where the <em>beans are born.</em></h2></div>
+    <a href="#" class="view-all" onclick="filterP('all'); return false;">View all coffees &#8594;</a>
+  </div>
+  <div class="orig-grid">
+    <div class="o-card rv" onclick="filterP('single-origin'); goShop();">
+      <div class="img-wrap"><img onload="imgLoaded(this)" class="loading" src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&q=80&fit=crop" alt="Africa" loading="lazy"></div>
+      <div class="o-overlay"><div class="o-num">01 &#8212; Africa</div><div class="o-name">Ethiopia &amp;<br>Kenya</div><div class="o-region">Floral &#183; Bright &#183; Complex</div><div class="o-cta">Shop now &#8594;</div></div>
+    </div>
+    <div class="o-card rv d1" onclick="filterP('blend'); goShop();">
+      <div class="img-wrap"><img onload="imgLoaded(this)" class="loading" src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&q=80&fit=crop" alt="Americas" loading="lazy"></div>
+      <div class="o-overlay"><div class="o-num">02 &#8212; Americas</div><div class="o-name">Colombia &amp;<br>Guatemala</div><div class="o-region">Caramel &#183; Chocolate &#183; Balanced</div><div class="o-cta">Shop now &#8594;</div></div>
+    </div>
+    <div class="o-card rv d2" onclick="filterP('rare'); goShop();">
+      <div class="img-wrap"><img onload="imgLoaded(this)" class="loading" src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=600&q=80&fit=crop" alt="Rare" loading="lazy"></div>
+      <div class="o-overlay"><div class="o-num">03 &#8212; Rare Lots</div><div class="o-name">Panama &amp;<br>Peru</div><div class="o-region">Exotic &#183; Refined &#183; Limited</div><div class="o-cta">Shop now &#8594;</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="shop" id="shop">
+  <div class="filter-bar">
+    <button class="fb on" onclick="filterP('all', this)">All</button>
+    <button class="fb" onclick="filterP('single-origin', this)">Single Origin</button>
+    <button class="fb" onclick="filterP('blend', this)">Blends</button>
+    <button class="fb" onclick="filterP('rare', this)">Rare Lots</button>
+    <button class="fb" onclick="filterP('espresso', this)">Espresso</button>
+    <button class="fb" onclick="filterP('cold-brew', this)">Cold Brew</button>
+  </div>
+  <div class="shop-grid" id="grid"></div>
+</section>
+
+<section class="craft" id="craft">
+  <div class="craft-img">
+    <img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=1200&q=90&fit=crop" alt="Roasting" loading="lazy">
+    <div style="position:absolute;inset:0;background:linear-gradient(to right,transparent 65%,#1A1814 100%)"></div>
+  </div>
+  <div class="craft-body">
+    <div class="craft-ey">Our Philosophy</div>
+    <h2 class="craft-h2">Sourced with intention.<br>Roasted with <em>obsession.</em></h2>
+    <p class="craft-p">Lofty Azul began with one question: why does the best coffee rarely reach homes in peak condition? <strong>We fixed that. Every lot ships within 48 hours of the roast date.</strong></p>
+    <div class="craft-stats">
+      <div><div class="stat-n">12</div><div class="stat-l">Farm partners</div></div>
+      <div><div class="stat-n">48h</div><div class="stat-l">Roast to ship</div></div>
+      <div><div class="stat-n">6yr</div><div class="stat-l">Building trust</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sub-sec" id="sub-sec" style="position:relative">
+  <div class="sub-bg">
+    <img src="https://images.unsplash.com/photo-1504630083234-14187a9df0f5?w=1400&q=80&fit=crop" alt="" loading="lazy">
+  </div>
+  <div class="sub-in">
+    <div class="sub-ey">Never run out</div>
+    <h2 class="sub-h2">Subscribe &amp;<br><em>save up to 20%.</em></h2>
+    <p class="sub-p">Your cadence. Our roast. Skip, pause, or cancel anytime &#8212; no contracts, no catch, always fresh.</p>
+    <div class="sub-plans">
+      <div class="sp rv" onclick="pickPlan(this)">
+        <div class="sp-freq">Every 2 weeks</div>
+        <div class="sp-price"><span>$</span>26</div>
+        <div class="sp-period">per bag &#183; billed biweekly</div>
+        <div class="sp-save">Save 10%</div>
+        <ul class="sp-feats"><li>Free shipping always</li><li>Skip or pause anytime</li><li>Early access to new lots</li></ul>
+      </div>
+      <div class="sp on rv d1" onclick="pickPlan(this)">
+        <div class="sp-freq">Every month</div>
+        <div class="sp-price"><span>$</span>23</div>
+        <div class="sp-period">per bag &#183; billed monthly</div>
+        <div class="sp-save">Save 15%</div>
+        <ul class="sp-feats"><li>Free shipping always</li><li>Skip or pause anytime</li><li>Tasting notes included</li></ul>
+      </div>
+      <div class="sp rv d2" onclick="pickPlan(this)">
+        <div class="sp-freq">Every 6 weeks</div>
+        <div class="sp-price"><span>$</span>21</div>
+        <div class="sp-period">per bag &#183; billed every 6 weeks</div>
+        <div class="sp-save">Save 20%</div>
+        <ul class="sp-feats"><li>Free shipping always</li><li>Skip or pause anytime</li><li>Full curator access</li></ul>
+      </div>
+    </div>
+    <button class="sub-cta" onclick="openCK()">Start your subscription &#8594;</button>
+    <div class="sub-trust">
+      <span>Cancel anytime</span><span class="sep">&#183;</span>
+      <span>No commitment</span><span class="sep">&#183;</span>
+      <span>Free shipping</span><span class="sep">&#183;</span>
+      <span>Fresh roast guaranteed</span>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="ft-top">
+    <div>
+      <div class="ft-logo">LOFTY <span class="az">AZUL</span></div>
+      <p class="ft-tag">Single-origin coffee sourced from the world's best farms. Roasted to order. Delivered fresh.</p>
+      <div class="ft-email">
+        <input class="ft-ei" type="email" placeholder="Your email address">
+        <button class="ft-eb" id="ftEmailBtn" onclick="submitEmail()">Join</button>
+      </div>
+    </div>
+    <div>
+      <div class="ft-col-t">Shop</div>
+      <div class="ft-links"><a href="#">Single Origin</a><a href="#">Blends</a><a href="#">Rare Lots</a><a href="#">Espresso</a><a href="#">Cold Brew</a><a href="#">Gift Cards</a></div>
+    </div>
+    <div>
+      <div class="ft-col-t">Subscribe</div>
+      <div class="ft-links"><a href="#">How it works</a><a href="#">Manage subscription</a><a href="#">Gift a subscription</a><a href="#">Wholesale</a></div>
+    </div>
+    <div>
+      <div class="ft-col-t">Company</div>
+      <div class="ft-links"><a href="#">Our story</a><a href="#">Farm partners</a><a href="#">Sustainability</a><a href="#">Contact</a></div>
+    </div>
+  </div>
+  <div class="ft-bot">
+    <div class="ft-copy">&#169; 2026 Lofty Azul Coffee &#8212; All rights reserved</div>
+    <div class="ft-blinks"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Accessibility</a></div>
+  </div>
+</footer>
+
+<div class="cart" id="cart">
+  <div class="cart-head"><div class="cart-title">Your Cart</div><button class="xbtn" onclick="closeCart()">&#10005;</button></div>
+  <div class="cart-body" id="cartBody"><div class="cart-empty"><div class="ce-icon">&#8709;</div><div class="ce-txt">Your cart is empty.</div></div></div>
+  <div class="cart-foot" id="cartFoot" style="display:none">
+    <div class="cart-sub"><span class="cart-sub-lbl">Subtotal</span><span class="cart-sub-price" id="cSub">$0.00</span></div>
+    <div class="cart-ship" id="cShip">Add $10.00 more for free shipping</div>
+    <button class="cart-ck" onclick="openCK()">Proceed to checkout &#8594;</button>
+    <button class="cart-cont" onclick="closeCart()">Continue shopping</button>
+  </div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-bg" onclick="closeModal()"></div>
+  <div class="modal-card">
+    <div class="modal-img"><img id="mImg" src="" alt=""></div>
+    <div class="modal-body">
+      <button class="xbtn2" onclick="closeModal()">&#10005;</button>
+      <div class="m-cat" id="mCat"></div>
+      <div class="m-name" id="mName"></div>
+      <div class="m-tag" id="mTag"></div>
+      <div class="m-price-row">
+        <div class="m-price" id="mPrice"></div>
+        <div class="m-was" id="mWas" style="display:none"></div>
+        <div class="m-save" id="mSave" style="display:none">Save 15%</div>
+      </div>
+      <p class="m-desc" id="mDesc"></p>
+      <div class="opt-lbl">Grind</div>
+      <div class="opts" id="mGrind">
+        <button class="opt on" onclick="pickOpt(this)">Whole Bean</button>
+        <button class="opt" onclick="pickOpt(this)">Coarse</button>
+        <button class="opt" onclick="pickOpt(this)">Medium</button>
+        <button class="opt" onclick="pickOpt(this)">Fine</button>
+        <button class="opt" onclick="pickOpt(this)">Espresso</button>
+      </div>
+      <div class="opt-lbl">Size</div>
+      <div class="opts" id="mSize">
+        <button class="opt" onclick="pickOpt(this)">250g</button>
+        <button class="opt on" onclick="pickOpt(this)">340g</button>
+        <button class="opt" onclick="pickOpt(this)">1kg</button>
+      </div>
+      <div class="qty-row">
+        <span class="qty-lbl">Quantity</span>
+        <div class="qty-ctrl">
+          <button class="qb" onclick="chQty(-1)">&#8722;</button>
+          <div class="qv" id="mQty">1</div>
+          <button class="qb" onclick="chQty(1)">+</button>
+        </div>
+      </div>
+      <button class="m-add" onclick="addFromModal()">Add to cart &#8594;</button>
+      <button class="m-sub-btn" onclick="goToSub()">Subscribe &amp; save 15% &#8594;</button>
+      <div class="m-dets" id="mDets"></div>
+    </div>
+  </div>
+</div>
+
+<div class="ck" id="ck">
+  <div class="ck-bg" onclick="closeCK()"></div>
+  <div class="ck-card">
+    <button class="xbtn" style="position:absolute;top:20px;right:20px" onclick="closeCK()">&#10005;</button>
+    <div class="ck-logo">LOFTY <span class="az">AZUL</span></div>
+    <div class="ck-steps">
+      <div class="ck-step active" id="st1">Information</div>
+      <div class="ck-step" id="st2">Shipping</div>
+      <div class="ck-step" id="st3">Payment</div>
+    </div>
+    <div class="ck-sec active" id="sec1">
+      <div class="ck-sec-t">Contact &amp; address</div>
+      <div class="fr full"><div class="fg"><label class="fl">Email</label><input class="fi" type="email" placeholder="you@example.com"></div></div>
+      <div class="fr"><div class="fg"><label class="fl">First name</label><input class="fi" placeholder="First"></div><div class="fg"><label class="fl">Last name</label><input class="fi" placeholder="Last"></div></div>
+      <div class="fr full"><div class="fg"><label class="fl">Address</label><input class="fi" placeholder="Street address"></div></div>
+      <div class="fr"><div class="fg"><label class="fl">City</label><input class="fi" placeholder="City"></div><div class="fg"><label class="fl">ZIP</label><input class="fi" placeholder="ZIP code"></div></div>
+      <div class="fr full"><div class="fg"><label class="fl">State</label><select class="fi"><option>Select state</option><option>Texas</option><option>California</option><option>New York</option><option>Florida</option></select></div></div>
+      <div class="ck-nav"><button class="ck-next" onclick="goStep(2)">Continue to shipping &#8594;</button></div>
+    </div>
+    <div class="ck-sec" id="sec2">
+      <div class="ck-sec-t">Shipping method</div>
+      <div class="so on" onclick="pickShip(this, 0)"><div><div class="so-name">Standard Shipping</div><div class="so-days">3-5 business days</div></div><div class="so-price so-free">FREE</div></div>
+      <div class="so" onclick="pickShip(this, 8)"><div><div class="so-name">Priority Shipping</div><div class="so-days">1-2 business days</div></div><div class="so-price">$8.00</div></div>
+      <div class="so" onclick="pickShip(this, 18)"><div><div class="so-name">Overnight</div><div class="so-days">Next business day</div></div><div class="so-price">$18.00</div></div>
+      <div class="osum" id="oSum2" style="margin-top:20px"></div>
+      <div class="ck-nav"><button class="ck-back" onclick="goStep(1)">&#8592; Back</button><button class="ck-next" onclick="goStep(3)">Continue to payment &#8594;</button></div>
+    </div>
+    <div class="ck-sec" id="sec3">
+      <div class="ck-sec-t">Payment</div>
+      <div class="pm-row">
+        <div class="pm on" onclick="pickPay(this)">Card</div>
+        <div class="pm" onclick="pickPay(this)">Apple Pay</div>
+        <div class="pm" onclick="pickPay(this)">PayPal</div>
+      </div>
+      <div class="fr full" style="margin-bottom:16px"><div class="fg"><label class="fl">Card number</label><input class="fi" placeholder="1234 5678 9012 3456"></div></div>
+      <div class="fr"><div class="fg"><label class="fl">Expiry</label><input class="fi" placeholder="MM / YY"></div><div class="fg"><label class="fl">CVV</label><input class="fi" placeholder="CVC"></div></div>
+      <div class="fr full"><div class="fg"><label class="fl">Name on card</label><input class="fi" placeholder="Full name"></div></div>
+      <div class="osum" id="oSum3" style="margin-top:8px"></div>
+      <div class="ck-nav"><button class="ck-back" onclick="goStep(2)">&#8592; Back</button><button class="ck-next" onclick="placeOrder()">Place order &#8594;</button></div>
+    </div>
+    <div class="ck-sec" id="secOK">
+      <div class="ok-wrap">
+        <div class="ok-icon">&#10022;</div>
+        <div class="ok-title">Order placed.</div>
+        <p class="ok-body">Your beans are being prepped for roast. Expect delivery in 2-4 business days, roasted fresh just for you.</p>
+        <button class="btn-dark" onclick="closeCK(); showToast('Thank you for your order!')">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function imgErr(el) {
+  if (el && el.parentElement) {
+    el.parentElement.style.background = 'linear-gradient(160deg,#2C1810,#5A3020)';
+  }
+}
+
+var products = [
+  {id:1,  name:"Ethiopia Yirgacheffe", tag:"Bright, floral, alive.",               cat:"single-origin", price:28,      img:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=85&fit=crop", imgHi:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=90&fit=crop", roast:"Light",       notes:"Jasmine - Bergamot - Stone fruit",      origin:"Gedeo Zone, Ethiopia",  process:"Washed",      altitude:"1800-2200m", badge:"new"},
+  {id:2,  name:"Kenya Kirinyaga AA",   tag:"Blackcurrant like you have never had it.", cat:"single-origin", price:32,   img:"https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=600&q=85&fit=crop", imgHi:"https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=900&q=90&fit=crop", roast:"Medium-Light",notes:"Blackcurrant - Red grape - Toffee",    origin:"Kirinyaga, Kenya",      process:"Washed",      altitude:"1700-1900m", badge:null},
+  {id:3,  name:"Colombia Huila",       tag:"Caramel depth. Every cup.",              cat:"single-origin", price:26,     img:"https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&q=85&fit=crop", imgHi:"https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=900&q=90&fit=crop", roast:"Medium",      notes:"Caramel - Dark cherry - Almond",       origin:"Huila, Colombia",       process:"Natural",     altitude:"1500-2000m", badge:null},
+  {id:4,  name:"Guatemala Antigua",    tag:"Old school. Perfect.",                    cat:"single-origin", price:25,    img:"https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&q=85&fit=crop", imgHi:"https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=900&q=90&fit=crop", roast:"Medium",      notes:"Brown sugar - Lime - Milk chocolate",  origin:"Antigua, Guatemala",    process:"Washed",      altitude:"1500-1700m", badge:null},
+  {id:5,  name:"Panama Geisha",        tag:"The rarest cup on earth.",                cat:"rare",          price:48,    img:"https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=600&q=85&fit=crop", imgHi:"https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=900&q=90&fit=crop", roast:"Light",       notes:"Peach - Jasmine - Tea-like clarity",   origin:"Boquete, Panama",       process:"Washed",      altitude:"1600-1800m", badge:"new"},
+  {id:6,  name:"Peru Cajamarca",       tag:"Hidden gem of the Andes.",                cat:"rare",          price:34,    img:"https://images.unsplash.com/photo-1611854779393-1b2da9d400fe?w=600&q=85&fit=crop", imgHi:"https://images.unsplash.com/photo-1611854779393-1b2da9d400fe?w=900&q=90&fit=crop", roast:"Medium-Light",notes:"Honey - Dried fruit - Soft spice",      origin:"Cajamarca, Peru",       process:"Natural",     altitude:"1700-2100m", badge:null},
+  {id:7,  name:"Azul Morning Blend",   tag:"The blend that started it all.",          cat:"blend",         price:22, was:27, img:"https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=600&q=85&fit=crop", imgHi:"https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=900&q=90&fit=crop", roast:"Medium",  notes:"Milk chocolate - Hazelnut - Citrus",  origin:"Ethiopia and Colombia", process:"Blend",       altitude:"Various",    badge:"best"},
+  {id:8,  name:"Dark Horizon",         tag:"Unapologetically bold.",                  cat:"blend",         price:24,    img:"https://images.unsplash.com/photo-1504630083234-14187a9df0f5?w=600&q=85&fit=crop", imgHi:"https://images.unsplash.com/photo-1504630083234-14187a9df0f5?w=900&q=90&fit=crop", roast:"Dark",        notes:"Dark chocolate - Walnut - Cedar",      origin:"Brazil and Sumatra",    process:"Blend",       altitude:"Various",    badge:null},
+  {id:9,  name:"Espresso Puro",        tag:"Pull the perfect shot.",                  cat:"espresso",      price:30,    img:"https://images.unsplash.com/photo-1534778101976-62847782c213?w=600&q=85&fit=crop", imgHi:"https://images.unsplash.com/photo-1534778101976-62847782c213?w=900&q=90&fit=crop", roast:"Medium-Dark", notes:"Brown sugar - Dark fruit - Cocoa",     origin:"Brazil and Colombia",   process:"Blend",       altitude:"Various",    badge:null},
+  {id:10, name:"Cold Brew Concentrate",tag:"Twelve hours. Zero compromise.",          cat:"cold-brew",     price:18,    img:"https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=600&q=85&fit=crop", imgHi:"https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=900&q=90&fit=crop", roast:"Cold",        notes:"Smooth - Chocolate - Low acid",        origin:"Azul signature blend",  process:"Cold-brewed", altitude:"N/A",        badge:"new"}
+];
+
+var cart = [];
+var mQty = 1;
+var curP = null;
+var ckStep = 1;
+var shipCost = 0;
+
+function goShop() {
+  document.getElementById('shop').scrollIntoView({behavior: 'smooth'});
+}
+
+function goToSub() {
+  closeModal();
+  setTimeout(function() {
+    document.getElementById('sub-sec').scrollIntoView({behavior: 'smooth'});
+  }, 300);
+}
+
+function renderProducts(filter) {
+  var g = document.getElementById('grid');
+  var list = filter === 'all' ? products : products.filter(function(p) { return p.cat === filter; });
+  var html = '';
+  for (var i = 0; i < list.length; i++) {
+    var p = list[i];
+    var badge = '';
+    if (p.badge === 'new') badge = '<div class="pc-badge new">New Arrival</div>';
+    else if (p.badge === 'best') badge = '<div class="pc-badge best">Best Value</div>';
+    var was = p.was ? '<span class="was">$' + p.was + '.00</span>' : '';
+    html += '<div class="pc" onclick="openModal(' + p.id + ')">' +
+      badge +
+      '<div class="pc-img"><img src="' + p.img + '" alt="' + p.name + '" loading="lazy" onerror="imgErr(this)"></div>' +
+      '<div class="pc-info">' +
+        '<div class="pc-cat">' + p.cat.replace('-', ' ') + '</div>' +
+        '<div class="pc-name">' + p.name + '</div>' +
+        '<div class="pc-notes">' + p.notes + '</div>' +
+        '<div class="pc-foot">' +
+          '<div class="pc-price">' + was + '$' + p.price + '.00</div>' +
+          '<button class="pc-add" onclick="event.stopPropagation(); qAdd(' + p.id + ')">+</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+  g.innerHTML = html;
+}
+
+function filterP(f, btn) {
+  renderProducts(f);
+  if (btn) {
+    var btns = document.querySelectorAll('.fb');
+    for (var i = 0; i < btns.length; i++) btns[i].classList.remove('on');
+    btn.classList.add('on');
+  }
+}
+
+function addToCart(p, qty, grind, size) {
+  var ex = null;
+  for (var i = 0; i < cart.length; i++) {
+    if (cart[i].id === p.id && cart[i].grind === grind && cart[i].size === size) { ex = cart[i]; break; }
+  }
+  if (ex) ex.qty += qty;
+  else cart.push({id: p.id, name: p.name, price: p.price, img: p.img, qty: qty, grind: grind, size: size});
+  updateCart();
+  showToast(p.name + ' added to cart');
+}
+
+function qAdd(id) {
+  var p = null;
+  for (var i = 0; i < products.length; i++) { if (products[i].id === id) { p = products[i]; break; } }
+  addToCart(p, 1, 'Whole Bean', '340g');
+  var btn = event.target;
+  if(btn) {
+    btn.classList.remove("pulse");
+    void btn.offsetWidth;
+    btn.classList.add("pulse");
+    setTimeout(function(){ btn.classList.remove("pulse"); }, 450);
+  }
+}
+
+function updateCart() {
+  var total = 0, sub = 0;
+  for (var i = 0; i < cart.length; i++) { total += cart[i].qty; sub += cart[i].price * cart[i].qty; }
+  var badge = document.getElementById('badge');
+  badge.textContent = total;
+  badge.className = total > 0 ? 'badge show' : 'badge';
+  var body = document.getElementById('cartBody');
+  var foot = document.getElementById('cartFoot');
+  if (!cart.length) {
+    body.innerHTML = '<div class="cart-empty"><div class="ce-icon">&#8709;</div><div class="ce-txt">Your cart is empty.</div></div>';
+    foot.style.display = 'none';
+  } else {
+    var html = '';
+    for (var i = 0; i < cart.length; i++) {
+      var item = cart[i];
+      html += '<div class="ci">' +
+        '<div class="ci-img"><img src="' + item.img + '" alt="' + item.name + '"></div>' +
+        '<div class="ci-info">' +
+          '<div class="ci-name">' + item.name + '</div>' +
+          '<div class="ci-var">' + item.grind + ' - ' + item.size + '</div>' +
+          '<div class="ci-ctrl">' +
+            '<button class="qbtn" onclick="chCartQty(' + i + ', -1)">&#8722;</button>' +
+            '<span class="qnum">' + item.qty + '</span>' +
+            '<button class="qbtn" onclick="chCartQty(' + i + ', 1)">+</button>' +
+            '<button class="rmbtn" onclick="rmItem(' + i + ')">Remove</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="ci-price">$' + (item.price * item.qty).toFixed(2) + '</div>' +
+      '</div>';
+    }
+    body.innerHTML = html;
+    foot.style.display = 'block';
+    document.getElementById('cSub').textContent = '$' + sub.toFixed(2);
+    var rem = Math.max(0, 45 - sub);
+    document.getElementById('cShip').textContent = rem > 0 ? 'Add $' + rem.toFixed(2) + ' more for free shipping' : 'Free shipping applied';
+  }
+}
+
+function chCartQty(idx, d) { cart[idx].qty += d; if (cart[idx].qty <= 0) cart.splice(idx, 1); updateCart(); }
+function rmItem(idx) { cart.splice(idx, 1); updateCart(); }
+function openCart() { document.getElementById('cart').classList.add('open'); document.getElementById('overlay').classList.add('show'); document.body.style.overflow = 'hidden'; }
+function closeCart() { document.getElementById('cart').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); document.body.style.overflow = ''; }
+
+function openModal(id) {
+  for (var i = 0; i < products.length; i++) { if (products[i].id === id) { curP = products[i]; break; } }
+  mQty = 1;
+  var p = curP;
+  document.getElementById('mImg').src = p.imgHi || p.img;
+  document.getElementById('mImg').alt = p.name;
+  document.getElementById('mCat').textContent = p.cat.replace('-', ' ');
+  document.getElementById('mName').textContent = p.name;
+  document.getElementById('mTag').textContent = p.tag;
+  document.getElementById('mPrice').textContent = '$' + p.price + '.00';
+  document.getElementById('mQty').textContent = '1';
+  document.getElementById('mDesc').textContent = 'Tasting notes of ' + p.notes.toLowerCase() + '. Sourced from ' + p.origin + '. ' + p.process + ' process. Altitude: ' + p.altitude + '.';
+  var wasEl = document.getElementById('mWas');
+  var saveEl = document.getElementById('mSave');
+  if (p.was) { wasEl.textContent = '$' + p.was + '.00'; wasEl.style.display = ''; saveEl.style.display = ''; }
+  else { wasEl.style.display = 'none'; saveEl.style.display = 'none'; }
+  var rows = [['Origin', p.origin], ['Roast', p.roast], ['Process', p.process], ['Altitude', p.altitude], ['Tasting Notes', p.notes]];
+  var detsHtml = '<div style="font-family:JetBrains Mono,monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:12px">Details</div>';
+  for (var i = 0; i < rows.length; i++) {
+    detsHtml += '<div class="m-det-row"><span class="m-det-k">' + rows[i][0] + '</span><span class="m-det-v">' + rows[i][1] + '</span></div>';
+  }
+  document.getElementById('mDets').innerHTML = detsHtml;
+  var allOpts = document.querySelectorAll('.opt');
+  for (var i = 0; i < allOpts.length; i++) allOpts[i].classList.remove('on');
+  document.querySelectorAll('#mGrind .opt')[0].classList.add('on');
+  document.querySelectorAll('#mSize .opt')[1].classList.add('on');
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('overlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+function pickOpt(btn) {
+  var p = btn.parentElement;
+  var opts = p.querySelectorAll('.opt');
+  for (var i = 0; i < opts.length; i++) opts[i].classList.remove('on');
+  btn.classList.add('on');
+}
+
+function chQty(d) { mQty = Math.max(1, mQty + d); document.getElementById('mQty').textContent = mQty; }
+
+function addFromModal() {
+  if (!curP) return;
+  var grindEl = document.querySelector('#mGrind .opt.on');
+  var sizeEl = document.querySelector('#mSize .opt.on');
+  var grind = grindEl ? grindEl.textContent : 'Whole Bean';
+  var size = sizeEl ? sizeEl.textContent : '340g';
+  addToCart(curP, mQty, grind, size);
+  closeModal();
+  setTimeout(openCart, 300);
+}
+
+function openCK() {
+  renderOSum();
+  ckStep = 1;
+  updateSteps();
+  document.getElementById('ck').classList.add('open');
+  document.getElementById('overlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCK() {
+  document.getElementById('ck').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+  document.body.style.overflow = '';
+  ckStep = 1;
+  updateSteps();
+}
+
+function goStep(n) { ckStep = n; updateSteps(); renderOSum(); }
+
+function updateSteps() {
+  for (var n = 1; n <= 3; n++) {
+    var tab = document.getElementById('st' + n);
+    var sec = document.getElementById('sec' + n);
+    if (tab) tab.className = 'ck-step' + (n === ckStep ? ' active' : n < ckStep ? ' done' : '');
+    if (sec) sec.className = 'ck-sec' + (n === ckStep ? ' active' : '');
+  }
+  var ok = document.getElementById('secOK');
+  if (ok) ok.className = 'ck-sec' + (ckStep === 4 ? ' active' : '');
+}
+
+function renderOSum() {
+  var sub = 0;
+  for (var i = 0; i < cart.length; i++) sub += cart[i].price * cart[i].qty;
+  var total = sub + shipCost;
+  var rows = '';
+  for (var i = 0; i < cart.length; i++) {
+    rows += '<div class="osum-row"><span class="osum-lbl">' + cart[i].name + ' x' + cart[i].qty + '</span><span class="osum-val">$' + (cart[i].price * cart[i].qty).toFixed(2) + '</span></div>';
+  }
+  var html = '<div class="osum-t">Order summary</div>' + rows +
+    '<div class="osum-row"><span class="osum-lbl">Shipping</span><span class="osum-val">' + (shipCost === 0 ? 'Free' : '$' + shipCost.toFixed(2)) + '</span></div>' +
+    '<div class="osum-row total"><span class="osum-lbl">Total</span><span class="osum-val">$' + total.toFixed(2) + '</span></div>';
+  var s2 = document.getElementById('oSum2'); if (s2) s2.innerHTML = html;
+  var s3 = document.getElementById('oSum3'); if (s3) s3.innerHTML = html;
+}
+
+function pickShip(el, cost) {
+  var opts = document.querySelectorAll('.so');
+  for (var i = 0; i < opts.length; i++) opts[i].classList.remove('on');
+  el.classList.add('on');
+  shipCost = cost;
+  renderOSum();
+}
+
+function pickPay(el) {
+  var pms = document.querySelectorAll('.pm');
+  for (var i = 0; i < pms.length; i++) pms[i].classList.remove('on');
+  el.classList.add('on');
+}
+
+function placeOrder() { ckStep = 4; updateSteps(); cart = []; updateCart(); }
+
+function pickPlan(el) {
+  var sps = document.querySelectorAll('.sp');
+  for (var i = 0; i < sps.length; i++) sps[i].classList.remove('on');
+  el.classList.add('on');
+}
+
+function closeAll() { closeCart(); closeModal(); closeCK(); }
+
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2800);
+}
+
+
+
+function submitEmail() {
+  var input = document.querySelector('.ft-ei');
+  var btn = document.getElementById('ftEmailBtn');
+  if (!input || !input.value.trim()) {
+    showToast('Enter your email address first.');
+    return;
+  }
+  if (!input.value.includes('@')) {
+    showToast('Please enter a valid email.');
+    return;
+  }
+  btn.textContent = 'Done';
+  btn.style.background = 'var(--green)';
+  btn.disabled = true;
+  input.value = '';
+  input.placeholder = 'You are on the list.';
+  showToast('You are on the list. First roast notification coming.');
+  setTimeout(function() {
+    btn.textContent = 'Join';
+    btn.style.background = '';
+    btn.disabled = false;
+    input.placeholder = 'Your email address';
+  }, 4000);
+}
+
+function openMobNav(){
+  document.getElementById("mobDrawer").classList.add("open");
+  document.getElementById("mobOverlay").classList.add("show");
+  document.body.style.overflow = "hidden";
+}
+function closeMobNav(){
+  document.getElementById("mobDrawer").classList.remove("open");
+  document.getElementById("mobOverlay").classList.remove("show");
+  document.body.style.overflow = "";
+}
+function imgLoaded(el){
+  el.classList.remove("loading");
+  el.classList.add("loaded");
+  if(el.parentElement) el.parentElement.classList.add("img-ready");
+}
+
+window.addEventListener('scroll', function() {
+  document.getElementById('nav').classList.toggle('solid', window.scrollY > 60);
+}, {passive: true});
+
+var io = new IntersectionObserver(function(entries) {
+  for (var i = 0; i < entries.length; i++) {
+    var e = entries[i];
+    if (e.isIntersecting) {
+      (function(el, delay) {
+        setTimeout(function() { el.classList.add('in'); }, delay);
+      })(e.target, i * 80);
+      io.unobserve(e.target);
+    }
+  }
+}, {threshold: 0.08});
+
+var rvEls = document.querySelectorAll('.rv');
+for (var i = 0; i < rvEls.length; i++) io.observe(rvEls[i]);
+
+renderProducts('all');
+</script>
+
+<!-- MOBILE NAV DRAWER -->
+<div class="mob-overlay" id="mobOverlay" onclick="closeMobNav()"></div>
+<div class="nav-mobile-drawer" id="mobDrawer">
+  <button class="mob-nav-close" onclick="closeMobNav()">&#10005;</button>
+  <div class="mob-nav-logo">LOFTY <span class="az">AZUL</span></div>
+  <div class="mob-nav-links">
+    <button class="mob-nav-link" onclick="closeMobNav();filterP('all')">Shop All</button>
+    <button class="mob-nav-link" onclick="closeMobNav();filterP('single-origin')">Single Origin</button>
+    <button class="mob-nav-link" onclick="closeMobNav();filterP('rare')">Rare Lots</button>
+    <button class="mob-nav-link" onclick="closeMobNav();document.getElementById('sub-sec').scrollIntoView({behavior:'smooth'})">Subscribe</button>
+    <button class="mob-nav-link" onclick="closeMobNav();document.getElementById('craft').scrollIntoView({behavior:'smooth'})">Our Story</button>
+  </div>
+</div>
+
+</body>
+</html>
