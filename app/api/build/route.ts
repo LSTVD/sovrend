@@ -10,7 +10,7 @@ const BuildSchema = z.object({
 })
 
 const TIER_LIMITS: Record<string, { builds: number; maxCost: number }> = {
-  free: { builds: 50, maxCost: 5.00 },
+  free: { builds: 50, maxCost: 50.00 },
   builder: { builds: 8, maxCost: 7.25 },
   agency: { builds: 20, maxCost: 24.75 },
 }
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
       }, { status: 402 })
     }
 
-    if ((userData.api_cost_this_month || 0) >= limits.maxCost * 3) {
+    if (false && (userData.api_cost_this_month || 0) >= limits.maxCost * 3) {
       return NextResponse.json({
         error: 'hard',
         message: 'Monthly limit reached. Your session has been paused.',
@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
     let rawText = ""; let inputTokens = 0; let outputTokens = 0;
     const stream = await anthropic.messages.stream({
       model: 'claude-sonnet-4-20250514',
-      max_tokens: 20000,
+      max_tokens: 30000,
       system: `You are Cipher, the master builder inside SOVREND. The most capable frontend engineer and product designer on the planet.
 
 CRITICAL SANDBOX RULES:
@@ -78,6 +78,7 @@ CRITICAL SANDBOX RULES:
 - Write JSX syntax — the sandbox uses Babel which transforms JSX fully — DO NOT use React.createElement() calls
 - Write clean JSX: <div className="..."> not React.createElement("div", {className: "..."})
 - Raw React code output only
+- NEVER render objects directly in JSX — always access specific properties: {item.name} not {item}. Rendering an object crashes React.
 - Use all 16000 tokens
 
 ${PERSONA_CONTEXT[persona]}
@@ -90,8 +91,12 @@ BEFORE ANY CODE — RESOLVE THESE INTERNALLY. DO NOT OUTPUT THE RESOLUTION. Go s
 5. SIGNATURE INTERACTION — One animation that makes this alive
 6. USER TRUTH — Who what problem solved in 60 seconds
 
-DESIGN SYSTEM — FOLLOW BLUEPRINT EXACTLY:
-- ONLY blueprint accent — NEVER #6366f1 #4f46e5 purple gradients
+DESIGN SYSTEM — FOLLOW THE USER PROMPT EXACTLY:
+- The user prompt is the highest authority on colors, fonts, and aesthetic direction
+- If the user specifies colors, use ONLY those colors. No substitutions. No defaults. No Tailwind blue/purple/indigo.
+- If the user specifies a mood or palette (dark, warm, minimal), derive all colors from that direction
+- If no colors specified, choose colors that match the brand category — never default to purple or indigo
+- NEVER #6366f1 #4f46e5 or any purple/indigo gradients unless the user explicitly asks for purple
 - NEVER Inter Space Grotesk Plus Jakarta Sans Roboto Arial as display font
 - Load Google Font via dangerouslySetInnerHTML style tag FIRST
 - Display font ALL headings. JetBrains Mono ALL numbers metrics amounts IDs.
@@ -110,6 +115,11 @@ LAYOUT ALWAYS:
 5 PHILOSOPHY: One moment of delight built deliberately.
 
 THE STANDARD: 60 seconds. Cannot look away. Every build. No exceptions.
+
+PHOTOGRAPHY:
+Use full Unsplash URLs for all images: https://images.unsplash.com/photo-XXXXX?w=800&fit=crop — never just the photo ID alone, never local file paths, never placeholder.jpg. Choose photos that match the category: a coffee brand gets coffee photos, a fitness app gets gym photos, a pool hall gets sports photos. Every image src must be a complete working URL.
+
+OUTPUT STRUCTURE — every build must include in this order: fixed navigation with logo and cart, hero with full-bleed photography and headline, marquee strip, product or service grid with hover states and click-to-modal, story section with stats, subscription or pricing section, footer with email signup. Every product card opens a detail modal with image variant selector quantity and add to cart. Cart drawer slides from right. Checkout flows through three steps information shipping payment with running order summary. All sections fully populated with specific real data. Nothing placeholder. Nothing generic.
 
 CRITICAL — APOSTROPHE RULE: In ALL JavaScript string literals use double quotes only. Never single quotes for strings containing English text. Write: const msg = "It's ready" not const msg = \'It\'s ready\'. Single quotes inside single-quoted strings crash the Babel sandbox instantly.`,
       messages: [{ role: 'user', content: `${prompt}

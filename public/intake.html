@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOVREND — Begin with Cipher</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100;0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,200;1,9..144,300;1,9..144,400&family=DM+Sans:wght@200;300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --pre:#0B0D14;--becoming:#141820;--almost:#1E2230;
+  --threshold:rgba(255,255,255,0.055);
+  --genesis:#E8E4D8;--genesis-dim:rgba(232,228,216,0.45);
+  --moment:#FFE8A8;--moment-dim:rgba(255,232,168,0.35);--moment-ghost:rgba(255,232,168,0.055);
+  --tron:#00E5FF;--smoke:rgba(232,228,216,0.38);--mist:rgba(232,228,216,0.22);
+}
+html,body{min-height:100vh;width:100%;-webkit-tap-highlight-color:transparent}
+body{background:var(--pre);color:var(--genesis);font-family:"DM Sans",sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;cursor:none}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(232,228,216,0.01) 3px,rgba(232,228,216,0.01) 4px)}
+#cv{position:fixed;inset:0;z-index:0;pointer-events:none}
+#cur{position:fixed;z-index:9999;pointer-events:none;will-change:transform}
+.cc{position:absolute;width:5px;height:5px;border-radius:50%;background:var(--moment);transform:translate(-50%,-50%);box-shadow:0 0 10px var(--moment),0 0 22px rgba(255,232,168,0.35);transition:transform 0.12s,box-shadow 0.2s}
+.cr{position:absolute;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,232,168,0.14);transform:translate(-50%,-50%);transition:all 0.45s cubic-bezier(0.16,1,0.3,1)}
+
+.nav{position:fixed;top:0;left:0;right:0;z-index:200;height:64px;display:flex;align-items:center;padding:0 52px;border-bottom:1px solid var(--threshold);background:rgba(11,13,20,0.88);backdrop-filter:blur(24px)}
+.nav-logo{font-family:"Fraunces",serif;font-size:15px;font-weight:300;letter-spacing:0.16em;text-transform:uppercase;color:var(--genesis);text-decoration:none;transition:letter-spacing 0.4s}
+.nav-logo em{font-style:italic;font-weight:100;opacity:0.4}
+.nav-back{margin-left:auto;background:none;border:none;cursor:none;font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--mist);transition:color 0.3s}
+.nav-back:hover{color:var(--genesis)}
+
+.shell{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:88px 24px 80px}
+
+/* INTRO */
+.intro{width:100%;max-width:640px;text-align:center;padding:52px 0 60px;opacity:0;animation:up 1s ease 0.2s forwards}
+.intro-badge{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:0.26em;text-transform:uppercase;color:rgba(255,232,168,0.35);margin-bottom:28px;display:flex;align-items:center;justify-content:center;gap:14px}
+.ib-line{width:36px;height:1px;background:rgba(255,232,168,0.25)}
+.ib-dot{width:5px;height:5px;border-radius:50%;background:var(--moment);animation:hb 2.4s ease-in-out infinite;box-shadow:0 0 8px var(--moment)}
+@keyframes hb{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.25;transform:scale(0.4)}}
+.intro-h{font-family:"Fraunces",serif;font-size:clamp(40px,7vw,72px);font-weight:900;line-height:0.88;letter-spacing:-0.048em;margin-bottom:20px}
+.intro-h em{font-style:italic;font-weight:200;color:var(--moment)}
+.intro-rule{width:1px;height:40px;background:linear-gradient(var(--moment-dim),transparent);margin:24px auto}
+.intro-sub{font-size:16px;font-weight:200;color:var(--smoke);line-height:1.78;max-width:420px;margin:0 auto}
+.intro-sub strong{color:var(--genesis);font-weight:300}
+@keyframes up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+
+/* CIPHER BAR */
+.cipher-bar{width:100%;max-width:640px;margin-bottom:44px;opacity:0;animation:up 0.8s ease 0.5s forwards}
+.cb-inner{background:var(--becoming);border:1px solid var(--threshold);border-top:2px solid rgba(0,229,255,0.18);padding:26px 30px;display:flex;gap:20px;align-items:flex-start}
+.cb-avatar{width:40px;height:40px;border-radius:50%;border:1px solid rgba(0,229,255,0.25);background:rgba(0,229,255,0.04);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative}
+.cb-avatar::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:1px solid rgba(0,229,255,0.08);animation:ring 3s ease-in-out infinite}
+@keyframes ring{0%,100%{opacity:0.6;transform:scale(1)}50%{opacity:0.15;transform:scale(1.08)}}
+.cb-glyph{width:12px;height:12px;border-radius:50%;background:var(--tron);box-shadow:0 0 10px var(--tron)}
+.cb-right{flex:1;min-width:0}
+.cb-meta{font-family:"JetBrains Mono",monospace;font-size:8px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(0,229,255,0.4);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.cb-pulse{width:4px;height:4px;border-radius:50%;background:rgba(0,229,255,0.5);animation:hb 1.6s ease-in-out infinite}
+.cb-text{font-size:15px;font-weight:200;color:var(--genesis);line-height:1.75}
+.tcursor{display:inline-block;width:2px;height:14px;background:rgba(0,229,255,0.55);animation:blink 0.9s step-end infinite;vertical-align:middle;margin-left:2px}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* INTAKE */
+.intake{width:100%;max-width:640px;opacity:0;animation:up 0.8s ease 0.7s forwards}
+
+/* PROGRESS */
+.prog-row{display:flex;align-items:center;gap:14px;margin-bottom:44px}
+.prog-segs{flex:1;display:flex;gap:5px}
+.ps{flex:1;height:1px;background:var(--threshold);transition:background 0.5s,box-shadow 0.5s}
+.ps.done{background:rgba(255,232,168,0.4)}
+.ps.active{background:var(--moment);box-shadow:0 0 8px rgba(255,232,168,0.3)}
+.prog-lbl{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--mist);white-space:nowrap}
+
+/* STEP */
+.step{display:none}
+.step.on{display:block;animation:up 0.38s ease forwards}
+
+/* Q HEADER */
+.q-eye{font-family:"JetBrains Mono",monospace;font-size:8px;letter-spacing:0.26em;text-transform:uppercase;color:rgba(255,232,168,0.28);display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.q-eye::before{content:"";width:1px;height:16px;background:linear-gradient(var(--moment-dim),transparent);flex-shrink:0}
+.q-title{font-family:"Fraunces",serif;font-size:clamp(26px,4.5vw,38px);font-weight:700;line-height:1.0;letter-spacing:-0.038em;margin-bottom:6px}
+.q-title em{font-style:italic;font-weight:200;color:var(--moment)}
+.q-sub{font-size:14px;font-weight:200;color:var(--smoke);margin-bottom:28px;line-height:1.65}
+.q-divider{width:100%;height:1px;background:var(--threshold);margin-bottom:24px}
+
+/* PATH CARDS — Step 0 */
+.path-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.pcard{background:var(--becoming);border:1px solid var(--threshold);padding:24px 22px;cursor:none;transition:all 0.3s;position:relative;overflow:hidden}
+.pcard::before{content:"";position:absolute;inset:0;background:var(--moment-ghost);opacity:0;transition:opacity 0.3s}
+.pcard:hover::before{opacity:1}
+.pcard.on{border-color:rgba(255,232,168,0.38);background:var(--almost)}
+.pcard.on::before{opacity:1}
+.pcard-icon{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,232,168,0.25);margin-bottom:14px;position:relative}
+.pcard.on .pcard-icon{color:rgba(255,232,168,0.5)}
+.pcard-name{font-family:"Fraunces",serif;font-size:20px;font-weight:700;letter-spacing:-0.03em;margin-bottom:8px;position:relative;line-height:1.1}
+.pcard-desc{font-size:12px;font-weight:200;color:var(--smoke);line-height:1.6;position:relative}
+.pcard-check{position:absolute;top:14px;right:16px;width:18px;height:18px;border-radius:50%;background:var(--moment);color:#0B0D14;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.25s}
+.pcard.on .pcard-check{opacity:1}
+.pcard-examples{margin-top:12px;font-family:"JetBrains Mono",monospace;font-size:8px;letter-spacing:0.12em;color:rgba(232,228,216,0.18);line-height:1.8;position:relative}
+.pcard.on .pcard-examples{color:rgba(232,228,216,0.3)}
+
+/* INPUTS */
+.field{margin-bottom:12px}
+.fl{font-family:"JetBrains Mono",monospace;font-size:8px;letter-spacing:0.20em;text-transform:uppercase;color:var(--mist);display:block;margin-bottom:8px}
+.fi{width:100%;padding:14px 16px;background:var(--becoming);border:1px solid var(--threshold);color:var(--genesis);font-family:"DM Sans",sans-serif;font-size:15px;font-weight:300;outline:none;transition:border-color 0.3s;-webkit-appearance:none;border-radius:0}
+.fi:focus{border-color:rgba(255,232,168,0.3)}
+.fi::placeholder{color:rgba(232,228,216,0.18)}
+.ta{width:100%;padding:14px 16px;background:var(--becoming);border:1px solid var(--threshold);color:var(--genesis);font-family:"DM Sans",sans-serif;font-size:15px;font-weight:300;outline:none;resize:none;line-height:1.65;transition:border-color 0.3s;-webkit-appearance:none;border-radius:0}
+.ta:focus{border-color:rgba(255,232,168,0.3)}
+.ta::placeholder{color:rgba(232,228,216,0.18)}
+.field-hint{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:0.12em;color:var(--mist);margin-top:10px;line-height:1.65}
+
+/* OFFER ROWS */
+.offer-tbl{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+.offer-row{display:grid;grid-template-columns:1fr 100px;gap:5px}
+.add-item{background:none;border:1px dashed rgba(255,232,168,0.1);padding:12px;width:100%;font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,232,168,0.25);cursor:none;transition:all 0.3s}
+.add-item:hover{border-color:rgba(255,232,168,0.28);color:var(--moment-dim)}
+
+/* VIBE CARDS */
+.vibe-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:12px}
+.vcard{background:var(--becoming);border:1px solid var(--threshold);cursor:none;transition:border-color 0.3s;position:relative;overflow:hidden}
+.vcard.on{border-color:rgba(255,232,168,0.38)}
+.vcard-swatch{height:50px}
+.vs-dark{background:linear-gradient(120deg,#060810 0%,#0F1520 60%,rgba(0,229,255,0.12) 100%)}
+.vs-light{background:linear-gradient(120deg,#F8F4EC 0%,#E8E4D8 60%,rgba(27,75,138,0.25) 100%)}
+.vs-bold{background:linear-gradient(120deg,#0A0808 0%,#1A0A06 50%,#C4622D 100%)}
+.vs-organic{background:linear-gradient(120deg,#080E08 0%,#0E1A0E 55%,#3D5A3E 100%)}
+.vcard-body{padding:14px 16px 16px}
+.vcard-name{font-family:"Fraunces",serif;font-size:16px;font-weight:700;letter-spacing:-0.025em;margin-bottom:4px}
+.vcard-desc{font-size:12px;font-weight:200;color:var(--smoke)}
+.vcheck{position:absolute;top:10px;right:10px;width:18px;height:18px;border-radius:50%;background:var(--moment);color:#0B0D14;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.25s}
+.vcard.on .vcheck{opacity:1}
+
+/* ACTION CARDS */
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.acard{background:var(--becoming);border:1px solid var(--threshold);padding:18px 18px 16px;cursor:none;transition:all 0.3s;position:relative}
+.acard.on{border-color:rgba(255,232,168,0.38);background:rgba(255,232,168,0.03)}
+.acard-name{font-family:"Fraunces",serif;font-size:17px;font-weight:700;letter-spacing:-0.025em;line-height:1.1;margin-bottom:5px}
+.acard-desc{font-size:12px;font-weight:200;color:var(--smoke)}
+.acheck{position:absolute;top:10px;right:12px;width:16px;height:16px;border-radius:50%;background:var(--moment);color:#0B0D14;font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.25s}
+.acard.on .acheck{opacity:1}
+
+/* NAV BUTTONS */
+.step-nav{display:flex;gap:8px;align-items:center;margin-top:36px}
+.btn-go{flex:1;padding:17px;background:var(--moment);color:#0B0D14;border:none;font-family:"DM Sans",sans-serif;font-size:14px;font-weight:500;letter-spacing:0.10em;text-transform:uppercase;cursor:none;position:relative;overflow:hidden;transition:all 0.4s}
+.btn-go::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.18),transparent);opacity:0;transition:opacity 0.3s}
+.btn-go:hover::before{opacity:1}
+.btn-go:hover{box-shadow:0 0 36px rgba(255,232,168,0.22);letter-spacing:0.14em}
+.btn-prev{padding:17px 20px;background:none;border:1px solid var(--threshold);color:var(--mist);font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;cursor:none;transition:all 0.3s}
+.btn-prev:hover{border-color:rgba(232,228,216,0.18);color:var(--smoke)}
+
+/* BUILD SCREEN */
+.build-screen{width:100%;max-width:640px;display:none;opacity:0;animation:up 0.6s ease forwards}
+.bs-h{font-family:"Fraunces",serif;font-size:clamp(30px,5vw,48px);font-weight:700;letter-spacing:-0.04em;line-height:0.95;margin-bottom:10px}
+.bs-h em{font-style:italic;font-weight:200;color:var(--moment)}
+.bs-sub{font-size:14px;font-weight:200;color:var(--smoke);line-height:1.65;margin-bottom:32px}
+.contract{background:var(--becoming);border:1px solid var(--threshold);border-left:2px solid rgba(255,232,168,0.25);padding:20px 24px;margin-bottom:24px}
+.contract-lbl{font-family:"JetBrains Mono",monospace;font-size:8px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,232,168,0.3);margin-bottom:10px}
+.contract-body{font-size:13px;font-weight:200;color:var(--smoke);line-height:1.75;font-style:italic}
+.bar-wrap{height:1px;background:var(--threshold);overflow:hidden;margin-bottom:6px}
+.bar-fill{height:100%;background:linear-gradient(to right,var(--moment),rgba(255,232,168,0.3));width:0;transition:width 0.7s ease;box-shadow:0 0 8px rgba(255,232,168,0.25)}
+.bar-pct{font-family:"JetBrains Mono",monospace;font-size:8px;letter-spacing:0.16em;color:var(--mist);text-align:right;margin-bottom:20px}
+.layers{display:flex;flex-direction:column;gap:2px}
+.layer{display:flex;align-items:center;gap:16px;padding:13px 18px;background:var(--becoming);border-left:2px solid var(--threshold);transition:all 0.4s}
+.layer.active{border-left-color:rgba(0,229,255,0.5);background:rgba(0,229,255,0.025)}
+.layer.done{border-left-color:rgba(255,232,168,0.22)}
+.ln{font-family:"JetBrains Mono",monospace;font-size:8px;letter-spacing:0.12em;color:var(--mist);width:18px;flex-shrink:0;transition:color 0.3s}
+.layer.active .ln,.layer.done .ln{color:rgba(255,232,168,0.35)}
+.lname{font-size:13px;font-weight:300;color:var(--mist);transition:color 0.4s;flex:1}
+.layer.active .lname{color:var(--genesis)}
+.layer.done .lname{color:rgba(232,228,216,0.35)}
+.lstate{font-family:"JetBrains Mono",monospace;font-size:8px;letter-spacing:0.14em;text-transform:uppercase;color:var(--mist);transition:color 0.3s;margin-left:auto}
+.layer.active .lstate{color:rgba(0,229,255,0.45)}
+.layer.done .lstate{color:rgba(255,232,168,0.3)}
+.lspin{width:10px;height:10px;border:1px solid rgba(0,229,255,0.18);border-top-color:var(--tron);border-radius:50%;animation:spin 0.8s linear infinite;display:none;flex-shrink:0}
+.layer.active .lspin{display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* COMPLETE */
+.complete-screen{width:100%;max-width:640px;display:none;opacity:0;animation:up 0.8s ease forwards;text-align:center;padding:40px 0}
+.complete-mark{font-family:"Fraunces",serif;font-size:80px;font-weight:900;color:transparent;-webkit-text-stroke:0.5px rgba(255,232,168,0.4);line-height:1;margin-bottom:36px;font-style:italic}
+.complete-h{font-family:"Fraunces",serif;font-size:clamp(44px,8vw,80px);font-weight:900;line-height:0.88;letter-spacing:-0.052em;margin-bottom:16px}
+.complete-h em{font-style:italic;font-weight:200;color:var(--moment)}
+.complete-sub{font-size:16px;font-weight:200;color:var(--smoke);line-height:1.8;max-width:460px;margin:0 auto 48px}
+.complete-sub strong{color:var(--genesis);font-weight:300}
+.complete-ctas{display:flex;flex-direction:column;gap:8px;max-width:400px;margin:0 auto}
+.btn-open{width:100%;padding:20px;background:var(--moment);color:#0B0D14;border:none;font-family:"DM Sans",sans-serif;font-size:14px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;cursor:none;transition:all 0.4s}
+.btn-open:hover{box-shadow:0 0 48px rgba(255,232,168,0.28);letter-spacing:0.18em}
+.btn-again{width:100%;padding:14px;background:none;border:1px solid var(--threshold);color:var(--mist);font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;cursor:none;transition:all 0.3s}
+.btn-again:hover{border-color:rgba(232,228,216,0.18);color:var(--smoke)}
+.ownership{margin-top:36px;display:flex;justify-content:center;gap:28px;font-family:"JetBrains Mono",monospace;font-size:8px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(232,228,216,0.13);flex-wrap:wrap}
+.tl{width:100%;max-width:640px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,232,168,0.12),transparent);margin:44px 0;opacity:0;animation:up 1s ease 0.9s forwards}
+
+@media(max-width:560px){
+  .nav{padding:0 20px}
+  .shell{padding:80px 18px 60px}
+  .path-grid{grid-template-columns:1fr 1fr}
+  .vibe-grid{grid-template-columns:1fr 1fr}
+  .action-grid{grid-template-columns:1fr 1fr}
+  .cb-inner{padding:20px 18px;gap:14px}
+}
+
+/* ── CLARIFYING QUESTION ──────────────────────────────── */
+.clarify-box{
+  background:var(--becoming);
+  border:1px solid var(--threshold);
+  border-left:2px solid rgba(255,232,168,0.35);
+  padding:28px 28px 24px;
+  margin-bottom:0;
+}
+.clarify-label{
+  font-family:"JetBrains Mono",monospace;font-size:8px;
+  letter-spacing:0.22em;text-transform:uppercase;
+  color:rgba(255,232,168,0.3);margin-bottom:16px;
+  display:flex;align-items:center;gap:10px;
+}
+.clarify-label::before{
+  content:"";width:1px;height:16px;
+  background:linear-gradient(var(--moment-dim),transparent);flex-shrink:0;
+}
+.clarify-q{
+  font-family:"Fraunces",serif;
+  font-size:clamp(18px,3vw,24px);font-weight:700;
+  letter-spacing:-0.03em;line-height:1.1;
+  color:var(--genesis);margin-bottom:20px;
+}
+.clarify-q em{font-style:italic;font-weight:200;color:var(--moment)}
+
+/* ── SPEC CARD ────────────────────────────────────────── */
+.spec-card{
+  background:var(--becoming);
+  border:1px solid var(--threshold);
+  overflow:hidden;
+}
+.spec-card-top{
+  border-bottom:1px solid var(--threshold);
+  padding:20px 26px;
+  display:flex;align-items:center;gap:16px;
+}
+.spec-top-glyph{
+  width:32px;height:32px;border-radius:50%;
+  border:1px solid rgba(0,229,255,0.25);
+  background:rgba(0,229,255,0.04);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.spec-top-dot{
+  width:10px;height:10px;border-radius:50%;
+  background:var(--tron);box-shadow:0 0 8px var(--tron);
+}
+.spec-top-text{}
+.spec-top-label{
+  font-family:"JetBrains Mono",monospace;font-size:8px;
+  letter-spacing:0.20em;text-transform:uppercase;
+  color:rgba(0,229,255,0.4);margin-bottom:4px;
+}
+.spec-top-title{
+  font-family:"Fraunces",serif;font-size:17px;font-weight:700;
+  letter-spacing:-0.02em;color:var(--genesis);
+}
+.spec-rows{padding:6px 0}
+.spec-row{
+  display:flex;align-items:flex-start;gap:0;
+  padding:12px 26px;
+  border-bottom:1px solid var(--threshold);
+  transition:background 0.2s;
+}
+.spec-row:last-child{border-bottom:none}
+.spec-row:hover{background:rgba(255,232,168,0.02)}
+.spec-key{
+  font-family:"JetBrains Mono",monospace;font-size:9px;
+  letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--mist);width:120px;flex-shrink:0;
+  padding-top:2px;
+}
+.spec-val{
+  font-size:14px;font-weight:300;color:var(--genesis);
+  line-height:1.5;flex:1;
+}
+.spec-val em{font-style:italic;font-weight:200;color:var(--moment)}
+.spec-val .tag{
+  display:inline-block;
+  font-family:"JetBrains Mono",monospace;font-size:8px;
+  letter-spacing:0.14em;text-transform:uppercase;
+  padding:3px 8px;
+  background:rgba(255,232,168,0.06);
+  border:1px solid rgba(255,232,168,0.12);
+  color:rgba(255,232,168,0.5);
+  margin:2px 4px 2px 0;
+}
+.spec-card-footer{
+  padding:18px 26px;
+  border-top:1px solid var(--threshold);
+  background:rgba(255,232,168,0.025);
+}
+.spec-footer-note{
+  font-family:"JetBrains Mono",monospace;font-size:9px;
+  letter-spacing:0.14em;color:var(--mist);
+  line-height:1.65;
+}
+.spec-footer-note strong{color:rgba(255,232,168,0.4);font-weight:400}
+
+/* EDIT INLINE */
+.spec-edit-btn{
+  font-family:"JetBrains Mono",monospace;font-size:8px;
+  letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--mist);background:none;border:1px solid var(--threshold);
+  padding:5px 10px;cursor:none;transition:all 0.25s;margin-left:auto;flex-shrink:0;
+}
+.spec-edit-btn:hover{border-color:rgba(255,232,168,0.2);color:var(--smoke)}
+
+/* GAP FLAG */
+.gap-flag{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:14px 16px;
+  background:rgba(255,49,49,0.04);
+  border:1px solid rgba(255,49,49,0.12);
+  border-left:2px solid rgba(255,49,49,0.3);
+  margin-bottom:8px;
+}
+.gap-icon{
+  font-family:"JetBrains Mono",monospace;font-size:8px;
+  letter-spacing:0.14em;color:rgba(255,49,49,0.5);
+  flex-shrink:0;padding-top:2px;
+}
+.gap-text{font-size:13px;font-weight:200;color:rgba(232,228,216,0.45);line-height:1.6}
+.gap-text strong{color:rgba(255,49,49,0.6);font-weight:300}
+.gaps-section{margin-bottom:20px}
+
+</style>
+</head>
+<body>
+
+<canvas id="cv"></canvas>
+<div id="cur"><div class="cc"></div><div class="cr"></div></div>
+
+<nav class="nav">
+  <a href="#" class="nav-logo">SOVREND <em>/ genesis</em></a>
+  <button class="nav-back">&#8592; &nbsp; Back</button>
+</nav>
+
+<div class="shell">
+
+  <div class="intro">
+    <div class="intro-badge"><div class="ib-line"></div><div class="ib-dot"></div>Cipher is ready<div class="ib-line"></div></div>
+    <h1 class="intro-h">Five questions.<br><em>One masterwork.</em></h1>
+    <div class="intro-rule"></div>
+    <p class="intro-sub">Not a form. A session with an architect who builds every product to the same ceiling — <strong>world-class, from the first render.</strong></p>
+  </div>
+
+  <div class="cipher-bar">
+    <div class="cb-inner">
+      <div class="cb-avatar"><div class="cb-glyph"></div></div>
+      <div class="cb-right">
+        <div class="cb-meta"><div class="cb-pulse"></div>Cipher &mdash; Lead Architect</div>
+        <div class="cb-text" id="cipherText"><span class="tcursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="intake" id="intake">
+
+    <div class="prog-row">
+      <div class="prog-segs" id="progSegs"></div>
+      <div class="prog-lbl" id="progLbl">01 of 05</div>
+    </div>
+
+    <!-- STEP 0: PATH SELECTION -->
+    <div class="step on" id="s0">
+      <div class="q-eye"><span>00 &mdash; Direction</span></div>
+      <h2 class="q-title">What are you<br><em>building?</em></h2>
+      <p class="q-sub">Every path gets the same quality of build. This tells Cipher how to structure the questions that follow.</p>
+      <div class="q-divider"></div>
+      <div class="path-grid" id="pathGrid">
+        <div class="pcard" onclick="pickPath(this,'product')">
+          <div class="pcard-check">&#10003;</div>
+          <div class="pcard-icon">01</div>
+          <div class="pcard-name">Selling<br>something</div>
+          <div class="pcard-desc">A product, a course, a physical good. You have something with a price attached.</div>
+          <div class="pcard-examples">Coffee &bull; Art &bull; Courses &bull; Merch &bull; Digital goods</div>
+        </div>
+        <div class="pcard" onclick="pickPath(this,'service')">
+          <div class="pcard-check">&#10003;</div>
+          <div class="pcard-icon">02</div>
+          <div class="pcard-name">Selling<br>expertise</div>
+          <div class="pcard-desc">You are the product. Your skill, knowledge, or creative work is what people are buying.</div>
+          <div class="pcard-examples">Coaching &bull; Design &bull; Consulting &bull; Photography &bull; Agency</div>
+        </div>
+        <div class="pcard" onclick="pickPath(this,'software')">
+          <div class="pcard-check">&#10003;</div>
+          <div class="pcard-icon">03</div>
+          <div class="pcard-name">Launching<br>software</div>
+          <div class="pcard-desc">An app, tool, platform, or SaaS. You built something technical and need the world to see it properly.</div>
+          <div class="pcard-examples">SaaS &bull; Mobile apps &bull; AI tools &bull; Dashboards &bull; APIs</div>
+        </div>
+        <div class="pcard" onclick="pickPath(this,'launch')">
+          <div class="pcard-check">&#10003;</div>
+          <div class="pcard-icon">04</div>
+          <div class="pcard-name">Launching<br>an idea</div>
+          <div class="pcard-desc">It doesn't fully exist yet. You're validating, raising, building an audience, or going pre-launch.</div>
+          <div class="pcard-examples">Waitlists &bull; MVP &bull; Fundraising &bull; Community &bull; Pre-launch</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 1: IDENTITY (all paths) -->
+    <div class="step" id="s1">
+      <div class="q-eye"><span>01 &mdash; Foundation</span></div>
+      <h2 class="q-title">Name it.<br><em>Define it.</em></h2>
+      <p class="q-sub" id="s1sub">Before anything is built, I need to know what it is. A precise name and one honest sentence is everything I need to begin.</p>
+      <div class="q-divider"></div>
+      <div class="field">
+        <label class="fl">Brand or project name</label>
+        <input class="fi" id="q1n" type="text" placeholder="What is it called?">
+      </div>
+      <div class="field">
+        <label class="fl" id="q1dl">What it does</label>
+        <textarea class="ta" id="q1d" rows="3" placeholder="One sentence. Who it is for and what it does for them."></textarea>
+      </div>
+    </div>
+
+    <!-- STEP 2: OFFER (adapts by path) -->
+    <div class="step" id="s2">
+      <div class="q-eye"><span>02 &mdash; Architecture</span></div>
+      <h2 class="q-title" id="s2title">What you sell<br>is the <em>structure.</em></h2>
+      <p class="q-sub" id="s2sub">Everything I build will be structured around what you offer. This is the architecture of your page.</p>
+      <div class="q-divider"></div>
+      <div id="s2content"></div>
+    </div>
+
+    <!-- STEP 3: AESTHETIC (all paths) -->
+    <div class="step" id="s3">
+      <div class="q-eye"><span>03 &mdash; Direction</span></div>
+      <h2 class="q-title">The best products are <em>felt</em><br>before they are understood.</h2>
+      <p class="q-sub">Choose the territory. Every color, typeface, and spacing decision follows from this single creative direction.</p>
+      <div class="q-divider"></div>
+      <div class="vibe-grid">
+        <div class="vcard" onclick="pickV(this,'dark')"><div class="vcheck">&#10003;</div><div class="vcard-swatch vs-dark"></div><div class="vcard-body"><div class="vcard-name">Dark &amp; Cinematic</div><div class="vcard-desc">Premium, minimal. Built to command attention.</div></div></div>
+        <div class="vcard" onclick="pickV(this,'light')"><div class="vcheck">&#10003;</div><div class="vcard-swatch vs-light"></div><div class="vcard-body"><div class="vcard-name">Light &amp; Editorial</div><div class="vcard-desc">Warm, refined. The language of trusted authority.</div></div></div>
+        <div class="vcard" onclick="pickV(this,'bold')"><div class="vcheck">&#10003;</div><div class="vcard-swatch vs-bold"></div><div class="vcard-body"><div class="vcard-name">Bold &amp; Modern</div><div class="vcard-desc">High-energy, high-contrast. Refuses to whisper.</div></div></div>
+        <div class="vcard" onclick="pickV(this,'organic')"><div class="vcheck">&#10003;</div><div class="vcard-swatch vs-organic"></div><div class="vcard-body"><div class="vcard-name">Warm &amp; Organic</div><div class="vcard-desc">Natural, earthy. Built for trust that takes time.</div></div></div>
+      </div>
+      <div class="field" style="margin-top:8px">
+        <label class="fl">Or name a brand yours should feel like (optional)</label>
+        <input class="fi" id="q3r" placeholder="e.g. Stripe, Linear, La Colombe, Apple, Notion">
+      </div>
+    </div>
+
+    <!-- STEP 4: ACTION (adapts by path) -->
+    <div class="step" id="s4">
+      <div class="q-eye"><span>04 &mdash; Conversion</span></div>
+      <h2 class="q-title">Every page<br>has <em>one job.</em></h2>
+      <p class="q-sub">I design every section in service of this single moment. The moment someone decides to act.</p>
+      <div class="q-divider"></div>
+      <div class="action-grid" id="s4content"></div>
+    </div>
+
+    <!-- STEP 5: EDGE (all paths) -->
+    <div class="step" id="s5">
+      <div class="q-eye"><span>05 &mdash; Distinction</span></div>
+      <h2 class="q-title">Why you<br>and <em>no one else?</em></h2>
+      <p class="q-sub">The specificity of what you write here is the specificity of what gets built. Generic in, generic out. Tell me exactly who this is for and what makes you the only real choice.</p>
+      <div class="q-divider"></div>
+      <div class="field">
+        <textarea class="ta" id="q5e" rows="5" placeholder="Who is your ideal customer? What do they struggle with before they find you? What do you do that nobody else does? What should they feel the moment they land on your page?"></textarea>
+      </div>
+      <div class="field-hint">The more honest and specific, the stronger the build.</div>
+    </div>
+
+
+    <!-- STEP 6: CIPHER CLARIFYING QUESTION -->
+    <div class="step" id="s6">
+      <div class="q-eye"><span>06 &mdash; Precision</span></div>
+      <h2 class="q-title">One more<br><em>before we build.</em></h2>
+      <p class="q-sub">This answer shapes your hero copy and brand voice. The more specific you are, the more yours it feels on the first render.</p>
+      <div class="q-divider"></div>
+      <div class="clarify-box">
+        <div class="clarify-label">Cipher is asking</div>
+        <div class="clarify-q" id="clarifyQ">What is the one thing you want someone to feel the moment they land?</div>
+        <textarea class="ta" id="q6answer" rows="3" placeholder="Be specific. This becomes your hero headline direction."></textarea>
+      </div>
+    </div>
+
+    <!-- STEP 7: PRE-BUILD CONFIRMATION BRIEF -->
+    <div class="step" id="s7">
+      <div class="q-eye"><span>07 &mdash; Contract</span></div>
+      <h2 class="q-title">Before I build,<br><em>confirm this is right.</em></h2>
+      <p class="q-sub">This is exactly what Cipher is about to build. Read it. If anything is wrong, go back and fix it now. Corrections here cost nothing. Corrections after cost refines.</p>
+      <div class="q-divider"></div>
+      <div class="gaps-section" id="gapsSection"></div>
+      <div class="spec-card" id="specCard">
+        <div class="spec-card-top">
+          <div class="spec-top-glyph"><div class="spec-top-dot"></div></div>
+          <div class="spec-top-text">
+            <div class="spec-top-label">Build contract</div>
+            <div class="spec-top-title" id="specTitle">Assembling your brief...</div>
+          </div>
+        </div>
+        <div class="spec-rows" id="specRows"></div>
+        <div class="spec-card-footer">
+          <div class="spec-footer-note">
+            <strong>This is your first render contract.</strong> Every section, every interaction, every design decision follows from what you see above. Confirm it is right and Cipher builds at full power.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-nav" id="stepNav">
+      <button class="btn-prev" id="btnPrev" onclick="goPrev()" style="display:none">&#8592;</button>
+      <button class="btn-go" id="btnNext" onclick="goNext()">Continue &#8594;</button>
+    </div>
+  </div>
+
+  <div class="tl"></div>
+
+  <!-- BUILD -->
+  <div class="build-screen" id="buildScreen">
+    <h2 class="bs-h">Cipher is <em>building</em><br>your contract.</h2>
+    <div class="bs-sub">AAIPE executing. Five layers. Nothing guessed. Everything deliberate.</div>
+    <div class="contract"><div class="contract-lbl">Build contract</div><div class="contract-body" id="contractBody">Assembling brief...</div></div>
+    <div class="bar-wrap"><div class="bar-fill" id="barFill"></div></div>
+    <div class="bar-pct" id="barPct">0%</div>
+    <div class="layers">
+      <div class="layer" id="l1"><div class="ln">01</div><div class="lname">Analyze &mdash; Extracting intent and requirements</div><div class="lstate" id="ls1">Waiting</div><div class="lspin"></div></div>
+      <div class="layer" id="l2"><div class="ln">02</div><div class="lname">Architect &mdash; Selecting blueprint and structure</div><div class="lstate" id="ls2">Waiting</div><div class="lspin"></div></div>
+      <div class="layer" id="l3"><div class="ln">03</div><div class="lname">Implement &mdash; Generating production output</div><div class="lstate" id="ls3">Waiting</div><div class="lspin"></div></div>
+      <div class="layer" id="l4"><div class="ln">04</div><div class="lname">Polish &mdash; Applying design system</div><div class="lstate" id="ls4">Waiting</div><div class="lspin"></div></div>
+      <div class="layer" id="l5"><div class="ln">05</div><div class="lname">Evaluate &mdash; Scoring and surfacing pathways</div><div class="lstate" id="ls5">Waiting</div><div class="lspin"></div></div>
+    </div>
+  </div>
+
+  <!-- COMPLETE -->
+  <div class="complete-screen" id="completeScreen">
+    <div class="complete-mark">&#9702;</div>
+    <h2 class="complete-h">It <em>exists.</em></h2>
+    <p class="complete-sub" id="completeSub">Your vision crossed the threshold. <strong>What you described is now real.</strong> This is the beginning of where it goes.</p>
+    <div class="complete-ctas">
+      <button class="btn-open" onclick="setTimeout(function(){ window.location.href = '/dashboard'; }, 300)">Open your build &#8594;</button>
+      <button class="btn-again" onclick="resetAll()">Build something else</button>
+    </div>
+    <div class="ownership"><span>Your code</span><span>&#183;</span><span>Your domain</span><span>&#183;</span><span>Your data</span><span>&#183;</span><span>Yours forever</span></div>
+  </div>
+
+</div>
+
+<script>
+/* CURSOR */
+var cur=document.getElementById("cur"),cc=cur.querySelector(".cc"),cr=cur.querySelector(".cr");
+var mx=window.innerWidth/2,my=window.innerHeight/2,rx=mx,ry=my;
+document.addEventListener("mousemove",function(e){mx=e.clientX;my=e.clientY;cur.style.transform="translate("+mx+"px,"+my+"px)"});
+(function lerp(){rx+=(mx-rx)*0.08;ry+=(my-ry)*0.08;cr.style.left=(rx-mx)+"px";cr.style.top=(ry-my)+"px";requestAnimationFrame(lerp)})();
+function con(){cc.style.transform="translate(-50%,-50%) scale(3)";cr.style.transform="translate(-50%,-50%) scale(0.35)";cr.style.borderColor="rgba(255,232,168,0.45)"}
+function coff(){cc.style.transform="translate(-50%,-50%) scale(1)";cr.style.transform="translate(-50%,-50%) scale(1)";cr.style.borderColor="rgba(255,232,168,0.14)"}
+function bindCursor(){document.querySelectorAll("button,a,.pcard,.vcard,.acard").forEach(function(el){el.removeEventListener("mouseenter",con);el.removeEventListener("mouseleave",coff);el.addEventListener("mouseenter",con);el.addEventListener("mouseleave",coff)})}
+bindCursor();
+
+/* PARTICLES */
+var cv=document.getElementById("cv"),ctx=cv.getContext("2d"),W,H,parts=[],flsh=[];
+function rsz(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight}
+rsz();window.addEventListener("resize",rsz);
+function Part(){this.init()}
+Part.prototype.init=function(){this.x=Math.random()*W;this.y=Math.random()*H;this.vx=(Math.random()-.5)*0.18;this.vy=(Math.random()-.5)*0.18;this.sz=Math.random()*1.2+0.2;this.s=Math.random();this.t=Math.random();this.sp=0.002+Math.random()*0.003};
+Part.prototype.tick=function(){this.x+=this.vx;this.y+=this.vy;this.s+=(this.t-this.s)*this.sp;if(Math.abs(this.s-this.t)<0.01)this.t=Math.random();var dx=mx-this.x,dy=my-this.y,d=Math.sqrt(dx*dx+dy*dy);if(d<150){this.vx+=dx/d*0.005*(1-d/150);this.vy+=dy/d*0.005*(1-d/150)}this.vx*=0.992;this.vy*=0.992;if(this.x<0||this.x>W||this.y<0||this.y>H)this.init()};
+Part.prototype.draw=function(){var r=Math.floor(232+this.s*23),g=Math.floor(228+this.s*4),b=Math.floor(216-this.s*48),a=this.s*0.32+0.02;ctx.beginPath();ctx.arc(this.x,this.y,this.sz,0,Math.PI*2);ctx.fillStyle="rgba("+r+","+g+","+b+","+a+")";ctx.fill()};
+for(var i=0;i<160;i++)parts.push(new Part());
+setInterval(function(){flsh.push({x:Math.random()*W,y:Math.random()*H,l:1,s:0})},750);
+function frame(){ctx.clearRect(0,0,W,H);for(var i=0;i<parts.length;i+=2){for(var j=i+1;j<parts.length;j+=2){var dx=parts[i].x-parts[j].x,dy=parts[i].y-parts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<75){ctx.beginPath();ctx.moveTo(parts[i].x,parts[i].y);ctx.lineTo(parts[j].x,parts[j].y);ctx.strokeStyle="rgba(255,232,168,"+((1-d/75)*(parts[i].s+parts[j].s)/2*0.045)+")";ctx.lineWidth=0.5;ctx.stroke()}}}parts.forEach(function(p){p.tick();p.draw()});flsh=flsh.filter(function(f){return f.l>0.02});flsh.forEach(function(f){f.s+=7*f.l;f.l*=0.87;ctx.beginPath();ctx.arc(f.x,f.y,f.s,0,Math.PI*2);ctx.fillStyle="rgba(255,232,168,"+(f.l*0.045)+")";ctx.fill()});requestAnimationFrame(frame)}
+frame();
+
+/* VOICE */
+var voices={
+  s0:"What are you building? Every path gets the same quality from me. This just tells me how to structure what comes next.",
+  s1_product:"Good. Before I build a single element, I need to know what we are naming and what it does. One sentence is enough.",
+  s1_service:"Good. Your credibility starts with clarity. Tell me what you do, who you do it for, and what changes for them when they work with you.",
+  s1_software:"Good. Technical products live or die on how clearly they communicate their value. Start with the name and one honest sentence about the problem it solves.",
+  s1_launch:"Good. Ideas that look real get treated as real. Give me the name and the clearest sentence you have about what this becomes.",
+  s2_product:"Your products are the architecture of every page I build. List what you sell. Name and price is all I need to structure everything around them.",
+  s2_service:"How you work with people shapes everything. Walk me through your process, your packages, and what working with you actually looks like.",
+  s2_software:"Features tell me nothing. Problems solved tell me everything. Walk me through what your software does and who uses it.",
+  s2_launch:"Pre-launch pages live or die on the specificity of the vision. Tell me exactly what you are building and what stage it is at.",
+  s3:"The best products are felt before they are understood. Choose the emotional territory and I will work within it precisely.",
+  s4:"Every section I build points toward this moment. Choose the one action that matters most.",
+  s5:"This is where the build either becomes yours or becomes generic. The more specific you are here, the more precisely I can build something nobody else could.",
+  s6:"One last question before I start. This answer goes straight into your hero copy. The more honest and specific, the stronger the opening line.",
+  s7:"This is your build contract. Read every line. If anything is wrong, go back now. Changes here cost nothing. Changes after the build costs refines."
+};
+
+function typeVoice(text,cb){
+  var el=document.getElementById("cipherText");
+  el.innerHTML="";
+  var i=0,cursor=document.createElement("span");
+  cursor.className="tcursor";
+  function go(){if(i<text.length){el.textContent=text.slice(0,i+1);el.appendChild(cursor);i++;setTimeout(go,14+Math.random()*10)}else{el.appendChild(cursor);if(cb)setTimeout(cb,300)}}
+  setTimeout(go,180);
+}
+
+/* PATH CONTENT */
+var pathConfigs={
+  product:{
+    s1sub:"Before I build a single element, I need to know what we are naming and what it does. Precision here drives everything.",
+    s1dl:"What it does",
+    s1ph:"One sentence. Who it is for and what it gives them.",
+    s2title:"What you sell
+is the structure.",
+    s2sub:"Your products are the architecture of every section I build. List what you sell with a price. I will build the value story around them.",
+    s2html:'<div class="offer-tbl" id="offerTbl"><div class="offer-row"><input class="fi" placeholder="Product or service name" data-o="n"><input class="fi" placeholder="Price" data-o="p"></div><div class="offer-row"><input class="fi" placeholder="Product or service name" data-o="n"><input class="fi" placeholder="Price" data-o="p"></div><div class="offer-row"><input class="fi" placeholder="Product or service name" data-o="n"><input class="fi" placeholder="Price" data-o="p"></div></div><button class="add-item" onclick="addOffer()">+ Add another item</button><div class="field-hint">List everything you offer. Leave empty rows blank.</div>',
+    s4actions:[
+      {id:"buy",name:"Buy Now",desc:"Direct purchase. Commerce-first structure."},
+      {id:"subscribe",name:"Subscribe",desc:"Recurring revenue. The long relationship."},
+      {id:"learn",name:"Learn More",desc:"Education-first. Earned trust before the ask."},
+      {id:"waitlist",name:"Join Waitlist",desc:"Not live yet. Capture demand now."}
+    ]
+  },
+  service:{
+    s1sub:"Your credibility starts with clarity. Tell me what you do, who for, and what changes for them.",
+    s1dl:"What you do",
+    s1ph:"One sentence. Who you serve and what you transform for them.",
+    s2title:"How you work
+is the architecture.",
+    s2sub:"Your process and packages shape every section I build. Walk me through what working with you actually looks like.",
+    s2html:'<div class="field"><label class="fl">What you offer</label><textarea class="ta" id="s2service" rows="3" placeholder="Describe your service, packages, or how people work with you. Include pricing if you have it."></textarea></div><div class="field"><label class="fl">Who you work best with</label><input class="fi" id="s2ideal" placeholder="Describe your ideal client in one sentence."></div>',
+    s4actions:[
+      {id:"book",name:"Book a Call",desc:"High-ticket consult. Relationship-first."},
+      {id:"contact",name:"Start a Conversation",desc:"Lead capture. The relationship begins here."},
+      {id:"apply",name:"Apply to Work Together",desc:"Selective. Builds authority and demand."},
+      {id:"learn",name:"See My Work",desc:"Portfolio-first. Let the work close."}
+    ]
+  },
+  software:{
+    s1sub:"Technical products live or die on clarity. Give me the name and the one honest sentence about the problem it solves.",
+    s1dl:"The problem it solves",
+    s1ph:"One sentence. The exact problem and who has it.",
+    s2title:"Problems solved,
+not <em>features listed.</em>",
+    s2sub:"Features tell me nothing. Problems solved tell me everything. Walk me through what your software does and who uses it.",
+    s2html:'<div class="field"><label class="fl">Core features or capabilities</label><textarea class="ta" id="s2features" rows="3" placeholder="What are the 3-5 most important things your software does? What does it make possible?"></textarea></div><div class="field"><label class="fl">Who uses it</label><input class="fi" id="s2users" placeholder="Job title, role, or type of person. Be specific."></div><div class="field"><label class="fl">Pricing model (optional)</label><input class="fi" id="s2pricing" placeholder="Free tier, monthly subscription, one-time, usage-based..."></div>',
+    s4actions:[
+      {id:"signup",name:"Start Free",desc:"Low friction. Get them in the product."},
+      {id:"demo",name:"Book a Demo",desc:"Enterprise. Human-assisted conversion."},
+      {id:"waitlist",name:"Join Waitlist",desc:"Pre-launch. Capture early adopters."},
+      {id:"trial",name:"Start Free Trial",desc:"Let the product sell itself."}
+    ]
+  },
+  launch:{
+    s1sub:"Ideas that look real get treated as real. Give me the name and the clearest sentence you have about what this becomes.",
+    s1dl:"What this becomes",
+    s1ph:"One sentence. The vision at full maturity.",
+    s2title:"The vision<br>in <em>detail.</em>",
+    s2sub:"Pre-launch pages live or die on specificity. The more clearly you describe what you are building, the more real it looks.",
+    s2html:'<div class="field"><label class="fl">What you are building</label><textarea class="ta" id="s2vision" rows="3" placeholder="Describe what this is in detail. What does it do, who is it for, what problem does it solve?"></textarea></div><div class="field"><label class="fl">Where it is now</label><input class="fi" id="s2stage" placeholder="e.g. Raising funding, building MVP, pre-launch, accepting early access..."></div><div class="field"><label class="fl">Launch timeline (optional)</label><input class="fi" id="s2timeline" placeholder="e.g. Q2 2026, this summer, accepting beta users now..."></div>',
+    s4actions:[
+      {id:"waitlist",name:"Join Waitlist",desc:"Capture demand before you exist."},
+      {id:"earlyaccess",name:"Get Early Access",desc:"Exclusive. Builds anticipation."},
+      {id:"invest",name:"Learn to Invest",desc:"Raising capital. Serious operators."},
+      {id:"notify",name:"Notify Me",desc:"Soft commitment. Maximum reach."}
+    ]
+  }
+};
+
+/* STATE */
+var currentStep=0;
+var totalSteps=7;
+var path="";
+var vibe="";
+var action="";
+
+function buildProgSegs(){
+  var segs=document.getElementById("progSegs");
+  segs.innerHTML="";
+  for(var i=0;i<=totalSteps;i++){
+    var d=document.createElement("div");
+    if(i<currentStep)d.className="ps done";
+    else if(i===currentStep)d.className="ps active";
+    else d.className="ps";
+    segs.appendChild(d);
+  }
+  var num=currentStep+1;
+  document.getElementById("progLbl").textContent=(num<10?"0"+num:num)+" of 0"+(totalSteps+1);
+  var prev=document.getElementById("btnPrev");
+  var next=document.getElementById("btnNext");
+  if(prev)prev.style.display=currentStep>0?"block":"none";
+  if(next)next.textContent=currentStep===totalSteps?"Build it →":"Continue →";
+}
+
+function showStep(n){
+  for(var i=0;i<=totalSteps;i++){
+    var el=document.getElementById("s"+i);
+    if(el)el.className=i===n?"step on":"step";
+  }
+  currentStep=n;
+  buildProgSegs();
+  var vkey="s"+n;
+  var pkey=vkey+"_"+path;
+  var vtext=voices[pkey]||voices[vkey]||"";
+  if(vtext)typeVoice(vtext);
+  if(n===1&&path)applyPathContent();
+  if(n===2&&path)applyStep2();
+  if(n===4&&path)applyStep4();
+  if(n===6)applyClarifyQ();
+  if(n===7)buildSpecCard();
+  bindCursor();
+}
+
+function applyPathContent(){
+  var cfg=pathConfigs[path];
+  if(!cfg)return;
+  var sub=document.getElementById("s1sub");
+  var dl=document.getElementById("q1dl");
+  var ta=document.getElementById("q1d");
+  if(sub)sub.textContent=cfg.s1sub;
+  if(dl)dl.textContent=cfg.s1dl;
+  if(ta)ta.placeholder=cfg.s1ph;
+}
+
+function applyStep2(){
+  var cfg=pathConfigs[path];
+  if(!cfg)return;
+  var title=document.getElementById("s2title");
+  var sub=document.getElementById("s2sub");
+  var content=document.getElementById("s2content");
+  if(title)title.innerHTML=cfg.s2title;
+  if(sub)sub.textContent=cfg.s2sub;
+  if(content)content.innerHTML=cfg.s2html;
+  bindCursor();
+}
+
+function applyStep4(){
+  var cfg=pathConfigs[path];
+  if(!cfg)return;
+  var grid=document.getElementById("s4content");
+  if(!grid)return;
+  var html="";
+  for(var i=0;i<cfg.s4actions.length;i++){
+    var a=cfg.s4actions[i];
+    html+="<div class='acard' onclick='pickA(this,""+a.id+"")'><div class='acheck'>&#10003;</div><div class='acard-name'>"+a.name+"</div><div class='acard-desc'>"+a.desc+"</div></div>";
+  }
+  grid.innerHTML=html;
+  bindCursor();
+}
+
+function pickPath(el,p){
+  document.querySelectorAll(".pcard").forEach(function(c){c.classList.remove("on")});
+  el.classList.add("on");
+  path=p;
+}
+
+function pickV(el,v){
+  document.querySelectorAll(".vcard").forEach(function(c){c.classList.remove("on")});
+  el.classList.add("on");
+  vibe=v;
+}
+
+function pickA(el,a){
+  document.querySelectorAll(".acard").forEach(function(c){c.classList.remove("on")});
+  el.classList.add("on");
+  action=a;
+}
+
+function addOffer(){
+  var t=document.getElementById("offerTbl");
+  if(!t)return;
+  var r=document.createElement("div");
+  r.className="offer-row";
+  r.innerHTML="<input class='fi' placeholder='Product or service name' data-o='n'><input class='fi' placeholder='Price' data-o='p'>";
+  t.appendChild(r);
+}
+
+
+function applyClarifyQ(){
+  var questions={
+    product:"What is the single feeling you want someone to have the moment they see your product? Luxury, discovery, trust, or urgency?",
+    service:"What is the single outcome your best client achieved working with you? Name the result and the person if you can.",
+    software:"Who is your most frustrated potential user and what exactly are they frustrated about before they find you?",
+    launch:"What do you want the first person on your waitlist to tell their friend about you?"
+  };
+  var el=document.getElementById("clarifyQ");
+  if(el && questions[path]){
+    el.innerHTML=questions[path].replace(/([^.?]+[.?])/g,"$1");
+  }
+}
+
+function buildSpecCard(){
+  var d=collect();
+  var vmapLabel={dark:"Dark &amp; Cinematic",light:"Light &amp; Editorial",bold:"Bold &amp; Modern",organic:"Warm &amp; Organic"};
+  var amapLabel={buy:"Buy Now",book:"Book a Call",waitlist:"Join Waitlist",subscribe:"Subscribe",contact:"Start a Conversation",learn:"Learn More",signup:"Start Free",demo:"Book a Demo",trial:"Start Free Trial",earlyaccess:"Get Early Access",invest:"Learn to Invest",notify:"Notify Me"};
+  var pmapLabel={product:"E-Commerce / Product",service:"Service Business",software:"SaaS / Software",launch:"Pre-Launch / Idea"};
+  var bpmap={product:"Commerce — Product Store",service:"Service — Credibility & Conversion",software:"SaaS — Product & Feature",launch:"Launch — Validation & Demand"};
+
+  var title=document.getElementById("specTitle");
+  if(title) title.textContent=d.name||(pmapLabel[path]||"Your Build");
+
+  var gaps=[];
+  if(!d.name) gaps.push({key:"Brand name",msg:"No brand name entered. I will use a placeholder."});
+  if(!d.desc) gaps.push({key:"Description",msg:"No description entered. Hero copy will be generic."});
+  if(path==="product"&&!d.offers.length) gaps.push({key:"Products",msg:"No products listed. Commerce structure will use placeholders."});
+  if(!d.vibe) gaps.push({key:"Aesthetic",msg:"No visual direction selected. I will default to Dark &amp; Cinematic."});
+  if(!d.action) gaps.push({key:"Primary CTA",msg:"No action selected. I will default to the most common for your path."});
+
+  var gapsSection=document.getElementById("gapsSection");
+  if(gapsSection){
+    if(gaps.length){
+      var ghtml="";
+      for(var i=0;i<gaps.length;i++){
+        ghtml+="<div class='gap-flag'><div class='gap-icon'>!</div><div class='gap-text'><strong>"+gaps[i].key+"</strong> &mdash; "+gaps[i].msg+"</div></div>";
+      }
+      gapsSection.innerHTML=ghtml;
+      gapsSection.style.display="block";
+    } else {
+      gapsSection.innerHTML="";
+      gapsSection.style.display="none";
+    }
+  }
+
+  var clarifyAnswer=(document.getElementById("q6answer")||{value:""}).value.trim();
+  var offersDisplay=d.offers.length?d.offers.slice(0,4).map(function(o){return "<span class='tag'>"+o+"</span>"}).join(""):"<em>None entered</em>";
+
+  var rows=[
+    {key:"Blueprint",val:bpmap[path]||"Custom"},
+    {key:"Brand",val:d.name||"<em>Not entered</em>"},
+    {key:"Type",val:pmapLabel[path]||path},
+    {key:"Aesthetic",val:vmapLabel[d.vibe]||"<em>Not selected</em>"},
+    {key:"Primary CTA",val:amapLabel[d.action]||"<em>Not selected</em>"},
+    {key:"Offerings",val:offersDisplay},
+    {key:"Voice &amp; Edge",val:d.edge?"<em>"+d.edge.slice(0,80)+(d.edge.length>80?"...":"")+"</em>":"<em>Not entered</em>"},
+    {key:"Hero Direction",val:clarifyAnswer?"<em>"+clarifyAnswer.slice(0,80)+(clarifyAnswer.length>80?"...":"")+"</em>":"<em>Not entered</em>"},
+    {key:"Photography",val:"Curated editorial — matched to "+( pmapLabel[path]||"your build type")},
+    {key:"Reference",val:d.ref||"<em>None specified — Cipher selects</em>"}
+  ];
+
+  var rowsEl=document.getElementById("specRows");
+  if(rowsEl){
+    var rhtml="";
+    for(var i=0;i<rows.length;i++){
+      rhtml+="<div class='spec-row'><div class='spec-key'>"+rows[i].key+"</div><div class='spec-val'>"+rows[i].val+"</div></div>";
+    }
+    rowsEl.innerHTML=rhtml;
+  }
+}
+
+function goNext(){
+  if(!path&&currentStep===0){typeVoice("Choose a path first. Every direction leads somewhere great.");return}
+  if(currentStep<totalSteps)showStep(currentStep+1);
+  else startBuild();
+}
+
+function goPrev(){
+  if(currentStep>0)showStep(currentStep-1);
+}
+
+function collect(){
+  var name=(document.getElementById("q1n")||{value:""}).value.trim();
+  var desc=(document.getElementById("q1d")||{value:""}).value.trim();
+  var ref=(document.getElementById("q3r")||{value:""}).value.trim();
+  var edge=(document.getElementById("q5e")||{value:""}).value.trim();
+  var clarify=(document.getElementById("q6answer")||{value:""}).value.trim();
+  var ni=document.querySelectorAll("[data-o='n']"),pi=document.querySelectorAll("[data-o='p']"),offers=[];
+  for(var i=0;i<ni.length;i++){var on=ni[i].value.trim();if(on)offers.push(on+(pi[i]&&pi[i].value?" ("+pi[i].value.trim()+")":""))}
+  var s2extra="";
+  var s2fields=["s2service","s2ideal","s2features","s2users","s2pricing","s2vision","s2stage","s2timeline"];
+  for(var i=0;i<s2fields.length;i++){var el=document.getElementById(s2fields[i]);if(el&&el.value.trim())s2extra+=el.value.trim()+" "}
+  return{name:name,desc:desc,path:path,offers:offers,s2:s2extra.trim(),vibe:vibe,ref:ref,action:action,edge:edge,clarify:clarify}
+}
+
+function buildBrief(d){
+  var vm={dark:"dark cinematic premium",light:"light editorial warm",bold:"bold modern high-energy",organic:"warm organic natural"};
+  var am={buy:"Buy Now",subscribe:"Subscribe",learn:"Learn More",waitlist:"Join Waitlist",book:"Book a Call",contact:"Start a Conversation",apply:"Apply to Work Together",signup:"Start Free",demo:"Book a Demo",trial:"Start Free Trial",earlyaccess:"Get Early Access",invest:"Learn to Invest",notify:"Notify Me"};
+  var pm={product:"product/ecommerce",service:"service business",software:"SaaS/software",launch:"pre-launch"};
+  var p=[];
+  if(d.name)p.push("Build a "+(vm[d.vibe]||"professional")+" "+(pm[d.path]||"")+" website for "+d.name+".");
+  if(d.desc)p.push(d.desc);
+  if(d.offers.length)p.push("Offerings: "+d.offers.join(", ")+".");
+  if(d.s2)p.push(d.s2);
+  if(d.action)p.push("Primary conversion goal: "+(am[d.action]||d.action)+".");
+  if(d.edge)p.push(d.edge);
+  if(d.clarify)p.push('Hero direction: '+d.clarify);
+  if(d.ref)p.push("Design reference: "+d.ref+".");
+  return p.join(" ")||"Building your vision...";
+}
+
+function startBuild(){
+  var d = collect();
+  try { sessionStorage.setItem('__intakeData', JSON.stringify(d)); } catch(e){}
+  document.getElementById("intake").style.display="none";
+  document.getElementById("buildScreen").style.display="block";
+  var d=collect();
+  document.getElementById("contractBody").textContent=buildBrief(d);
+  typeVoice("Contract locked. AAIPE executing. Five layers. One render.");
+  var layers=[
+    {id:"l1",sid:"ls1",start:400,dur:1100,done:"Analyzed"},
+    {id:"l2",sid:"ls2",start:1700,dur:1300,done:"Matched"},
+    {id:"l3",sid:"ls3",start:3200,dur:3200,done:"Generated"},
+    {id:"l4",sid:"ls4",start:6600,dur:1200,done:"Polished"},
+    {id:"l5",sid:"ls5",start:8000,dur:700,done:"Scored"}
+  ];
+  var bf=document.getElementById("barFill"),bp=document.getElementById("barPct");
+  layers.forEach(function(l,idx){
+    setTimeout(function(){
+      var el=document.getElementById(l.id),st=document.getElementById(l.sid);
+      if(el)el.classList.add("active");if(st)st.textContent="Running";
+      var pct=(idx+1)/layers.length*100;
+      if(bf)bf.style.width=(pct*0.85)+"%";if(bp)bp.textContent=Math.round(pct*0.85)+"%";
+      setTimeout(function(){
+        if(el){el.classList.remove("active");el.classList.add("done")}if(st)st.textContent=l.done;
+        if(bf)bf.style.width=pct+"%";if(bp)bp.textContent=Math.round(pct)+"%";
+        if(idx===layers.length-1)setTimeout(showComplete,600);
+      },l.dur);
+    },l.start);
+  });
+}
+
+function showComplete(){
+  document.getElementById("buildScreen").style.display="none";
+  document.getElementById("completeScreen").style.display="block";
+  var d=collect();
+  var brand=d.name||"Your build";
+  typeVoice(brand+" exists now. The threshold was crossed. What happens next is yours.");
+  var sub=document.getElementById("completeSub");
+  if(sub&&d.name)sub.innerHTML=d.name+" was built from five precise answers. Architecture locked. Design applied. <strong>This is where your idea starts becoming a business.</strong>";
+}
+
+function resetAll(){
+  currentStep=0;path="";vibe="";action="";
+  document.querySelectorAll(".fi,.ta").forEach(function(el){el.value=""});
+  document.querySelectorAll(".pcard,.vcard,.acard").forEach(function(el){el.classList.remove("on")});
+  document.querySelectorAll(".layer").forEach(function(el){el.classList.remove("active","done")});
+  document.querySelectorAll(".lstate").forEach(function(el){el.textContent="Waiting"});
+  var bf=document.getElementById("barFill"),bp=document.getElementById("barPct");
+  if(bf)bf.style.width="0";if(bp)bp.textContent="0%";
+  document.getElementById("buildScreen").style.display="none";
+  document.getElementById("completeScreen").style.display="none";
+  document.getElementById("intake").style.display="block";
+  showStep(0);
+}
+
+buildProgSegs();
+typeVoice(voices.s0);
+</script>
+</body>
+</html>
