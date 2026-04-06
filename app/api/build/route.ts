@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
     const parsed = BuildSchema.safeParse(body)
     if (!parsed.success) { console.log("[PARSE ERROR]", JSON.stringify(parsed.error.issues)); return NextResponse.json({ error: "Invalid request", issues: parsed.error.issues }, { status: 400 }) }
 
-    const { prompt, appId, persona } = parsed.data
+    const { prompt, appId, persona, blueprintId: incomingBlueprintId } = parsed.data
     const tier = (userData.tier as string) || 'free'
     const limits = TIER_LIMITS[tier] || TIER_LIMITS.free
 
@@ -112,14 +112,24 @@ export async function POST(req: NextRequest) {
     else if(promptLower.match(/restaurant|food|eat|dining|chef|kitchen|pizza|burger/)) searchQuery = categoryPhotoQueries.restaurant
     else if(promptLower.match(/fitness|gym|workout|training|crossfit|yoga/)) searchQuery = categoryPhotoQueries.fitness
     else if(promptLower.match(/fashion|cloth|wear|apparel|dress|boutique/)) searchQuery = categoryPhotoQueries.fashion
-    else if(promptLower.match(/beauty|skin|hair|makeup|salon|spa/)) searchQuery = categoryPhotoQueries.beauty
+    else if(promptLower.match(/beauty|skin|hair|makeup|salon/)) searchQuery = categoryPhotoQueries.beauty
     else if(promptLower.match(/saas|software|app|dashboard|platform|tech|startup/)) searchQuery = categoryPhotoQueries.saas
     else if(promptLower.match(/real estate|property|house|apartment|realtor/)) searchQuery = categoryPhotoQueries.real_estate
     else if(promptLower.match(/health|medical|dental|clinic|wellness/)) searchQuery = categoryPhotoQueries.health
+    else if(promptLower.match(/spa|float|sauna|massage|infrared|sound bath|meditation|retreat|holistic/)) searchQuery = 'spa wellness relaxation therapy'
+    else if(promptLower.match(/yoga|pilates|stretch|mindful|breathwork/)) searchQuery = 'yoga wellness studio peaceful'
+    else if(promptLower.match(/bar|cocktail|lounge|whiskey|bourbon|speakeasy/)) searchQuery = 'cocktail bar lounge drinks'
+    else if(promptLower.match(/tattoo|piercing|ink|studio art/)) searchQuery = 'tattoo studio art creative'
+    else if(promptLower.match(/pet|dog|cat|grooming|veterinar/)) searchQuery = 'pet dog grooming veterinary'
+    else if(promptLower.match(/wedding|bridal|event|florist|ceremony/)) searchQuery = 'wedding event elegant floral'
+    else if(promptLower.match(/law|legal|attorney|lawyer|firm/)) searchQuery = 'law office professional legal'
+    else if(promptLower.match(/dental|teeth|orthodont|smile/)) searchQuery = 'dental clinic teeth smile'
+    else if(promptLower.match(/construction|contractor|renovation|remodel/)) searchQuery = 'construction renovation building'
     else if(promptLower.match(/music|band|concert|album|studio/)) searchQuery = categoryPhotoQueries.music
     else if(promptLower.match(/travel|hotel|resort|tour|vacation/)) searchQuery = categoryPhotoQueries.travel
     else if(promptLower.match(/sport|athletic|team|league|compete/)) searchQuery = categoryPhotoQueries.sports
-    else if(blueprintId) searchQuery = blueprintId.replace(/_/g,' ')
+    else if(incomingBlueprintId && blueprintPhotoMap[incomingBlueprintId]) searchQuery = blueprintPhotoMap[incomingBlueprintId]
+    else if(incomingBlueprintId) searchQuery = incomingBlueprintId.replace(/_/g,' ')
     console.log('[PEXELS QUERY]', searchQuery)
     const [photoUrls, videoUrl] = await Promise.all([
       fetchPexelsPhotos(searchQuery),
@@ -171,6 +181,9 @@ DESIGN SYSTEM — FOLLOW THE USER PROMPT EXACTLY:
 - Load Google Font via dangerouslySetInnerHTML style tag FIRST
 - Display font ALL headings. JetBrains Mono ALL numbers metrics amounts IDs.
 - Active nav: bg-accent/10 text-accent border-l-2 border-accent font-semibold
+- TYPOGRAPHY CONTRACT: Fraunces serif 900 weight for ALL display headings. DM Sans 300 for body text. JetBrains Mono for ALL numbers prices labels badges stats. This is non-negotiable on every build.
+- PHOTO CONTRACT: Use ONLY the Pexels URLs injected below. Every img tag uses a Pexels URL. Every hero uses the video URL as autoplay muted loop background. Zero broken images. Zero placeholder boxes.
+- ACCESSIBILITY: Every img has descriptive alt text. Every button is a real button element. Every form input has an associated label. Semantic HTML throughout.
 
 LAYOUT ALWAYS:
 - Fixed left sidebar 220-240px — ALWAYS
@@ -188,7 +201,17 @@ THE STANDARD: 60 seconds. Cannot look away. Every build. No exceptions.
 
 ${mediaBlock}
 
-OUTPUT STRUCTURE — every build must include in this order: fixed navigation with logo and cart, hero with full-bleed photography and headline, marquee strip, product or service grid with hover states and click-to-modal, story section with stats, subscription or pricing section, footer with email signup. Every product card opens a detail modal with image variant selector quantity and add to cart. Cart drawer slides from right. Checkout flows through three steps information shipping payment with running order summary. All sections fully populated with specific real data. Nothing placeholder. Nothing generic.
+OUTPUT STRUCTURE — every build must include in this order: fixed navigation with logo and cart, hero with autoplay muted loop VIDEO background from the injected video URL with headline overlaid, marquee strip, product or service grid with hover states and click-to-modal, story section with stats, subscription or pricing section, footer with email signup. Every product card opens a detail modal with image variant selector quantity and add to cart. Cart drawer slides from right. Checkout flows through three steps information shipping payment with running order summary. All sections fully populated with specific real data. Nothing placeholder. Nothing generic.
+
+MICRO-INTERACTION CONTRACT — every build must include:
+- Add to cart button springs with cubic-bezier(0.34,1.56,0.64,1) scale animation on click
+- Hero headline words reveal staggered with translateY(100%) to 0 animation on load
+- Product cards lift 4px on hover with box-shadow transition 0.3s
+- Stats count up from zero when scrolled into view using IntersectionObserver
+- Success states draw SVG checkmark stroke by stroke using stroke-dashoffset animation
+- Image skeleton shimmer while loading then fade in on load event
+- Toast notifications slide up from bottom and auto-dismiss after 2.8 seconds
+- Nav cart badge springs in with scale animation when items added
 
 CRITICAL — APOSTROPHE RULE: In ALL JavaScript string literals use double quotes only. Never single quotes for strings containing English text. Write: const msg = "It's ready" not const msg = \'It\'s ready\'. Single quotes inside single-quoted strings crash the Babel sandbox instantly.`,
       messages: [{ role: 'user', content: `${prompt}
