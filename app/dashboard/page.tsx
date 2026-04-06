@@ -564,8 +564,8 @@ export default function DashboardPage() {
     if(!prompt.trim()||appState!=='idle')return
     setAppState('building');setProjName('New Architect');setVer('BUILDING...');setShowNarr(true)
     setMsgs([{role:'cipher',text:'I see your vision. Let me bring it to life.'},{role:'user',text:prompt},{role:'cipher',text:'Analyzing your prompt across 5 layers...',type:'building'}])
-    let buildPrompt=prompt
-    try{const eRes=await fetch('/api/enhance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});const eData=await eRes.json();if(eData.success&&eData.enhanced){buildPrompt=eData.enhanced;const capturedBlueprintId=eData.blueprintId||null;setPromptAnalysis({original:prompt,enhanced:eData.enhanced,layers:eData.layers||[],score:eData.promptScore||3,blueprintId:capturedBlueprintId});setMsgs(prev=>[...prev.slice(0,-1),{role:'cipher',text:'Prompt strengthened. Building now.',type:'building'}])}}catch(e){}
+    let buildPrompt=prompt;let capturedBlueprintId:string|null=null
+    try{const eRes=await fetch('/api/enhance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});const eData=await eRes.json();if(eData.success&&eData.enhanced){buildPrompt=eData.enhanced;capturedBlueprintId=eData.blueprintId||null;setPromptAnalysis({original:prompt,enhanced:eData.enhanced,layers:eData.layers||[],score:eData.promptScore||3,blueprintId:capturedBlueprintId});setMsgs(prev=>[...prev.slice(0,-1),{role:'cipher',text:'Prompt strengthened. Building now.',type:'building'}])}}catch(e){}
     let step=0;setNarrText(STEPS[0][0]);setNarrTeach(STEPS[0][1])
     const ni=setInterval(()=>{step++;if(step>=STEPS.length){clearInterval(ni);return};setNarrText(STEPS[step][0]);setNarrTeach(STEPS[step][1])},800)
     try{
