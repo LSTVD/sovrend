@@ -128,8 +128,62 @@ export async function POST(req: NextRequest) {
     else if(promptLower.match(/music|band|concert|album|studio/)) searchQuery = categoryPhotoQueries.music
     else if(promptLower.match(/travel|hotel|resort|tour|vacation/)) searchQuery = categoryPhotoQueries.travel
     else if(promptLower.match(/sport|athletic|team|league|compete/)) searchQuery = categoryPhotoQueries.sports
-    else if(incomingBlueprintId && blueprintPhotoMap[incomingBlueprintId]) searchQuery = blueprintPhotoMap[incomingBlueprintId]
-    else if(incomingBlueprintId) searchQuery = incomingBlueprintId.replace(/_/g,' ')
+    else if(incomingBlueprintId) {
+      const numericPhotoMap: Record<number, string> = {
+        1: 'saas analytics dashboard workspace',
+        2: 'client portal professional business',
+        3: 'booking appointment calendar scheduling',
+        4: 'task management productivity workspace',
+        5: 'ecommerce products shopping retail',
+        6: 'crm sales pipeline business',
+        7: 'landing page modern minimal',
+        8: 'habit tracker wellness lifestyle',
+        9: 'fitness gym workout training athlete',
+        10: 'budget finance money planning',
+        11: 'invoice business documents professional',
+        12: 'restaurant food dining chef kitchen',
+        13: 'real estate property house architecture',
+        14: 'job board recruitment hiring office',
+        15: 'membership dashboard community',
+        16: 'portfolio creative design studio',
+        17: 'online course education learning',
+        18: 'blog content writing editorial',
+        19: 'team directory office people',
+        20: 'link bio social media profile',
+        21: 'marketplace peer to peer community',
+        22: 'healthcare patient medical clinic',
+        23: 'wedding elegant floral ceremony',
+        24: 'shift scheduling workforce planning',
+        25: 'social feed community people',
+        26: 'project management team collaboration',
+        27: 'notes writing minimal workspace',
+        28: 'time tracking productivity clock',
+        29: 'restaurant management kitchen staff',
+        30: 'learning management education classroom',
+        31: 'event management conference venue',
+        32: 'inventory warehouse products shelves',
+        33: 'customer support help desk service',
+        34: 'financial planning investment charts',
+        35: 'survey research data analytics',
+        36: 'subscription box packaging products',
+        37: 'property management real estate',
+        38: 'music podcast audio studio',
+        39: 'freelancer creative workspace laptop',
+        40: 'volunteer nonprofit community people',
+        41: 'social media content creation',
+        42: 'recruitment hiring interview office',
+        43: 'knowledge base documentation library',
+        44: 'recipe meal planning food kitchen',
+        45: 'pitch deck presentation business',
+        46: 'fleet management vehicles logistics',
+        47: 'language learning education global',
+        48: 'spa wellness meditation mindfulness',
+        49: 'code review developer programming',
+        50: 'interior design home decor elegant',
+      }
+      const numId = typeof incomingBlueprintId === 'number' ? incomingBlueprintId : parseInt(incomingBlueprintId)
+      searchQuery = numericPhotoMap[numId] || String(incomingBlueprintId).replace(/_/g,' ')
+    }
     console.log('[PEXELS QUERY]', searchQuery)
     const [photoUrls, videoUrl] = await Promise.all([
       fetchPexelsPhotos(searchQuery),
