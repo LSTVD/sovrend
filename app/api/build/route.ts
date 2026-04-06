@@ -140,7 +140,7 @@ export async function POST(req: NextRequest) {
     let rawText = ""; let inputTokens = 0; let outputTokens = 0;
     const stream = await anthropic.messages.stream({
       model: 'claude-sonnet-4-20250514',
-      max_tokens: 30000,
+      max_tokens: 24000,
       system: `You are Cipher, the master builder inside SOVREND. The most capable frontend engineer and product designer on the planet.
 
 CRITICAL SANDBOX RULES:
@@ -212,6 +212,8 @@ MICRO-INTERACTION CONTRACT — every build must include:
 - Image skeleton shimmer while loading then fade in on load event
 - Toast notifications slide up from bottom and auto-dismiss after 2.8 seconds
 - Nav cart badge springs in with scale animation when items added
+
+CRITICAL — COMPLETION RULE: You must always close every JSX tag and every function before stopping. If you are approaching the token limit, immediately close all open tags, close all open functions, and return the App component cleanly. A truncated build that crashes is worth zero. A complete simpler build is worth everything. Never leave a tag open. Never leave a function unclosed.
 
 CRITICAL — APOSTROPHE RULE: In ALL JavaScript string literals use double quotes only. Never single quotes for strings containing English text. Write: const msg = "It's ready" not const msg = \'It\'s ready\'. Single quotes inside single-quoted strings crash the Babel sandbox instantly.`,
       messages: [{ role: 'user', content: `${prompt}
