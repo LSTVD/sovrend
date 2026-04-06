@@ -8,6 +8,7 @@ const BuildSchema = z.object({
   appId: z.string().uuid().optional().nullable(),
   persona: z.enum(['operator', 'architect', 'oracle']),
   blueprintId: z.union([z.string(), z.number()]).optional().nullable(),
+  photoQuery: z.string().optional().nullable(),
 })
 
 const TIER_LIMITS: Record<string, { builds: number; maxCost: number }> = {
@@ -54,7 +55,7 @@ export async function POST(req: NextRequest) {
     const parsed = BuildSchema.safeParse(body)
     if (!parsed.success) { console.log("[PARSE ERROR]", JSON.stringify(parsed.error.issues)); return NextResponse.json({ error: "Invalid request", issues: parsed.error.issues }, { status: 400 }) }
 
-    const { prompt, appId, persona, blueprintId: incomingBlueprintId } = parsed.data
+    const { prompt, appId, persona, blueprintId: incomingBlueprintId, photoQuery: incomingPhotoQuery } = parsed.data
     const tier = (userData.tier as string) || 'free'
     const limits = TIER_LIMITS[tier] || TIER_LIMITS.free
 
@@ -185,6 +186,11 @@ export async function POST(req: NextRequest) {
       const numId = typeof incomingBlueprintId === 'number' ? incomingBlueprintId : parseInt(incomingBlueprintId)
       searchQuery = numericPhotoMap[numId] || String(incomingBlueprintId).replace(/_/g,' ')
     }
+    // PRIORITY 1 — Gemini returned a direct photo query — use it
+    if (incomingPhotoQuery) {
+      searchQuery = incomingPhotoQuery
+      console.log('[PHOTO SOURCE] gemini direct query')
+    }
     console.log('[PEXELS QUERY]', searchQuery)
     console.log('[BLUEPRINT ID]', incomingBlueprintId)
     console.log('[PROMPT LOWER SAMPLE]', promptLower.slice(0,200))
@@ -269,6 +275,8 @@ MICRO-INTERACTION CONTRACT — every build must include:
 - Image skeleton shimmer while loading then fade in on load event
 - Toast notifications slide up from bottom and auto-dismiss after 2.8 seconds
 - Nav cart badge springs in with scale animation when items added
+
+CRITICAL — CHECKOUT RULE: Every build with a cart or booking must include a fully working three step checkout — Step 1 Information (name email address), Step 2 Shipping or confirmation, Step 3 Payment with card fields. After payment submit show a success screen with animated SVG checkmark, order number, and confirmation message personalized with the customer name. The checkout must complete. The order confirmed screen must exist and render.
 
 CRITICAL — COMPLETION RULE: You must always close every JSX tag and every function before stopping. If you are approaching the token limit, immediately close all open tags, close all open functions, and return the App component cleanly. A truncated build that crashes is worth zero. A complete simpler build is worth everything. Never leave a tag open. Never leave a function unclosed.
 

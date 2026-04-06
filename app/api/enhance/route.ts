@@ -55,7 +55,8 @@ Return ONLY valid JSON, no markdown, no backticks, no extra text:
     {"layer": 4, "name": "Architecture", "status": "weak", "added": "what was added"},
     {"layer": 5, "name": "Philosophy", "status": "missing", "added": "what was added"}
   ],
-  "score": 3
+  "score": 3,
+  "photoQuery": "3 to 5 word Pexels search query specific to this business visual world"
 }` }]
       },
     })
@@ -85,6 +86,7 @@ Return ONLY valid JSON, no markdown, no backticks, no extra text:
       layers: parsed.layers || [],
       promptScore: parsed.score || 3,
       blueprintId: parsed.blueprintId || 1,
+      photoQuery: parsed.photoQuery || null,
       blueprintName: parsed.blueprintName || 'App',
     })
   } catch (err: any) {
