@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<head><title>Preview</title></head>
+<body>
+<script>
+var html = sessionStorage.getItem('__preview');
+if(html){ document.open(); document.write(html); document.close(); }
+else { document.body.innerHTML = 'No preview available'; }
+</script>
+</body>
+</html>

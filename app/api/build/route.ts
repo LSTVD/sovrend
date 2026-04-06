@@ -15,6 +15,31 @@ const TIER_LIMITS: Record<string, { builds: number; maxCost: number }> = {
   agency: { builds: 20, maxCost: 24.75 },
 }
 
+async function fetchPexelsPhotos(query: string): Promise<string[]> {
+  try {
+    const res = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=12&orientation=landscape`, {
+      headers: { Authorization: process.env.PEXELS_API_KEY! },
+    })
+    const data = await res.json()
+    return (data.photos || []).map((p: any) => p.src.large2x)
+  } catch { return [] }
+}
+
+async function fetchPexelsVideo(query: string): Promise<string> {
+  try {
+    const res = await fetch(`https://api.pexels.com/videos/search?query=${encodeURIComponent(query)}&per_page=3`, {
+      headers: { Authorization: process.env.PEXELS_API_KEY! },
+    })
+    const data = await res.json()
+    const video = (data.videos || [])[0]
+    if (!video) return ''
+    const files = video.video_files || []
+    const hd = files.find((f: any) => f.quality === 'hd')
+    const sd = files.find((f: any) => f.quality === 'sd')
+    return (hd || sd || files[0])?.link || ''
+  } catch { return '' }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const supabase = createClient()
@@ -58,6 +83,50 @@ export async function POST(req: NextRequest) {
       oracle: 'User is the Oracle — builds by feel and vision. Make it fluid, intuitive, alive. There is no spoon.',
     }
 
+    // Extract search query from blueprint category for accurate photo matching
+    const categoryPhotoQueries: Record<string, string> = {
+      'ecommerce': 'products shopping retail store',
+      'coffee': 'coffee cafe espresso roasting',
+      'restaurant': 'restaurant food dining chef kitchen',
+      'fitness': 'gym workout fitness training athlete',
+      'fashion': 'fashion clothing style boutique',
+      'beauty': 'beauty skincare salon spa cosmetics',
+      'saas': 'technology software workspace laptop',
+      'portfolio': 'creative design studio workspace',
+      'real_estate': 'real estate property house architecture',
+      'health': 'health wellness medical clinic',
+      'education': 'education learning classroom students',
+      'sports': 'sports athletic competition training',
+      'music': 'music concert performance studio',
+      'travel': 'travel destination landscape adventure',
+      'food': 'food cooking gourmet culinary',
+      'automotive': 'car automotive vehicle dealership',
+      'billiards': 'billiards pool table cue sport',
+      'default': 'modern professional business',
+    }
+    // Detect category from prompt keywords
+    const promptLower = prompt.toLowerCase()
+    let searchQuery = categoryPhotoQueries.default
+    if(promptLower.match(/coffee|cafe|espresso|roast|brew/)) searchQuery = categoryPhotoQueries.coffee
+    else if(promptLower.match(/billiard|pool.*hall|pool.*cue|cue.*stick|snooker/)) searchQuery = categoryPhotoQueries.billiards
+    else if(promptLower.match(/restaurant|food|eat|dining|chef|kitchen|pizza|burger/)) searchQuery = categoryPhotoQueries.restaurant
+    else if(promptLower.match(/fitness|gym|workout|training|crossfit|yoga/)) searchQuery = categoryPhotoQueries.fitness
+    else if(promptLower.match(/fashion|cloth|wear|apparel|dress|boutique/)) searchQuery = categoryPhotoQueries.fashion
+    else if(promptLower.match(/beauty|skin|hair|makeup|salon|spa/)) searchQuery = categoryPhotoQueries.beauty
+    else if(promptLower.match(/saas|software|app|dashboard|platform|tech|startup/)) searchQuery = categoryPhotoQueries.saas
+    else if(promptLower.match(/real estate|property|house|apartment|realtor/)) searchQuery = categoryPhotoQueries.real_estate
+    else if(promptLower.match(/health|medical|dental|clinic|wellness/)) searchQuery = categoryPhotoQueries.health
+    else if(promptLower.match(/music|band|concert|album|studio/)) searchQuery = categoryPhotoQueries.music
+    else if(promptLower.match(/travel|hotel|resort|tour|vacation/)) searchQuery = categoryPhotoQueries.travel
+    else if(promptLower.match(/sport|athletic|team|league|compete/)) searchQuery = categoryPhotoQueries.sports
+    else if(blueprintId) searchQuery = blueprintId.replace(/_/g,' ')
+    console.log('[PEXELS QUERY]', searchQuery)
+    const [photoUrls, videoUrl] = await Promise.all([
+      fetchPexelsPhotos(searchQuery),
+      fetchPexelsVideo(searchQuery),
+    ])
+    const mediaBlock = `\n\nLIVE MEDIA — use these exact URLs for all images and video in this build. Hero video (autoplay muted loop): ${videoUrl || 'none available, use a photo instead'}. Photos in order — hero, products, sections:\n${photoUrls.length ? photoUrls.join('\n') : 'No photos available, use solid color backgrounds.'}\nNever use placeholder images. Never use Unsplash. Use only these URLs.`
+
     let rawText = ""; let inputTokens = 0; let outputTokens = 0;
     const stream = await anthropic.messages.stream({
       model: 'claude-sonnet-4-20250514',
@@ -66,6 +135,7 @@ export async function POST(req: NextRequest) {
 
 CRITICAL SANDBOX RULES:
 - React component ONLY — function App() main, export default App
+- App must return ONE root element — wrap everything in a single <div> or React.Fragment (<>...</>). A style tag and a div side by side crashes Babel. Put the style tag INSIDE the root div.
 - NO import statements — React hooks globally: React.useState, React.useEffect, React.useRef
 - Tailwind CSS globally available
 - Google Fonts via style tag dangerouslySetInnerHTML only
@@ -116,8 +186,7 @@ LAYOUT ALWAYS:
 
 THE STANDARD: 60 seconds. Cannot look away. Every build. No exceptions.
 
-PHOTOGRAPHY:
-Use full Unsplash URLs for all images: https://images.unsplash.com/photo-XXXXX?w=800&fit=crop — never just the photo ID alone, never local file paths, never placeholder.jpg. Choose photos that match the category: a coffee brand gets coffee photos, a fitness app gets gym photos, a pool hall gets sports photos. Every image src must be a complete working URL.
+${mediaBlock}
 
 OUTPUT STRUCTURE — every build must include in this order: fixed navigation with logo and cart, hero with full-bleed photography and headline, marquee strip, product or service grid with hover states and click-to-modal, story section with stats, subscription or pricing section, footer with email signup. Every product card opens a detail modal with image variant selector quantity and add to cart. Cart drawer slides from right. Checkout flows through three steps information shipping payment with running order summary. All sections fully populated with specific real data. Nothing placeholder. Nothing generic.
 

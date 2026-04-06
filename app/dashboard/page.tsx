@@ -445,8 +445,14 @@ function renderSrcDoc(code) {
   const trimmed = code.trim();
   const htmlStart = trimmed.search(/<!DOCTYPE|<html/i);
   if (htmlStart >= 0) return trimmed.slice(htmlStart);
-  // Fix truncated code — balance braces/parens so Babel doesn't crash
   let fixed = trimmed;
+  // Fix adjacent JSX — if style tag sits next to a div in App's return, wrap in fragment
+  if (/return\s*\(\s*<style/.test(fixed)) {
+    fixed = fixed.replace(/return\s*\(\s*<style/, 'return (<><style');
+    const lastClose = fixed.lastIndexOf(');');
+    if (lastClose !== -1) fixed = fixed.slice(0, lastClose) + '</>);' + fixed.slice(lastClose + 2);
+  }
+  // Fix truncated code — balance braces/parens so Babel doesn't crash
   let opens = 0; let parens = 0;
   for (let i = 0; i < fixed.length; i++) {
     if (fixed[i] === '{') opens++;
@@ -779,7 +785,7 @@ export default function DashboardPage() {
           </div>
           <div className="flex-1 flex flex-col overflow-hidden">
             <div className="flex items-center px-3 flex-shrink-0 overflow-hidden transition-all duration-300" style={{height:showNarr?28:0,background:'rgba(8,11,22,.93)',borderBottom:'1px solid rgba(0,229,255,.035)',fontFamily:MONO,fontSize:10,color:'rgba(0,229,255,.5)'}}><div style={{width:6,height:6,borderRadius:'50%',background:'#00E5FF',marginRight:8,animation:'pulse 1.5s ease infinite'}}/>{narrText}<span style={{color:'rgba(0,229,255,.3)',fontStyle:'italic',marginLeft:4}}> — {narrTeach}</span></div>
-            <div className="flex items-center justify-between px-3 flex-shrink-0" style={{height:30,background:'rgba(8,11,22,.93)',borderBottom:'1px solid rgba(0,229,255,.035)'}}><span style={{fontSize:10,color:'rgba(195,200,215,.55)',background:'rgba(0,229,255,.04)',border:'1px solid rgba(0,229,255,.07)',padding:'2px 10px'}}><b style={{color:'#00E5FF',fontWeight:500}}>{projName.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'myapp'}</b>.sovrend.com</span><div className="flex gap-1">{['History','Visual Edit','View Code','\u2197 New Tab'].map(a=><span key={a} className="cursor-pointer" onClick={()=>{if(a==='View Code')setCodeOpen(!codeOpen);if(a==='Visual Edit'){setMsgs(prev=>[...prev,{role:'cipher',text:'Visual Edit mode coming soon. For now, describe what you want to change and I\'ll handle it.'}])};if(a==='History'){setMsgs(prev=>[...prev,{role:'cipher',text:'Version history coming soon. Each refine is saved automatically.'}])} if(a.includes('New Tab')){if(generatedCode){sessionStorage.setItem('__sovrend_preview',renderSrcDoc(generatedCode));window.open('/preview','_blank')}}}} style={{fontSize:9,color:a==='View Code'&&codeOpen?'#00E5FF':'rgba(195,200,215,.55)',padding:'3px 6px',border:'1px solid rgba(0,229,255,.035)'}}>{a}</span>)}</div></div>
+            <div className="flex items-center justify-between px-3 flex-shrink-0" style={{height:30,background:'rgba(8,11,22,.93)',borderBottom:'1px solid rgba(0,229,255,.035)'}}><span style={{fontSize:10,color:'rgba(195,200,215,.55)',background:'rgba(0,229,255,.04)',border:'1px solid rgba(0,229,255,.07)',padding:'2px 10px'}}><b style={{color:'#00E5FF',fontWeight:500}}>{projName.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'myapp'}</b>.sovrend.com</span><div className="flex gap-1">{['History','Visual Edit','View Code'].map(a=><span key={a} className="cursor-pointer" onClick={()=>{if(a==='View Code')setCodeOpen(!codeOpen);if(a==='Visual Edit'){setMsgs(prev=>[...prev,{role:'cipher',text:'Visual Edit mode coming soon. For now, describe what you want to change and I\'ll handle it.'}])};if(a==='History'){setMsgs(prev=>[...prev,{role:'cipher',text:'Version history coming soon. Each refine is saved automatically.'}]);}}} style={{fontSize:9,color:a==='View Code'&&codeOpen?'#00E5FF':'rgba(195,200,215,.55)',padding:'3px 6px',border:'1px solid rgba(0,229,255,.035)'}}>{a}</span>)}<a href={generatedCode?URL.createObjectURL(new Blob([renderSrcDoc(generatedCode)],{type:'text/html;charset=utf-8'})):undefined} target="_blank" rel="noopener" className="cursor-pointer" style={{fontSize:9,color:'rgba(195,200,215,.55)',padding:'3px 6px',border:'1px solid rgba(0,229,255,.035)',textDecoration:'none'}}>{'\u2197 New Tab'}</a><span className='cursor-pointer' style={{fontSize:9,color:'rgba(195,200,215,.55)',padding:'3px 6px',border:'1px solid rgba(0,229,255,.035)'}} onClick={()=>{if(generatedCode){const w=window.open('','_blank');if(w){w.document.open();w.document.write(renderSrcDoc(generatedCode));w.document.close()}}}}>↗ Full View</span></div></div>
             <div className="flex-1 flex overflow-hidden">
               <div className="flex-1 flex flex-col" style={{background:'rgba(10,14,24,.5)'}}>
                 {appState==='building'?<SignalDecode/>:appState==='revealing'?<div className="flex-1 relative" style={{background:'#000308',overflow:'hidden'}}>
