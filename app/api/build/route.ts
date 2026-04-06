@@ -7,6 +7,7 @@ const BuildSchema = z.object({
   prompt: z.string().min(1).max(12000),
   appId: z.string().uuid().optional().nullable(),
   persona: z.enum(['operator', 'architect', 'oracle']),
+  blueprintId: z.union([z.string(), z.number()]).optional().nullable(),
 })
 
 const TIER_LIMITS: Record<string, { builds: number; maxCost: number }> = {
@@ -185,6 +186,8 @@ export async function POST(req: NextRequest) {
       searchQuery = numericPhotoMap[numId] || String(incomingBlueprintId).replace(/_/g,' ')
     }
     console.log('[PEXELS QUERY]', searchQuery)
+    console.log('[BLUEPRINT ID]', incomingBlueprintId)
+    console.log('[PROMPT LOWER SAMPLE]', promptLower.slice(0,200))
     const [photoUrls, videoUrl] = await Promise.all([
       fetchPexelsPhotos(searchQuery),
       fetchPexelsVideo(searchQuery),
