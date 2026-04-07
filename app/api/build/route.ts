@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getBlueprintBrief } from '@/lib/blueprints'
+import { getReferenceComponent } from '@/lib/references'
 import { createClient } from '@/lib/supabase/server'
 import { z } from 'zod'
 
@@ -190,6 +191,10 @@ export async function POST(req: NextRequest) {
     if (incomingPhotoQuery) {
       searchQuery = incomingPhotoQuery
       console.log('[PHOTO SOURCE] gemini direct query')
+
+    const numBpId = incomingBlueprintId !== null && incomingBlueprintId !== undefined ? (typeof incomingBlueprintId === 'number' ? incomingBlueprintId : parseInt(String(incomingBlueprintId))) : null
+    const refComponent = numBpId && !isNaN(numBpId) ? getReferenceComponent(numBpId) : ''
+    console.log('[REFERENCE]', numBpId ? 'blueprint '+numBpId+' reference loaded' : 'no blueprint — skipping reference')
     }
     console.log('[PEXELS QUERY]', searchQuery)
     console.log('[BLUEPRINT ID]', incomingBlueprintId)
@@ -229,6 +234,7 @@ ${PERSONA_CONTEXT[persona]}
 BEFORE ANY CODE — RESOLVE THESE INTERNALLY. DO NOT OUTPUT THE RESOLUTION. Go straight to code after resolving internally:
 1. FEELING — Emotional state in one sentence
 2. REFERENCE — World-class app this resembles and what makes it alive
+${refComponent}
 3. HERO MOMENT — First thing user sees that stops them
 4. DATA — Sarah Chen Marcos Rivera Priya Nair James Thornton Aisha Okonkwo David Park. $24819 not $25000. 1284 not 1000. Oct/Nov 2025.
 5. SIGNATURE INTERACTION — One animation that makes this alive
