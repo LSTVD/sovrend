@@ -215,7 +215,7 @@ export default function DeployPage(){
               <div style={{width:14,height:1,background:'#00E5FF'}}/>
               Act {act.num} of {ACTS.length}
             </div>
-            <div style={{fontFamily:SERIF,fontStyle:'italic',fontSize:clamp(24,3,36),fontWeight:300,letterSpacing:'-.03em',color:'#E8E4D8',marginBottom:8,lineHeight:1.1}}>{act.title}</div>
+            <div style={{fontFamily:SERIF,fontStyle:'italic',fontSize:'clamp(24px,3vw,36px)',fontWeight:300,letterSpacing:'-.03em',color:'#E8E4D8',marginBottom:8,lineHeight:1.1}}>{act.title}</div>
             <div style={{fontSize:14,fontWeight:300,color:'rgba(232,228,216,.5)',lineHeight:1.72,maxWidth:560}}>{act.cipher}</div>
           </div>
 
@@ -298,4 +298,4 @@ export default function DeployPage(){
   )
 }
 
-function clamp(min:number,vw:number,max:number){return`clamp(${min}px,${vw}vw,${max}px)`}
+
