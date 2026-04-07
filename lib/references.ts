@@ -42,7 +42,7 @@ export const REFERENCE_COMPONENTS: Record<number, string> = {
 // Product card: photo 280px tall, name Fraunces italic, price, Add to Cart button.
 // Add to Cart → cart drawer slides from right. Qty controls. Remove items. Subtotal.
 // Checkout: 3-step. Contact → Shipping → Payment. Order confirmation with reference number.
-// Accent gold #C4963A on CTA buttons, active states, featured badges. Everything functional.`,
+// Accent champagne #E8D5B0 on headlines, CTAs, active states. Sage #7A9E7E on prices, success states, featured badges. Ivory #F5EDD8 for body text. Everything functional.`,
 
 6: `// CRM PIPELINE — Attio quality. Background #FAFAF8. Accent orange #F97316.
 // PEXELS HERO: none — kanban pipeline is the product. Show it immediately.
@@ -100,7 +100,7 @@ export const REFERENCE_COMPONENTS: Record<number, string> = {
 // Menu sections: appetizers → mains → desserts. Photo cards name description price.
 // Order flow: add items → order drawer → checkout → confirmation with order number.
 // Reservation: date picker + party size + time + contact. Animated checkmark confirm.
-// Fraunces italic dish names. Gold #C4963A accent. Everything functional end to end.`,
+// Fraunces italic dish names. Champagne #E8D5B0 accent. Everything functional end to end.`,
 
 13: `// REAL ESTATE — La Colombe quality. Background #1A1208 hero → #F5F0E8 cream content.
 // PEXELS HERO: luxury home exterior architecture modern beautiful landscaping
@@ -162,7 +162,7 @@ export const REFERENCE_COMPONENTS: Record<number, string> = {
 // Member detail: slides from right. Bio + skills + projects + contact.
 // Stats: 47 team members · 8 departments · 12 open roles. JetBrains Mono.`,
 
-20: `// LINK IN BIO — La Colombe quality. Background #1A1208. Accent gold #C4963A.
+20: `// LINK IN BIO — La Colombe quality. Background #1A1208. Accent champagne #E8D5B0.
 // PEXELS HERO: creator influencer lifestyle professional portrait dark moody atmospheric
 // PEXELS BACKGROUND: dark moody lifestyle aesthetic creator content editorial
 // Profile: large portrait photo centered, name Fraunces italic large, bio DM Sans 300.
@@ -171,7 +171,7 @@ export const REFERENCE_COMPONENTS: Record<number, string> = {
 // Social proof: follower counts JetBrains Mono. All links functional open in tab.`,
 
 
-21: `// MARKETPLACE — La Colombe quality. Background #F5F0E8 cream. Accent gold #C4963A.
+21: `// MARKETPLACE — La Colombe quality. Background #F5F0E8 cream. Accent champagne #E8D5B0.
 // PEXELS HERO: marketplace shopping diverse products lifestyle community bustling
 // PEXELS LISTINGS: diverse products items for sale styled photography editorial
 // PEXELS SELLERS: diverse people entrepreneurs sellers small business portrait
@@ -239,7 +239,7 @@ export const REFERENCE_COMPONENTS: Record<number, string> = {
 // Time log: date + project + description + duration. Edit inline.
 // Stats: 47.3 hrs this week · $4,230 billed · 6 projects · 94% billable.`,
 
-29: `// RESTAURANT MANAGEMENT — La Colombe quality. Background #1A1208. Accent gold #C4963A.
+29: `// RESTAURANT MANAGEMENT — La Colombe quality. Background #1A1208. Accent champagne #E8D5B0.
 // PEXELS HERO: restaurant kitchen chef professional cooking team behind scenes
 // POS layout: table grid floor plan. Status: open/seated/ordering/check.
 // Order ticket: items + modifiers + time elapsed. Kitchen queue list.
@@ -308,7 +308,7 @@ export const REFERENCE_COMPONENTS: Record<number, string> = {
 // Maintenance: ticket list with priority + status + contractor assigned.
 // Stats: 47 units · $94,819 monthly revenue · 96% occupancy · 3 open maintenance.`,
 
-38: `// MUSIC / PODCAST — Dark cinematic. Background #07090F. Accent gold #C4963A.
+38: `// MUSIC / PODCAST — Dark cinematic. Background #07090F. Accent champagne #E8D5B0.
 // PEXELS HERO: music studio recording professional audio dark moody atmospheric
 // PEXELS ALBUMS: vinyl record music album cover dark aesthetic photography
 // PEXELS ARTIST: musician performer artist portrait moody dramatic stage
