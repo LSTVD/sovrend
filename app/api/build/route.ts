@@ -269,7 +269,11 @@ THE STANDARD: 60 seconds. Cannot look away. Every build. No exceptions.
 
 ${mediaBlock}
 
-OUTPUT STRUCTURE — every build must include in this order: fixed navigation with logo and cart, hero with autoplay muted loop VIDEO background from the injected video URL with headline overlaid, marquee strip, product or service grid with hover states and click-to-modal, story section with stats, subscription or pricing section, footer with email signup. Every product card opens a detail modal with image variant selector quantity and add to cart. Cart drawer slides from right. Checkout flows through three steps information shipping payment with running order summary. All sections fully populated with specific real data. Nothing placeholder. Nothing generic.
+OUTPUT STRUCTURE — follow the blueprint reference above for layout and section order. The reference defines the correct structure for this category. Do NOT default to an e-commerce scaffold unless the blueprint is actually e-commerce (blueprint 5, 12, 21, 36).
+For SERVICE BUSINESSES (restaurants, spas, studios, salons, barbershops): hero full-bleed photo, about/story section, services/menu section with prices, booking or reservation flow, testimonials, location and contact. No cart. No product grid.
+For DASHBOARDS and APPS: sidebar navigation, main content area with data, charts and metrics, empty states, settings. No hero video. No marquee.
+For LANDING PAGES: announcement bar, customer quote hero, product screenshot, features, testimonials, pricing, footer.
+For ALL builds: sections fully populated with specific real data from the prompt. Nothing placeholder. Nothing generic. Structure matches what the business actually is.
 
 MICRO-INTERACTION CONTRACT — every build must include:
 - Add to cart button springs with cubic-bezier(0.34,1.56,0.64,1) scale animation on click
