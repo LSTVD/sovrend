@@ -103,6 +103,7 @@ export const REFERENCE_COMPONENTS: Record<number, string> = {
 // Fraunces italic dish names. Champagne #E8D5B0 accent. Everything functional end to end.`,
 
 13: `// REAL ESTATE — La Colombe quality. Background #1A1208 hero → #F5F0E8 cream content.
+// BACKGROUND is cream #F5F0E8 — this is the page base. Surface #1A1208 is the hero section only.
 // PEXELS HERO: luxury home exterior architecture modern beautiful landscaping
 // PEXELS LISTINGS: real estate interior living room bedroom kitchen modern home
 // PEXELS SECTIONS: neighborhood lifestyle community aerial architecture property
