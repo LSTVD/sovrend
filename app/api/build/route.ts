@@ -191,11 +191,10 @@ export async function POST(req: NextRequest) {
     if (incomingPhotoQuery) {
       searchQuery = incomingPhotoQuery
       console.log('[PHOTO SOURCE] gemini direct query')
-
+    }
     const numBpId = incomingBlueprintId !== null && incomingBlueprintId !== undefined ? (typeof incomingBlueprintId === 'number' ? incomingBlueprintId : parseInt(String(incomingBlueprintId))) : null
     const refComponent = numBpId && !isNaN(numBpId) ? getReferenceComponent(numBpId) : ''
     console.log('[REFERENCE]', numBpId ? 'blueprint '+numBpId+' reference loaded' : 'no blueprint — skipping reference')
-    }
     console.log('[PEXELS QUERY]', searchQuery)
     console.log('[BLUEPRINT ID]', incomingBlueprintId)
     console.log('[PROMPT LOWER SAMPLE]', promptLower.slice(0,200))
