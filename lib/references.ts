@@ -1,462 +1,423 @@
 
 export const REFERENCE_COMPONENTS: Record<number, string> = {
 
-1: `// SAAS ANALYTICS DASHBOARD — Reference: Linear, Vercel, Mixpanel
-// Dark navy #0f172a sidebar. White content. Indigo #6366f1 accent. Inter font.
-// Shell: fixed sidebar 220px + scrollable main content. Stats row + chart + feed.
-// Cards: bg rgba(255,255,255,0.04) border rgba(255,255,255,0.08) rounded-xl
-// Numbers: tabular-nums JetBrains Mono. Never round: $24,819 not $25,000.
-// MRR $24,819 users 1,284 churn 2.1% ARPU $19.33 — specific always
-// Bar chart: bars animate left to right staggered 60ms intervals
-// Activity feed: Sarah Chen upgraded Pro 2m, Marcos Rivera signup 14m
-// Nav active state: bg rgba(99,102,241,0.15) text #818cf8 font-semibold`,
+1: `// SAAS ANALYTICS — Attio quality. Background #FFFFFF clean white. Accent indigo #4F7FBE single color only.
+// PEXELS HERO: none — product dashboard IS the hero. Show it full-width below headline.
+// Hero: short Fraunces headline + customer quote card above it. "Your data, finally clear."
+// Dashboard: sidebar 220px, charts animate on mount — area chart, bar chart, sparklines.
+// Stats: $24,819 MRR · 1,284 users · 2.1% churn · 94.3% uptime. JetBrains Mono for all numbers.
+// Charts: smooth curves, indigo stroke, fill rgba(79,127,190,.08).
+// Section rhythm: white → #F8F8F8 alternating. Tweet-card testimonials 3 columns.
+// Hover: cards translateY(-3px) + shadow 0 8px 28px rgba(0,0,0,.08) at .2s cubic-bezier.`,
 
-2: `// CLIENT PORTAL — Reference: HoneyBook, Dubsado, Bonsai, AND.CO
-// White #ffffff. Teal #0d9488 accent. Plus Jakarta Sans. Warm professional.
-// Shell: sidebar 230px bg-white border-r border-gray-100 + scrollable content
-// Nav active: bg #f0fdfa color #0d9488 border-left 3px solid #0d9488
-// Project cards: name client progress bar (73% not 75%) status badge deadline
-// Invoice rows: INV-2024-0847 PAID green, SENT blue, OVERDUE red pulsing
-// Mark as Paid: badge flips red to green with scale(1.1) animation — delight
-// Stats: Active Projects 3, Billed $24,400, Outstanding $9,072, Avg 18 days`,
+2: `// CLIENT PORTAL — Attio quality. Background #FAFAF8 warm white. Accent teal #0D9488.
+// PEXELS HERO: freelancer working laptop coffee shop professional warm light
+// Hero: client quote first — "I stopped chasing invoices the day I launched this." Then headline.
+// Project cards: status bar teal, invoice table INV-2024-0847, PAID/OVERDUE/SENT badges.
+// Stats: $24,400 billed · $9,072 outstanding · 18 days avg payment. All specific never round.
+// Mark as Paid: badge animates red→green scale(1.1) 200ms — the delight moment.
+// Sidebar navigation, project list, activity feed. DM Sans 300 body. Fraunces display.`,
 
-3: `// BOOKING SYSTEM — Reference: Calendly, Acuity, Cal.com, Square Appointments
-// Pure white. Violet #7c3aed accent. Inter font. Calendar grid is the hero.
-// Shell: centered max-w-4xl. Service selector left, calendar right.
-// Calendar: 7-column grid, today highlighted violet, booked days have dot
-// Available slots: pill buttons, selected = violet bg white text
-// Time slots: 9:00am 9:30am 10:15am 11:00am 2:00pm 3:45pm 4:30pm
-// Services: Strategy Session 60min $150, Quick Call 30min $75, Deep Dive 90min $225
-// Confirmation checkmark draws itself stroke by stroke 400ms — delight`,
+3: `// BOOKING SYSTEM — Attio quality. Background #FFFFFF. Accent violet #7C3AED.
+// PEXELS HERO: professional service business interior welcoming warm light
+// Hero: business owner quote — "Phone tag ended the day I launched this." Then headline.
+// Calendar: 7-column grid, today=violet fill, available=violet pill, booked=gray dot.
+// Time slots: 9:00am 9:30am 10:15am 2:00pm irregular not round hours.
+// Confirmation: SVG checkmark draws stroke-by-stroke 400ms. Reference number generated.
+// 3-step booking flow: service select → time pick → confirm. Full flow must work end to end.
+// Stats: 847 bookings · $24,819 revenue · 94.3% show rate. Tweet-cards 3 columns.`,
 
-4: `// TASK MANAGER — Reference: Linear, Height, Asana, ClickUp
-// White #ffffff. Indigo #6366f1 accent. Inter font. Issue rows not bloated cards.
-// Shell: sidebar 240px + content with sections per status column
-// Task rows: checkbox, title, priority badge color, assignee avatar, due date
-// Priority: High = red badge, Medium = amber badge, Low = gray badge
-// Overdue: amber left border 3px, pulse animation
-// Checking subtask: 3-particle confetti burst from checkbox — delight
-// Done column: strikethrough text, 8 completed this week count`,
+4: `// TASK MANAGER — Linear quality. Background #0A0A0A near-black. Accent neon green #A8FF3E.
+// PEXELS HERO: none — dark UI is the statement. Subtle grid texture background.
+// Issue list: checkbox + title + priority badge HIGH/MEDIUM/LOW + assignee avatar + due date.
+// Priority: red HIGH, amber MEDIUM, gray LOW — badge only not backgrounds.
+// Checking off task: 3-particle burst from checkbox + strikethrough animation. Delight.
+// Sprint board: Backlog → In Progress → Review → Done columns.
+// Stats: 24 open · 8 in review · 47 closed · 94 velocity points. JetBrains Mono.`,
 
-5: `// E-COMMERCE — Reference: Allbirds, Away, Glossier, Warby Parker
-// White #ffffff. Dark #111827 accent. Playfair Display + Inter. Product is hero.
-// Shell: sticky nav, category filter, 3-column product grid, cart drawer right
-// Product cards: gradient photo placeholder, name Playfair font, price mono
-// Add to cart: thumbnail arcs from card to cart icon 300ms — delight
-// Cart drawer: slides from right, item list, quantity controls, checkout CTA
-// Category filter: minimal pill chips, not dropdown, filters live
-// Product detail: large image, variants selector, add to bag button full width`,
+5: `// E-COMMERCE — La Colombe quality. Background #1A1208 espresso hero → #F5F0E8 cream content.
+// PEXELS HERO: premium product photography dark moody lifestyle editorial
+// PEXELS PRODUCTS: product flat lay minimal dark background editorial photography
+// Photo-forward. Hero full-bleed product photography. Product grid 3 columns.
+// Product card: photo 280px tall, name Fraunces italic, price, Add to Cart button.
+// Add to Cart → cart drawer slides from right. Qty controls. Remove items. Subtotal.
+// Checkout: 3-step. Contact → Shipping → Payment. Order confirmation with reference number.
+// Accent gold #C4963A on CTA buttons, active states, featured badges. Everything functional.`,
 
-6: `// CRM PIPELINE — Reference: HubSpot, Attio, Pipedrive, Close CRM
-// White #ffffff. Orange #f97316 accent. DM Sans + JetBrains Mono. Deal focused.
-// Shell: sidebar + pipeline kanban columns as main content
-// Deal cards: company, contact, value LARGE mono font, probability bar, days in stage
-// Columns: Lead Contacted Proposal Negotiation — Won section at end
-// Total pipeline: $847,500 in header always visible
-// Moving deal to Won: green flash + Deal Won $220,000 toast — delight
-// Probability bar: green >70%, orange 40-70%, gray <40%`,
+6: `// CRM PIPELINE — Attio quality. Background #FAFAF8. Accent orange #F97316.
+// PEXELS HERO: none — kanban pipeline is the product. Show it immediately.
+// Kanban: Lead → Contacted → Proposal → Negotiation → Won. Deal cards with value large.
+// Total pipeline $847,500 visible in header always. Orange at >70% probability.
+// Moving to Won: green flash + "Deal Won $220,000" toast 300ms. The delight moment.
+// Stats: $847K pipeline · 12 active deals · 34 day avg close · 67% win rate.`,
 
-7: `// LANDING PAGE — Reference: Stripe, Linear, Resend, Vercel.com
-// White #ffffff. Indigo #6366f1 accent. Plus Jakarta Sans 900 weight hero.
-// Hero: radial gradient glow behind, badge pill, h1 large with gradient text
-// Stats count up on scroll: 847K+ users $2.4M generated 12min avg 99.9% uptime
-// Testimonials: real names real outcomes Marcus Rivera Sarah Kim James Thornton
-// Pricing: 3 tiers, Pro Most Popular highlighted with border glow
-// FAQ: smooth accordion height transition, 6 questions
-// Email capture glows on focus, CTA shifts to accent — delight`,
+7: `// LANDING PAGE — Attio quality. Background #F7F4EF warm paper. Accent amber #C4963A.
+// PEXELS HERO: product screenshot as hero — show actual dashboard/app below headline.
+// Slim announcement bar full-width dark background. Customer quote FIRST above headline.
+// Headline: Fraunces 88px+ ends with period. One sentence. Confident.
+// Tweet-cards: 3-column Twitter-style. Handle + quote + result badge. 3D tilt on hover.
+// Features: numbered cards, amber top-border activates on hover. 6 cards.
+// Pricing: 3 plans, featured plan dark ink background, amber CTA. Stats count-up on scroll.`,
 
-8: `// HABIT TRACKER — Reference: Streaks, Done, Way of Life, Habitica
-// Warm white #fafaf9. Orange #f97316 accent. Plus Jakarta Sans. Streak emotion.
-// Shell: sidebar + today view with habit cards stacked
-// Habit cards: circular checkbox, streak badge fire emoji, weekly dots Mon-Sun
-// Progress ring: 3 of 5 today 60%, draws clockwise on mount
-// Heatmap: GitHub contribution style 3 months below
-// All 5 habits checked: Perfect Day toast with gold shimmer on rings — delight
-// Best streak 34 days, this week 82%, total 847 completions`,
+8: `// HABIT TRACKER — Adaline quality. Background #F5F2EC warm cream. Accent sage #8FAF5A.
+// PEXELS HERO: morning routine calm lifestyle minimal coffee journal sunlight
+// PEXELS SECTIONS: mindful living wellness daily ritual peaceful morning
+// Cormorant Garamond italic headlines. "Small things, every day." Period.
+// Streak calendar: 7-column grid, sage fill completed days, today pulses.
+// Streak count: large Cormorant number animates up on mount. Milestone note in sage.
+// Monthly heatmap: sage intensity light→dark by completion. Breathing room everywhere.
+// DM Sans 200 body. JetBrains Mono for numbers only. No gamification noise.`,
 
-9: `// FITNESS TRACKER — Reference: Whoop, Strava, Fitbod, Nike Training Club
-// Dark #111827. Orange #f97316 accent. Space Grotesk + JetBrains Mono. Energy.
-// Shell: dark sidebar #0f172a + dark content #111827 + scrollable
-// Recovery ring: SVG circle, percent text center, color by score (green/amber/red)
-// Stats: Calories 1,847 | Active 47min | Streak 14 days fire | Volume 12,400lbs
-// Exercise rows: name, 3x8 @185lbs, PR badge gold glow if new record
-// Weekly bar chart: Mon-Sun bars, today orange highlighted
-// PR badge scales in with gold pulse — moment of delight`,
+9: `// FITNESS TRACKER — Fitbod quality. Background #07090F near-black. Accent electric lime #B8FF3C.
+// PEXELS HERO: athletic workout gym dark dramatic lighting weights training
+// PEXELS SECTIONS: muscle fitness barbell lifting performance athlete body
+// Barlow Condensed 900 uppercase headlines. Data as the hero visual.
+// Progress rings: 3 concentric SVG rings animate from zero on scroll. Lime stroke.
+// Workout card: sets/reps table, active set pulses, muscle groups with bar fills.
+// Stats: 847 workouts · 94% completion · 312 exercises. Specific never round.
+// Muscle group bars animate width on scroll. Hover shows left border sweep lime.`,
 
-10: `// BUDGET TRACKER — Reference: Monarch Money, Copilot, YNAB
-// White #ffffff. Emerald #10b981 accent. Inter + JetBrains Mono. Data is hero.
-// Shell: sidebar 220px bg-white border-r + scrollable content bg-gray-50
-// Stats: Income $6,200 | Spent $4,847 | Remaining $1,353 — count up on mount
-// Category bars: color dot + name + progress bar + spent/budget amounts
-// Over budget: red bar, Over badge, exact overage amount shown
-// Transactions: merchant icon, name, category, date, amount mono right-aligned
-// Savings goals: 3 cards with progress bars and percentages
-// Savings bar crossing 50% shifts blue to green — moment of delight`,
+10: `// BUDGET TRACKER — Robinhood quality. Background #0A0A0A. Accent neon #C8FF00.
+// PEXELS HERO: none — financial data UI is the statement. Dark premium.
+// Portfolio ring: animated SVG neon stroke, center shows total $24,819.
+// Spending bars: green < 80%, amber 80-95%, red > 95%. Bar only no text.
+// Account rows: checking + savings + investment + retirement. Change arrows colored.
+// Numbers: $24,819 not $25,000. -2.3% not -2%. Always specific never round.
+// Transaction list: date + merchant + category icon + amount. Sorted by recent.`,
 
-11: `// INVOICE GENERATOR — Reference: Bonsai, Wave, FreshBooks, Invoice Ninja
-// White #ffffff. Indigo #6366f1 accent. Inter + JetBrains Mono. Two-panel layout.
-// Shell: form left 50% + live preview right 50% updates on every keystroke
-// Preview: professional document layout, line items table, total prominent
-// Line items: Brand Strategy Workshop $2,800, Visual Identity $4,200, Guidelines $1,400
-// Subtotal $8,400 Tax 8% $672 Total $9,072 — indigo large font
-// Total section glows when all items filled — moment of delight
-// Download PDF: loading spinner then success checkmark animation`,
+11: `// INVOICE GENERATOR — Attio quality. Background #FAFAF8. Accent blue #3B82F6.
+// PEXELS HERO: freelancer working home office professional laptop focused warm
+// Real invoice layout: INV-2024-0847, line items qty × rate = amount, subtotal + tax + total.
+// Tax 8.5% auto-calculated. Total $4,557 never round. JetBrains Mono for all amounts.
+// Status badges: PAID green dot · SENT blue dot · OVERDUE red pulse animation.
+// Send button: invoice floats up disappears 400ms — the delight moment.
+// Stats: $47,293 invoiced · 14 paid · 3 outstanding · 12 days avg payment.`,
 
-12: `// RESTAURANT — Reference: Toast POS, ChowNow, Resy, Olo
-// Warm #faf9f7. Red #dc2626 accent. Lora + Inter. Appetizing warm palette.
-// Shell: sticky category tabs + product grid + cart drawer right
-// Menu cards: gradient warm photo placeholder, name Lora font, price red
-// Category tabs: All Starters Mains Sides Drinks Desserts — filters live
-// Dietary tags: V green GF yellow — pill badges on each item
-// First item added: cart icon bounces + drawer peeks 20px from right — delight
-// Cart: items list, delivery/pickup toggle, tip selector, checkout button`,
+12: `// RESTAURANT — La Colombe quality. Background #1A1208 espresso hero → #F5F0E8 cream content.
+// PEXELS HERO: upscale restaurant interior dining ambiance warm candlelight
+// PEXELS MENU: food photography plating gourmet restaurant dish upscale beautiful
+// PEXELS SECTIONS: chef cooking kitchen professional restaurant atmosphere culinary
+// Menu sections: appetizers → mains → desserts. Photo cards name description price.
+// Order flow: add items → order drawer → checkout → confirmation with order number.
+// Reservation: date picker + party size + time + contact. Animated checkmark confirm.
+// Fraunces italic dish names. Gold #C4963A accent. Everything functional end to end.`,
 
-13: `// REAL ESTATE — Reference: Zillow, Compass, Redfin, Realtor.com
-// White #ffffff. Blue #1d4ed8 accent. Inter + JetBrains Mono. Trust and clarity.
-// Shell: map placeholder left 45% + listings right 55% scrollable
-// Listing cards: photo placeholder, price LARGE mono, address, beds/baths/sqft
-// Price specific: $485,000 not $500,000 — $329,000 not $330,000
-// Days badge: 5 days on market — green if <7 amber if <30 gray if older
-// Save heart fills with pop animation — moment of delight
-// Schedule Tour: calendar opens, slot highlights, confirmation slides up`,
+13: `// REAL ESTATE — La Colombe quality. Background #1A1208 hero → #F5F0E8 cream content.
+// PEXELS HERO: luxury home exterior architecture modern beautiful landscaping
+// PEXELS LISTINGS: real estate interior living room bedroom kitchen modern home
+// PEXELS SECTIONS: neighborhood lifestyle community aerial architecture property
+// Listing grid: photo-forward cards, price large Fraunces, beds/baths/sqft JetBrains Mono.
+// Filter bar: price range + beds + type + location. Live filter no page reload.
+// Property detail modal: photo gallery + full specs + inquiry form.
+// Inquiry → confirmation with agent name and reference. Gold accent. All functional.`,
 
-14: `// JOB BOARD — Reference: LinkedIn Jobs, Wellfound, Lever, Greenhouse
-// White #ffffff. Sky blue #0ea5e9 accent. Inter font. Opportunity forward.
-// Shell: filter sidebar 260px + job list scrollable
-// Job cards: company logo area, title, company, location, salary ALWAYS visible
-// Salary: $120K-$150K not just listed — always prominent
-// Apply button: loading brief then Applied green badge immediately — delight
-// Filters: Full-time Remote Salary Level Date — all work live
-// Job detail: slides from right, apply modal with resume upload`,
+14: `// JOB BOARD — Attio quality. Background #FAFAF8. Accent slate #475569.
+// PEXELS HERO: professional team office modern workspace diverse people working
+// Job cards: role + company + location + salary $94K-$128K + posted date. 1px border.
+// Salary always specific: $94,000–$128,000 never round ranges.
+// Filter: department + level + remote + salary. Live filter.
+// Application: 3 steps Info → Resume → Submit. Confirmation with reference number.
+// Status: OPEN green · INTERVIEWING amber · FILLED gray.`,
 
-15: `// MEMBERSHIP — Reference: Memberstack, Patreon, Kajabi, Substack
-// Dark #0f172a. Violet #a78bfa accent. Inter + JetBrains Mono. Premium feel.
-// Shell: sidebar + content. Member card prominent at top.
-// Member card: gradient dark purple, shimmer animation on mount — delight
-// Member ID: ARC-2847-XKQP — specific always
-// Benefits: builds 7/9 remaining with progress bar, seats 1/2, custom domain checkmark
-// Billing: card ending 4242, Nov 1 $44 Paid, Oct 1 $44 Paid — download receipts
-// Plan: Architect $44/month renews December 1 2025`,
+15: `// MEMBERSHIP DASHBOARD — Attio quality. Background #FAFAF8. Accent purple #9333EA.
+// PEXELS HERO: community people together collaboration diverse group professional
+// PEXELS SECTIONS: team working together community event networking modern office
+// Member quote first: "This community changed how I work." Then headline.
+// Content grid: articles + videos + resources. Gated content shows lock + upgrade prompt.
+// Progress ring: completion % animates on mount. Purple stroke.
+// Stats: 1,284 members · 847 active · 94.3% retention. Tweet-cards 3 columns.`,
 
-16: `// PORTFOLIO — Reference: Awwwards winners, agency sites, Cargo Collective
-// Cream #fafaf9. Dark #1c1917 text. Cormorant Garamond + DM Sans. Editorial.
-// Shell: full viewport hero + asymmetric project grid + about + contact
-// Project grid: mixed sizes — large 2x2 beside two 1x1 — curated not listed
-// Hover: image darkens, title slides up from bottom, category fades in
-// Case study: hero full width, process 3 steps, results with real metrics
-// Contact: minimal name email project type message — no busy forms
-// Scroll: smooth, sections reveal with stagger — editorial rhythm`,
+16: `// PORTFOLIO — La Colombe quality. Background #1A1208 hero → #F5F0E8 cream content.
+// PEXELS HERO: creative professional workspace studio design laptop minimal dark
+// PEXELS WORK: design creative workspace abstract minimal editorial photography art
+// PEXELS ABOUT: professional portrait lifestyle creative studio warm confident light
+// Work grid: photo-forward project cards. Hover shows project title overlay slide up.
+// Project detail: full-bleed header image + role + tools + description + outcomes.
+// About section: professional photo + story + skills. Contact form → confirmation.
+// Fraunces italic headlines. Gold accent. Case study layout.`,
 
-17: `// COURSE PLATFORM — Reference: Teachable, Kajabi, Maven, Podia
-// White #ffffff. Violet #7c3aed accent. Plus Jakarta Sans. Progress visible always.
-// Shell: video player top + lesson detail below + curriculum sidebar right 280px
-// Curriculum sidebar: sections expandable, lessons with checkmarks, current highlighted
-// Progress bar: top of sidebar, percentage, draws on mount
-// Lesson complete button: fires checkmark + XP animation + next lesson
-// Final lesson: certificate slides up with gold shimmer + confetti — delight
-// Font: Plus Jakarta Sans 800 weight headers`,
+17: `// COURSE PLATFORM — Adaline quality. Background #F5F2EC warm cream. Accent amber #C4963A.
+// PEXELS HERO: online learning education laptop studying focused professional light
+// PEXELS COURSES: education learning workshop training professional skill development
+// PEXELS INSTRUCTOR: teacher instructor professional portrait warm confident natural
+// Course cards: large photo, amber top-border hover, progress bar specific 64%.
+// Lesson view: editorial. Cormorant Garamond title. DM Sans 300 body.
+// Completion: certificate slides in quietly. No confetti. Calm achievement.
+// Progress: thin amber bar. Always specific percentage never halfway.`,
 
-18: `// BLOG — Reference: Substack, Ghost, Medium, Bulletin
-// White #ffffff. Near-black text #1c1917. Lora serif. Typography is everything.
-// Shell: narrow content column max-w-2xl centered. Reading experience first.
-// Reading progress: thin colored line at very top fills as user scrolls — delight
-// Article list: Lora heading, excerpt 2 lines, author date read time views
-// Article page: large Lora headline, generous line-height 1.8, drop shadows subtle
-// Newsletter CTA inline between paragraphs — non-intrusive
-// Category tags: pill badges, click filters list live`,
+18: `// BLOG / CONTENT — Adaline quality. Background #F5F2EC cream. Near monochromatic.
+// PEXELS HERO: writer journalist editorial writing creative workspace minimal calm
+// PEXELS ARTICLES: reading books editorial minimal lifestyle creative professional
+// Cormorant Garamond 80px+ article title as hero. Type IS the visual.
+// Article grid: 2-column editorial. Title + category + date + reading time.
+// Article view: 680px max width. Cormorant headlines. DM Sans 300 body. 1.82 line-height.
+// Pull quotes: Cormorant italic 24px left border. Reading progress thin bar top.
+// Near-zero color. One category accent only. Newsletter signup elegant at end.`,
 
-19: `// TEAM DIRECTORY — Reference: Notion team, Lattice, Rippling, Workday
-// White #ffffff. Cyan #0891b2 accent. Inter font. Human warmth prominent.
-// Shell: search + filter bar top + profile card grid below scrollable
-// Profile cards: large avatar with initials gradient, name, role, dept badge, location
-// Dept color coding: consistent per department across all cards
-// Search: filters name role department skill live on keystroke
-// Profile detail: slides from right — bio skills manager reports recent projects
-// Org chart nodes pop with scale on expand — moment of delight`,
+19: `// TEAM DIRECTORY — Attio quality. Background #FAFAF8. Accent teal #0D9488.
+// PEXELS HERO: diverse professional team office modern workspace portrait group
+// PEXELS MEMBERS: professional headshot portrait diverse team corporate business
+// Member cards: photo + name + role + department + contact icons. Clean grid.
+// Org chart view: hierarchical tree. Department filter. Search by name.
+// Member detail: slides from right. Bio + skills + projects + contact.
+// Stats: 47 team members · 8 departments · 12 open roles. JetBrains Mono.`,
 
-20: `// LINK IN BIO — Reference: Linktree, Beacons, Stan Store, Koji
-// Dark #0f0f0f. Violet #a78bfa accent. Inter. Creator personality is design.
-// Shell: centered column, avatar, name, bio, links stacked
-// Link buttons: colored left border matching category — that IS the design
-// Each button: icon + title + click count on right — feels curated not listed
-// Avatar: large circular with subtle glow ring in accent color
-// Analytics tab: 284 clicks today chart 7 days top link
-// Theme switcher: 6 presets with live preview`,
+20: `// LINK IN BIO — La Colombe quality. Background #1A1208. Accent gold #C4963A.
+// PEXELS HERO: creator influencer lifestyle professional portrait dark moody atmospheric
+// PEXELS BACKGROUND: dark moody lifestyle aesthetic creator content editorial
+// Profile: large portrait photo centered, name Fraunces italic large, bio DM Sans 300.
+// Link buttons: icon + label + subtle hover lift. Gold active state.
+// Featured content: latest post thumbnails grid 3 columns with photo.
+// Social proof: follower counts JetBrains Mono. All links functional open in tab.`,
 
 
-21: `// MARKETPLACE — Reference: Depop, Vinted, eBay, Facebook Marketplace
-// White #ffffff. Dark #111827 accent. Inter font. Trust signals everywhere.
-// Shell: sidebar filters left 260px + listing grid right scrollable
-// Listing cards: photo placeholder, condition badge, price large, seller rating stars
-// Seller: avatar, name, rating 4.9 stars, sales count 247, verified badge
-// Make Offer: slide-up panel with amount input + typically responds 2hrs badge — delight
-// Filter: price range condition distance date — all live
-// Save: heart fills with pop animation instantly`,
+21: `// MARKETPLACE — La Colombe quality. Background #F5F0E8 cream. Accent gold #C4963A.
+// PEXELS HERO: marketplace shopping diverse products lifestyle community bustling
+// PEXELS LISTINGS: diverse products items for sale styled photography editorial
+// PEXELS SELLERS: diverse people entrepreneurs sellers small business portrait
+// Listing grid: photo-forward cards, price, seller name, rating stars, location.
+// Filter: category + price range + location + condition. Live.
+// Seller profile: photo + name + rating + listings grid + reviews.
+// Buy flow: listing detail → make offer → checkout → confirmation. All functional.`,
 
-22: `// HEALTHCARE PORTAL — Reference: One Medical, MyChart, Oscar Health
-// White #ffffff. Sky blue #0ea5e9. Inter font. Clinical but warm. Trust everything.
-// Shell: sidebar nav + content. Clean. Nothing distracting from health data.
-// Patient card: name DOB blood type insurance ID copay — all specific
-// Vitals: weight 181lbs height 5ft11in BP 118/76 pulse 68 — real numbers
-// Allergies: Penicillin Severe red badge, Shellfish Moderate amber badge
-// Appointments: upcoming pulsing blue indicator, past history below
-// All intake complete: You are all set screen with drawing checkmark — delight`,
+22: `// HEALTHCARE PORTAL — Attio quality. Background #FAFAF8. Accent calm blue #0369A1.
+// PEXELS HERO: doctor patient care professional medical clean modern clinical warm
+// PEXELS SECTIONS: healthcare wellness medical professional clean calm reassuring
+// Patient quote: "I always know what my doctor said and what comes next."
+// Appointment cards: Dr. Sarah Chen · Cardiology · Nov 14 2:30pm · Confirmed badge.
+// Lab results: glucose 94 mg/dL normal · BP 118/76 normal. Specific values always.
+// Medication: name + dose + frequency + refill date. Clinical grid.
+// Accessibility: high contrast, large text option, clear labels every input.`,
 
-23: `// WEDDING PLANNER — Reference: Zola, The Knot, Minted, Joy
-// Warm cream #fdf8f0. Rose #be185d accent. Cormorant Garamond + DM Sans. Elegant.
-// Shell: sidebar + content. Soft warm palette throughout. Nothing harsh.
-// Countdown: 247 Days Until June 14th — large animated flip numbers
-// Checklist: organized by timeline, checking fires strikethrough color flash
-// Budget: category cards with spent vs budget bars — Venue $8,500 PAID green
-// Guest list: 124 invited 89 confirmed 12 declined 23 pending — color coded
-// Checklist hitting 50%: champagne bubbles rise from progress bar — delight`,
+23: `// WEDDING PLANNER — Adaline quality. Background #F5F2EC cream. Accent dusty rose #C4A0A0.
+// PEXELS HERO: wedding ceremony elegant flowers bridal romantic outdoor golden hour
+// PEXELS CHECKLIST: wedding planning flowers venue decoration detail beautiful
+// PEXELS VENDORS: wedding photography flowers cake elegant professional service
+// PEXELS GALLERY: wedding reception celebration romantic couple love beautiful
+// Cormorant italic 72px hero: "Your day, planned." Period.
+// Checklist: Venue → Catering → Florals → Photography. Dusty rose progress.
+// Vendor cards: photo + name + category + review + price range. Breathe with whitespace.
+// Guest list: name + dietary + RSVP + table. Countdown to the day. Calm and reverent.`,
 
-24: `// SHIFT SCHEDULING — Reference: Deputy, 7shifts, When I Work, Homebase
-// White #ffffff. Teal #0891b2 accent. Inter font. Week grid is the hero.
-// Shell: sidebar team list left + week grid right — each row = one employee
-// Grid: Mon-Sun columns, shift blocks color-coded per employee
-// Each employee has a distinct color applied consistently throughout
-// Coverage warning: understaffed slot shows amber pulse overlay
-// Overtime warning: employee row shows amber badge near name
-// Publishing: wave animation sweeps left to right across full grid — delight`,
+24: `// SHIFT SCHEDULING — Attio quality. Background #FAFAF8. Accent blue #2563EB.
+// PEXELS HERO: professional team workplace service industry modern office smiling
+// Weekly calendar grid: 7 columns × team rows. Shift blocks color by role.
+// Shift card: employee name + start-end time + role + location. Drag to move.
+// Open shifts: highlighted amber. Conflicts: red border pulse.
+// Stats: 24 staff · 847 shifts scheduled · 94.3% fill rate · 3 open.
+// Publish: confirmation modal → notify all staff. Toast success.`,
 
-25: `// SOCIAL FEED — Reference: Twitter/X, Threads, Bluesky, Mastodon
-// White #ffffff. Blue #1d4ed8 accent. Inter font. Avatar forward. Content is design.
-// Shell: sidebar 260px + feed center + trending sidebar right 260px
-// Compose box: avatar + textarea placeholder What are you building
-// Post cards: avatar, name, handle, time, content, like comment share save
-// Posts: real content — Marcos Rivera Crossed $10K MRR this morning 234 likes
-// Like button: 5 small hearts scatter outward 400ms then settle — delight
-// Trending: hashtags BuildingInPublic ShipIt IndieHacker clickable`,
+25: `// SOCIAL FEED — Dark cinematic. Background #07090F. Accent cyan #00E5FF.
+// PEXELS HERO: social media content creator lifestyle phone scrolling modern
+// PEXELS POSTS: diverse people lifestyle portrait community content creator daily
+// Feed: post cards with avatar + photo + caption + engagement. Feel real not generic.
+// Photo posts: Pexels lifestyle images fill post cards throughout.
+// Engagement: like/comment/share animate. Like = heart burst particle effect.
+// Story bar: circular avatar photos with ring indicator. Horizontal scroll.
+// Trending sidebar: hashtags + topic cards. Cyan accents on active states.`,
 
-26: `// PROJECT MANAGEMENT — Reference: Linear, Asana, Monday, Jira
-// White #ffffff. Indigo #6366f1 accent. Inter font. Projects are the hero.
-// Shell: sidebar + project cards grid + my work tab + timeline tab
-// Project cards: name, status badge On Track green At Risk red Blocked amber
-// Progress bars animate on mount, deadline countdown visible
-// My work: tasks assigned to me across all projects today
-// Timeline: Gantt bars horizontal across dates with milestones as diamonds
-// Progress bar hitting 100%: brief fireworks burst — delight`,
+26: `// PROJECT MANAGEMENT — Attio quality. Background #FAFAF8. Accent green #16A34A.
+// PEXELS HERO: none — product UI is the statement. Show issue list immediately.
+// Issue rows: checkbox + title + priority + assignee avatar + due date. Linear-style.
+// Checking off task: 3-particle confetti burst from checkbox. The delight moment.
+// Overdue: amber left-border 3px + subtle row pulse. Urgency without noise.
+// Stats: 24 open · 8 in review · 47 closed · 94 velocity. JetBrains Mono.
+// Sprint board: kanban columns. Burndown chart green line.`,
 
-27: `// NOTE TAKING — Reference: Notion, Obsidian, Bear, Craft
-// Cream #fafaf9. Dark #1c1917 text. Lora + DM Sans. Writing is everything.
-// Shell: note list left 260px + markdown editor center + info panel right
-// Note list: title date word count favorite star — sorted by recent
-// Editor: title editable, markdown body with formatting toolbar
-// Markdown preview: headings render, bold renders, code syntax highlighted
-// Search: instant results highlighting matching text yellow
-// Focus mode: both panels hide, editor fills screen — moment of delight`,
+27: `// NOTE TAKING — Adaline quality. Background #F9F7F4 near-white cream. Minimal ink.
+// PEXELS HERO: writer notebook minimal workspace creative calm focused morning
+// Editor: 680px max-width, Cormorant titles, DM Sans 300 body, 1.85 line-height.
+// Sidebar: folders + notes list. Slim. The note is the star.
+// Markdown: headings breathe, code blocks cream bg, checklists checkable.
+// Search: instant results, amber highlight on match. Word count bottom-right quiet.
+// No animations except cursor blink and smooth scroll. Nothing distracts from writing.`,
 
-28: `// TIME TRACKING — Reference: Toggl, Harvest, Clockify, RescueTime
-// White #ffffff. Teal #0891b2 accent. Inter + JetBrains Mono. Timer is hero.
-// Shell: sidebar + timer prominent at top + today entries + week chart
-// Running timer: 01:24:37 ticking every second in JetBrains Mono large
-// Project selector: Website Redesign — Acme Corp, billable toggle, rate $150/hr
-// Today entries: rows with project, duration, billable amount
-// Stopping timer: number snaps to final value with brief count-up — delight
-// Week chart: daily hours bars, billable vs non-billable color coded`,
+28: `// TIME TRACKING — Attio quality. Background #FAFAF8. Accent blue #2563EB.
+// PEXELS HERO: professional focused working laptop timer productivity minimal clean
+// Timer: large JetBrains Mono display. Start/stop/pause. Project selector dropdown.
+// Weekly breakdown: horizontal bar chart by project. Fraunces numbers large.
+// Time log: date + project + description + duration. Edit inline.
+// Stats: 47.3 hrs this week · $4,230 billed · 6 projects · 94% billable.`,
 
-29: `// RESTAURANT MANAGEMENT — Reference: Toast POS, Square Restaurants, Aloha
-// Dark #111827. Orange #f97316 accent. Inter font. Real-time operational feel.
-// Shell: floor map tab + orders tab + menu tab + analytics tab
-// Floor map: table positions as cards, occupied/available/reserved color coded
-// Table card: number, party size, server name, time seated, check amount
-// New order: relevant table card pulses green briefly — moment of delight
-// Orders tab: active orders stream with status pipeline
-// Analytics: $4,847 today 127 covers $38.17 avg revenue by hour chart`,
+29: `// RESTAURANT MANAGEMENT — La Colombe quality. Background #1A1208. Accent gold #C4963A.
+// PEXELS HERO: restaurant kitchen chef professional cooking team behind scenes
+// POS layout: table grid floor plan. Status: open/seated/ordering/check.
+// Order ticket: items + modifiers + time elapsed. Kitchen queue list.
+// Revenue: $24,819 today · 847 covers · $29.31 avg check. Real-time updating feel.
+// Shift: staff clock-in list, hours worked, breaks. JetBrains Mono throughout.`,
 
-30: `// LMS CORPORATE — Reference: Docebo, Cornerstone, TalentLMS, Workday Learning
-// White #ffffff. Violet #7c3aed accent. Plus Jakarta Sans. Achievement earned.
-// Shell: sidebar + my learning tab + catalog + team progress + certificates
-// Course cards: title, required badge, due date urgency color, progress bar
-// Course player: module sidebar with checkmarks + video placeholder + quiz
-// Completing module: checkmark fills with animation + XP increment
-// Certificate earned: gold badge appears with radiant glow animation — delight
-// Team leaderboard: completion percentages, overdue flagged red`,
+30: `// LMS CORPORATE — Attio quality. Background #FAFAF8. Accent blue #2563EB.
+// PEXELS HERO: corporate training professional learning development team modern
+// PEXELS COURSES: professional workshop training business skill development office
+// Course catalog: photo cards with progress bars. Category filter pills.
+// Progress: completion rings animate on mount. Certificate earned = slide-in.
+// Learner dashboard: streak + points + badges + enrolled + recommended next.
+// Stats: 1,284 learners · 94.3% completion · 47 courses · 312 certificates.`,
 
 
-31: `// EVENT PLATFORM — Reference: Eventbrite, Luma, Partiful, Lu.ma
-// White #ffffff. Pink #db2777 accent. Inter font. Events are the hero.
-// Shell: category filter tabs + event cards grid + my tickets tab
-// Event cards: gradient photo placeholder, date badge, location, price, spots bar
-// Ticket purchase: modal with billing, card input, confirm with loading state
-// Digital ticket: styled with QR placeholder, event details, ticket number TKT-28471
-// After purchase: digital ticket slides up from bottom — moment of delight
-// Countdown: days until event shown on each card`,
+31: `// EVENT PLATFORM — La Colombe quality. Background #1A1208 hero → #F5F0E8 cream.
+// PEXELS HERO: event concert venue crowd celebration stage lighting dramatic
+// PEXELS EVENTS: conference networking professional event gathering community
+// Event cards: photo + name + date + location + ticket price + spots remaining.
+// Ticket flow: event detail → select tickets → checkout → QR code confirmation.
+// Calendar view: monthly grid, event dots by category. List/grid toggle.
+// Stats: 847 events · 24,819 tickets sold · 94.3% attendance.`,
 
-32: `// INVENTORY — Reference: Fishbowl, Cin7, inFlow, Katana MRP
-// White #ffffff. Dark #0f172a accent. Inter + JetBrains Mono. Table is hero.
-// Shell: stats bar top + searchable filterable table + orders tab + reports
-// Stats: 847 total items, 3 low stock amber, 1 critical red, value $124,800
-// Table rows: SKU, name, stock count, min stock, status badge, location, cost, price
-// Critical rows: red left border pulse, Low rows: amber badge
-// Stock level: mini bar visualization per row showing fill level
-// Receiving restock: row flashes green, warning badge disappears — delight`,
+32: `// INVENTORY — Attio quality. Background #FAFAF8. Accent amber #D97706.
+// PEXELS HERO: warehouse inventory products organized professional logistics
+// SKU grid: product photo + name + SKU + stock level + reorder point + status.
+// Stock: IN STOCK green · LOW amber pulse · OUT red. Visual not text wall.
+// Add stock: inline form. Reorder trigger: amber alert below threshold.
+// Stats: 1,284 SKUs · $247,819 inventory value · 47 low stock · 12 out.`,
 
-33: `// SUPPORT DESK — Reference: Zendesk, Intercom, Front, Linear
-// White #ffffff. Indigo #6366f1 accent. Inter font. Queue is everything.
-// Shell: inbox sidebar + ticket detail main + customer info right panel
-// Inbox: ticket rows with priority badge, subject, customer, time, assignee
-// Priority: Urgent red pulsing, High amber, Medium blue, Low gray
-// Ticket detail: conversation thread, reply editor with formatting, status selector
-// Customer sidebar: past tickets, plan, total spend, contact info
-// Resolving ticket: checkmark animation + ticket slides out of queue — delight`,
+33: `// SUPPORT DESK — Attio quality. Background #FAFAF8. Accent amber #D97706.
+// PEXELS HERO: customer support team professional headset office friendly warm
+// Ticket rows: ID + customer + subject + status + priority + time elapsed.
+// OPEN amber dot · IN PROGRESS blue dot · RESOLVED green dot.
+// Assigning: agent avatar slides in with micro-animation. Satisfying.
+// Stats: 47 open · 23 min avg response · 94.3% satisfaction · 847 resolved.
+// Ticket detail: thread view + internal notes + status changer. Full flow.`,
 
-34: `// FINANCIAL PLANNING — Reference: Betterment, Personal Capital, Wealthfront
-// White #ffffff. Emerald #10b981 accent. Inter + JetBrains Mono. Numbers hero.
-// Shell: sidebar + overview tab + investments + goals + reports
-// Net worth: $284,700 counts up from 0 on mount — large mono font center
-// Account cards: 401K Fidelity $142,800 +3.2%, Brokerage $68,400 +6.8%
-// Allocation donut: Retirement 59% Investment 24% Cash 17% draws clockwise
-// Goals: Home Down Payment $48,200 of $80,000 60.3% bar animates
-// Net worth hitting milestone: brief count-through celebration — delight`,
+34: `// FINANCIAL PLANNING — Robinhood quality. Background #0A0A0A. Accent neon #C8FF00.
+// PEXELS HERO: none — financial dashboard is the statement. Dark and premium.
+// Portfolio ring: animated SVG neon stroke, center $847,293 Lora serif.
+// Account cards: balance + change + trend sparkline each account.
+// Budget bars: green → amber at 80% → red at 95%. Animated fill on scroll.
+// Numbers: $24,819 not $25,000. -2.3% not -2%. Always specific. Lora for display.`,
 
-35: `// SURVEY PLATFORM — Reference: Typeform, Tally, SurveyMonkey, Jotform
-// White #ffffff. Indigo #6366f1 accent. Inter font. Results are the payoff.
-// Shell: survey list tab + results dashboard tab + templates tab
-// NPS gauge: semicircle animates to 72 score on mount — score specific never round
-// Response count: increments with brief scale pulse on each new response — delight
-// Multiple choice: Quality 68% bar, Price 24%, Support 8% — bars animate
-// Rating distribution: 2/4/12/89/140 — specific always
-// Survey list: 247 responses 67% completion rate — real numbers`,
+35: `// SURVEY PLATFORM — Adaline quality. Background #F5F2EC cream. Accent teal #0D9488.
+// PEXELS HERO: feedback survey research people discussing insights team meeting
+// Form builder: drag-drop question types. Preview mode toggle.
+// Question types: multiple choice, rating 1-5, text, NPS. All functional.
+// Response view: donut charts for choices, bar charts for ratings.
+// Stats: 1,284 responses · 94.3% completion · 47 questions avg · 4.2 min avg time.`,
 
-36: `// SUBSCRIPTION BOX — Reference: FabFitFun, Birchbox, Ipsy, Cratejoy
-// Warm cream #faf9f7. Amber #b45309 accent. Playfair Display + DM Sans. Gift feel.
-// Shell: my box tab + upcoming tab + history + preferences + shop
-// Upcoming box: November 2025 Artisan Collection with revealed and mystery items
-// Mystery items: blurred with question marks — anticipation is the emotion
-// Shipment tracking: Processing Packed Shipped Delivered steps
-// Preferences update: live box preview updates to match taste — delight
-// Past boxes: October September August as cards with full item reveal on click`,
+36: `// SUBSCRIPTION BOX — La Colombe quality. Background #1A1208 hero → #F5F0E8 cream.
+// PEXELS HERO: unboxing subscription box lifestyle product reveal premium elegant
+// PEXELS PRODUCTS: curated products lifestyle premium box subscription reveal editorial
+// PEXELS SECTIONS: lifestyle brand product photography flat lay editorial beautiful
+// Box preview: photo-forward product reveal. Contents list with item photos.
+// Subscribe flow: box selection → frequency → checkout → confirmation.
+// Past boxes: gallery grid with photos. Fraunces italic brand. Gold accent.`,
 
-37: `// PROPERTY MANAGEMENT — Reference: Buildium, AppFolio, Propertyware
-// White #ffffff. Teal #0891b2 accent. Inter font. Properties are the hero.
-// Shell: properties tab + tenants + maintenance + finances + leases
-// Property cards: address, units, occupancy, monthly rent, payment status badge
-// ALL PAID green, LATE red pulsing, PARTIAL amber — instantly clear
-// Maintenance: open requests with priority, status pipeline, assign vendor
-// Rent received: unit card briefly flashes green — moment of delight
-// Stats: 8 units 87.5% occupancy $14,450 monthly $1,850 outstanding`,
+37: `// PROPERTY MANAGEMENT — Attio quality. Background #FAFAF8. Accent blue #2563EB.
+// PEXELS HERO: property management residential building modern apartment professional
+// PEXELS UNITS: apartment interior modern clean residential property beautiful
+// Unit grid: photo + address + unit + tenant + rent status + lease end.
+// Rent status: PAID green · LATE amber pulse · OVERDUE red.
+// Maintenance: ticket list with priority + status + contractor assigned.
+// Stats: 47 units · $94,819 monthly revenue · 96% occupancy · 3 open maintenance.`,
 
-38: `// MUSIC / PODCAST — Reference: Spotify web, Overcast, Pocket Casts, Castro
-// Dark #0c0a09. Violet #a78bfa accent. Inter font. Audio atmosphere.
-// Shell: sidebar + episode list + persistent player bar at bottom
-// Player bar: episode title, waveform visualization, progress 14:32/42:18
-// Playback controls: play/pause, skip ±30s, speed 1x/1.5x/2x, volume
-// Episode list: number, title, duration, date, play count, play/download
-// Play button pressed: album art subtly breathes with waveform — delight
-// Waveform: animated bars that pulse with imagined audio rhythm`,
+38: `// MUSIC / PODCAST — Dark cinematic. Background #07090F. Accent gold #C4963A.
+// PEXELS HERO: music studio recording professional audio dark moody atmospheric
+// PEXELS ALBUMS: vinyl record music album cover dark aesthetic photography
+// PEXELS ARTIST: musician performer artist portrait moody dramatic stage
+// Player: waveform visualization, progress bar scrubbing, volume, like/share.
+// Album cards: large Pexels artwork photo, gold hover state, play button overlay.
+// Now playing: full-width bottom bar with artwork + title + controls + progress.
+// Fraunces for track titles. Gold accents. Dark atmospheric throughout.`,
 
-39: `// FREELANCER MARKETPLACE — Reference: Contra, Toptal, Fiverr Pro, Upwork
-// White #ffffff. Sky blue #0ea5e9 accent. Inter font. Trust signals everywhere.
-// Shell: category filter + freelancer card grid + profile detail slide
-// Freelancer cards: photo placeholder, name, title, rate $/hr, rating stars, jobs count
-// Available now: green pulse badge — urgency without pressure
-// Trust signals: verified badge, response time typically 2 hours, review count
-// Hire modal: project description, budget, timeline, send inquiry button
-// Sending inquiry shows response time badge immediately — delight`,
+39: `// FREELANCER MARKETPLACE — Attio quality. Background #FAFAF8. Accent violet #7C3AED.
+// PEXELS HERO: freelancer creative professional working laptop home office warm
+// PEXELS PROFILES: diverse professional portrait creative freelancer headshot confident
+// Profile cards: photo + name + role + rate $94/hr + rating 4.9 (47 reviews).
+// Rate always specific: $94/hr not $100/hr. Rating 4.9 not 5.0. Specific.
+// Filter: role + rate range + availability + location. Live filter.
+// Hire flow: Message → Proposal → Contract → Pay. Progress indicator. Full e2e.`,
 
-40: `// NONPROFIT / VOLUNTEER — Reference: Galaxy Digital, VolunteerMatch, InitLive
-// White #ffffff. Green #16a34a accent. Plus Jakarta Sans. Impact is the hero.
-// Shell: impact dashboard tab + opportunities + volunteers + donations + impact
-// Impact counters: 12,847 Meals 234 Families 847 Volunteers — all count up mount
-// Opportunity cards: title, date, time, location, spots remaining bar
-// 1 spot left: amber urgent badge pulsing — creates appropriate urgency
-// Donation: amount selector $25/$50/$100/$250, one-time/monthly toggle
-// After donation: Your $50 provides 10 meals animated reveal — delight`,
+40: `// NONPROFIT / VOLUNTEER — Adaline quality. Background #F5F2EC cream. Accent warm orange #C4623A.
+// PEXELS HERO: volunteer community service people helping outdoor charity warm sunny
+// PEXELS CAUSES: community service helping hands diverse people volunteer work
+// PEXELS IMPACT: diverse community people together celebration achievement joy
+// Cormorant italic hero: "Give your time." Period.
+// Opportunity cards: photo + cause + location + hours + spots remaining "3 of 12" specific.
+// Impact: 1,284 volunteers · 24,819 hours · 47 causes. Specific always.
+// Sign-up flow: 3 steps gentle. Welcome energy not form energy.`,
 
 
-41: `// SOCIAL MEDIA SCHEDULER — Reference: Buffer, Later, Sprout Social, Hootsuite
-// White #ffffff. Indigo #6366f1 accent. Inter font. Calendar is the hero.
-// Shell: calendar tab + queue tab + compose tab + analytics tab
-// Calendar: monthly grid, colored dots per platform Twitter blue LinkedIn blue Instagram pink TikTok teal
-// Queue: posts listed chronologically with platform badge, content preview, time, status
-// Compose: write area with character counter per platform, platform toggles, schedule picker
-// Scheduled post going live: calendar cell briefly flashes send animation — delight
-// Analytics: reach 124K engagement 4.8% best time heatmap followers growth`,
+41: `// SOCIAL MEDIA SCHEDULER — Attio quality. Background #FAFAF8. Accent pink #DB2777.
+// PEXELS HERO: content creator social media phone laptop desk workspace modern
+// Calendar: monthly grid, posts show platform icon + snippet. Pink dot indicator.
+// Post composer: text area + platform selector + schedule picker + preview.
+// Analytics: reach 124K (+8.3%) · engagement 4.8% · best time Tue 9am-11am.
+// Queue: upcoming posts drag-to-reorder. Going live: status flips LIVE green flash.`,
 
-42: `// RECRUITMENT ATS — Reference: Lever, Greenhouse, Ashby, Workable
-// White #ffffff. Teal #0891b2 accent. Inter font. Pipeline is everything.
-// Shell: pipeline kanban + candidates tab + jobs tab + analytics
-// Pipeline columns: Applied Screening Interview Offer — with candidate cards
-// Candidate cards: photo placeholder, name, role, applied date, match score badge
-// Score: color coded green 90+ amber 70-89 red below 70 — specific numbers
-// Candidate detail: slides from right, resume summary, interview notes, stage mover
-// Moving to Hired: celebration animation + congratulations toast fires — delight`,
+42: `// RECRUITMENT ATS — Attio quality. Background #FAFAF8. Accent teal #0891B2.
+// PEXELS HERO: hiring recruitment team interview professional office modern diverse
+// PEXELS CANDIDATES: professional interview diverse candidates business confident
+// Pipeline kanban: Applied → Screening → Interview → Offer → Hired.
+// Candidate cards: photo + name + role + match score 94% + applied date.
+// Score: 94% green · 71% amber · 48% gray. Specific percentage always.
+// Moving to Hired: confetti + toast. The delight moment.
+// Candidate detail slides from right: resume + notes + stage mover.`,
 
-43: `// KNOWLEDGE BASE — Reference: Notion, GitBook, Confluence, Archbee
-// Cream #fafaf9. Dark #1c1917 text. Inter font. Search is the hero.
-// Shell: search bar prominent top + section cards + article view
-// Search: instant results appear as you type, grouped by section
-// Article view: breadcrumb, title, updated date, reading time, table of contents sidebar
-// Table of contents: sticky, highlights current section as you scroll
-// Code blocks: syntax highlighted with copy button
-// Search result click: matching term highlights yellow as article slides in — delight
-// Article ratings: thumbs up/down, helpful percentage shown`,
+43: `// KNOWLEDGE BASE — Attio quality. Background #FAFAF8. Accent amber #D97706.
+// PEXELS HERO: knowledge library reading research books professional minimal clean
+// Search: prominent, instant results as you type, grouped by section label.
+// Article cards: title + section + reading time + updated date. Clean 1px border.
+// Article view: breadcrumb + title + TOC sticky + reading progress top bar.
+// Code blocks: syntax highlighted + copy button with check animation.
+// Rating: thumbs up/down. 94.3% found helpful. Specific always.`,
 
-44: `// MEAL PLANNING — Reference: Yummly, Mealime, Paprika, Plan to Eat
-// Warm cream #faf9f7. Orange #ea580c accent. Lora + DM Sans. Appetizing warm.
-// Shell: week grid tab + recipes tab + grocery list tab + nutrition tab
-// Week grid: 7 columns Mon-Sun, 3 rows Breakfast Lunch Dinner — all pre-filled
-// Recipe cards: warm photo gradient, name Lora font, time calories difficulty tags
-// Grocery list: auto-generated from week plan, sorted by Produce Meat Dairy Pantry
-// Adding 7th day: grocery list items appear one by one reveal animation — delight
-// Nutrition: weekly averages vs goals, macros chart, calorie trend line`,
+44: `// MEAL PLANNING — Adaline quality. Background #F5F2EC cream. Accent terracotta #C4623A.
+// PEXELS HERO: food photography cooking kitchen fresh ingredients beautiful natural
+// PEXELS RECIPES: recipe food photography plating beautiful fresh ingredients styled
+// PEXELS SECTIONS: grocery shopping fresh produce healthy eating lifestyle food
+// Week grid: 7 days × 3 meals. Each cell recipe name + prep time.
+// Recipe cards: Pexels food photo + Cormorant name + DM Sans ingredients.
+// Prep time: 35 min specific. JetBrains Mono for time. Never approximate.
+// Grocery list: auto-generated. Sorted Produce → Protein → Dairy → Pantry.`,
 
-45: `// PITCH DECK BUILDER — Reference: Beautiful.ai, Pitch, Tome, Gamma
-// Dark #0f172a. Amber #f59e0b accent. Inter font. Slides are the hero.
-// Shell: slide thumbnails list left + canvas center + style panel right
-// Slides: Problem complete, Solution complete, Market complete, Product in progress, Team empty
-// Empty slides: red exclamation badge — urgency to complete
-// Deck strength ring: 64% amber, animates to final score — specific never round
-// AI assist button: suggests content for current slide
-// All 9 slides complete: ring animates to final score with celebration — delight`,
+45: `// PITCH DECK BUILDER — Attio quality. Background #FAFAF8. Accent indigo #4F46E5.
+// PEXELS HERO: startup founder presenting pitch meeting professional confident
+// Slide thumbnails: left sidebar. Problem done Solution done Market in-progress Team empty.
+// Incomplete slides: amber exclamation badge urgency.
+// Deck strength ring: 64% amber animated on mount. Never 100% until all done.
+// Canvas: slide preview center. Style panel right. Font + color + layout controls.
+// All complete: ring animates + celebration toast. Delight moment.`,
 
-46: `// FLEET MANAGEMENT — Reference: Samsara, Verizon Connect, Fleetio, Azuga
-// Dark #111827. Sky blue #0ea5e9 accent. Inter font. Map is the hero.
-// Shell: live map tab + vehicles tab + drivers tab + deliveries tab + reports
-// Map: dark placeholder with vehicle markers in different states
-// Vehicle cards: ID, type, driver, status ON ROUTE green IDLE gray DELIVERING blue
-// Fuel gauge: animates to fill level on mount for each vehicle
-// Alert banner: VH-1204 maintenance due Medium amber — immediately visible
-// Vehicle completing delivery: map marker flashes green briefly — delight
-// Stats: 2 active 1 idle 14 deliveries today 92% on time`,
+46: `// FLEET MANAGEMENT — Attio quality. Background #FAFAF8. Accent blue #2563EB.
+// PEXELS HERO: fleet vehicles trucks logistics transportation professional modern
+// Vehicle grid: photo + plate + driver + status ACTIVE/IDLE/MAINTENANCE + location.
+// Stats: 47 vehicles · 24,819 miles this month · 94.3% uptime · 3 in maintenance.
+// Maintenance schedule: upcoming service list vehicle + date + type.
+// Driver log: name + hours + miles + incidents. JetBrains Mono throughout.`,
 
-47: `// LANGUAGE LEARNING — Reference: Duolingo web, Babbel, Pimsleur, Busuu
-// White #ffffff. Green #16a34a accent. Plus Jakarta Sans. Streak is emotional.
-// Shell: sidebar + lesson area center + leaderboard right 240px
-// Lesson: translation exercise with text input, multiple choice with 4 options
-// Correct answer: green flash + XP bar fills + count increments — satisfying
-// Wrong answer: red shake animation + try again — forgiving not punishing
-// Streak counter: 21-day flame, increments with flame grow animation — delight
-// Leaderboard: Sarah Chen 4,847 XP, Jordan Davis 3,291 XP, Marcos 2,847 XP`,
+47: `// LANGUAGE LEARNING — Adaline quality. Background #F5F2EC cream. Accent grass green #4D9041.
+// PEXELS HERO: language learning student studying books travel culture international
+// PEXELS SECTIONS: travel culture international world diverse language community
+// Cormorant italic hero: "Speak it." Period.
+// Lesson: editorial layout. Question prominent. Choices clean 1px border cards.
+// Correct: quiet green check. XP bar fills smoothly. No fanfare just progress.
+// Wrong: gentle shake. Try again forgiving not punishing.
+// Streak: Cormorant large number. 14 days. Sage green. Quiet motivation.`,
 
-48: `// MEDITATION / WELLNESS — Reference: Calm, Headspace, Insight Timer, Ten Percent
-// Deep indigo #1e1b4b. Lavender #a78bfa accent. DM Sans gentle font. Calm.
-// Shell: home tab + meditate tab + breathe tab + sleep tab + journal tab
-// Breathing circle: large SVG circle expands inhale 4s holds 4s contracts exhale 4s
-// Circle breathes in perfect biological rhythm — alive and responsive — delight
-// Session cards: Morning Calm 10min Guided, Focus Flow 15min, Body Scan 20min
-// Ambient sounds: Rain Forest Silence — toggle during session
-// Mood tracker: 5 emoji selectors, week history shown as emoji row`,
+48: `// MEDITATION / WELLNESS — Adaline quality. Background #F0EBE3 deep cream. Accent lavender #A78BFA.
+// PEXELS HERO: meditation yoga wellness peaceful nature calm serene morning light
+// PEXELS SESSIONS: zen meditation peaceful nature water yoga serene minimal calm
+// PEXELS AMBIENT: nature forest water peaceful calm atmospheric soft light
+// Cormorant italic hero: "Breathe." Just that. Period.
+// Breathing circle: large SVG, expands inhale 4s, holds 4s, contracts exhale 4s. Live animated.
+// Session cards: generous whitespace, Cormorant title, duration, minimal metadata.
+// Nothing competes with the breath. Lavender only. Sand background. Silence in the design.`,
 
-49: `// CODE REVIEW — Reference: GitHub, GitLab, Linear, Codecov, Qodo
-// Dark #0d1117. Blue #3b82f6 accent. Inter + JetBrains Mono. Developer precision.
-// Shell: dashboard tab + pull requests tab + quality tab + team tab
-// PR rows: title, author, repo, status READY green CHANGES REQUESTED amber DRAFT gray
-// PR detail: file list, diff view green additions red deletions, review comments
-// Code diff: JetBrains Mono font, line numbers, syntax colors appropriate
-// Merge button: branch folding into main line animation — moment of delight
-// Quality score: 87/100 ring, coverage 94% bar, debt 2.4 hours, 3 issues list`,
+49: `// CODE REVIEW — Attio quality. Background #FAFAF8. Accent blue #3B82F6.
+// PEXELS HERO: none — code diff view is the product. Show it immediately.
+// PR rows: title + author + repo + READY green / CHANGES REQUESTED amber / DRAFT gray.
+// Diff view: line numbers + green additions +47 / red deletions -12. JetBrains Mono.
+// Comment threads inline: avatar + comment + reply. Resolve button.
+// Quality score: 87/100 ring animated. Coverage 94.3%. Debt 2.4 hours. Specific.
+// Merge: branch folding into main animation 300ms. The delight moment.`,
 
-50: `// INTERIOR DESIGN — Reference: Houzz, Havenly, Modsy, Planner 5D
-// Warm cream #fafaf9. Gold #8b6914 accent. Cormorant Garamond + DM Sans. Premium.
-// Shell: my rooms tab + design canvas tab + mood board tab + shop tab
-// Room canvas: top-down grid, furniture as labeled draggable rectangles
-// Style selector: Modern Minimalist Scandinavian Industrial Bohemian Mid-Century
-// Furniture library: searchable, filter by type, items show name price brand dimensions
-// Mood board: Pinterest-style grid, add images, organize by room
-// Room layout complete: before empty and after furnished side-by-side reveal — delight`,
+50: `// INTERIOR DESIGN — Adaline quality. Background #F5F2EC cream. Accent warm gold #B8860B.
+// PEXELS HERO: luxury interior design living room modern beautiful architecture light
+// PEXELS ROOMS: interior design bedroom living room kitchen bathroom luxury modern
+// PEXELS FURNITURE: furniture design minimal scandinavian modern home decor beautiful
+// PEXELS MOOD: interior lifestyle home decor aspirational beautiful spaces warm
+// Cormorant italic hero: "Design your space." Period.
+// Room canvas: top-down grid, furniture as labeled elegant rectangles, precise.
+// Mood board: Pexels photo grid aspirational. Before/after reveal slider slow smooth.
+// Style selector: Modern Minimalist Scandinavian Bohemian. One active at a time.`,
 
 }
 
