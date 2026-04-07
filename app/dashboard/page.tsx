@@ -212,7 +212,7 @@ function GlossFab() {
     {open&&<div className="fixed z-[60] flex flex-col" style={{bottom:74,right:10,width:280,maxHeight:380,background:'rgba(4,6,14,.96)',border:'1px solid rgba(255,107,0,.3)',backdropFilter:'blur(18px)'}}>
       <div className="flex items-center justify-between px-3 py-2" style={{borderBottom:'1px solid rgba(255,107,0,.15)'}}>
         <span style={{fontFamily:UI,fontSize:8,letterSpacing:'.25em',color:'rgba(255,107,0,.7)'}}>SOVREN CODE · GLOSSARY</span>
-        <span className="cursor-pointer" style={{fontSize:12,color:'rgba(195,200,215,.55)'}} onClick={()=>setOpen(false)}>✕</span>
+        <span className="cursor-pointer" style={{fontSize:12,color:'rgba(195,200,215,.55)'}} onClick={()=>setOpen(false)}>×</span>
       </div>
       <input className="w-full outline-none" style={{background:'rgba(8,11,22,.7)',border:'none',borderBottom:'1px solid rgba(255,107,0,.15)',color:'#F0F0FF',fontSize:11,padding:'8px 12px'}}
         placeholder="Search any building term..." value={q} onChange={e=>setQ(e.target.value)}/>
@@ -613,9 +613,9 @@ export default function DashboardPage() {
 
       </div>
       {!sbCol&&<div className="flex flex-col gap-1 p-2" style={{borderTop:'1px solid rgba(0,229,255,.035)'}}>
-        <div className="flex items-center gap-2.5 cursor-pointer mb-1" onClick={()=>setSettingsTab(!settingsTab)} style={{padding:'8px 10px',fontSize:13,color:'rgba(195,200,215,.8)',border:'1px solid transparent'}}><span style={{fontSize:14,width:20,textAlign:'center'}}>⚙</span><span className="flex-1">Settings</span></div>
-        <div className="flex items-center gap-2 p-2.5 cursor-pointer" onClick={()=>{navigator.clipboard.writeText('https://sovrend.com?ref=operator');const el=document.createElement('div');el.textContent='Link copied!';el.style.cssText='position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:rgba(0,229,255,.15);color:#00E5FF;padding:8px 16px;font-size:11px;z-index:999;border:1px solid rgba(0,229,255,.2)';document.body.appendChild(el);setTimeout(()=>el.remove(),2000)}} style={{border:'1px solid rgba(0,229,255,.15)',color:'rgba(0,229,255,.7)',fontSize:11,cursor:'pointer'}}><span style={{fontSize:14}}>★</span><div><div>Share SOVREND</div><div style={{fontSize:9,color:'rgba(195,200,215,.55)',marginTop:2}}>Earn for every referral</div></div></div>
-        <div className="flex items-center gap-2 p-2.5 cursor-pointer" onClick={async()=>{try{const res=await fetch('/api/stripe/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:'builder'})});const data=await res.json();if(data.url)window.open(data.url,'_blank')}catch(e){console.error(e)}}} style={{border:'1px solid rgba(0,229,255,.15)',background:'rgba(0,229,255,.04)',color:'#00E5FF',fontSize:11,cursor:'pointer'}}><span style={{fontSize:14}}>⚡</span><div><div>Upgrade to Builder</div><div style={{fontSize:9,color:'rgba(195,200,215,.55)',marginTop:2}}>25 actions/month → $22/mo</div></div></div>
+        <div className="flex items-center gap-2.5 cursor-pointer mb-1" onClick={()=>setSettingsTab(!settingsTab)} style={{padding:'8px 10px',fontSize:13,color:'rgba(195,200,215,.8)',border:'1px solid transparent'}}><span style={{fontSize:14,width:20,textAlign:'center'}}></span><span className="flex-1">Settings</span></div>
+        <div className="flex items-center gap-2 p-2.5 cursor-pointer" onClick={()=>{navigator.clipboard.writeText('https://sovrend.com?ref=operator');const el=document.createElement('div');el.textContent='Link copied!';el.style.cssText='position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:rgba(0,229,255,.15);color:#00E5FF;padding:8px 16px;font-size:11px;z-index:999;border:1px solid rgba(0,229,255,.2)';document.body.appendChild(el);setTimeout(()=>el.remove(),2000)}} style={{border:'1px solid rgba(0,229,255,.15)',color:'rgba(0,229,255,.7)',fontSize:11,cursor:'pointer'}}><span style={{fontSize:14}}></span><div><div>Share SOVREND</div><div style={{fontSize:9,color:'rgba(195,200,215,.55)',marginTop:2}}>Earn for every referral</div></div></div>
+        <div className="flex items-center gap-2 p-2.5 cursor-pointer" onClick={async()=>{try{const res=await fetch('/api/stripe/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:'builder'})});const data=await res.json();if(data.url)window.open(data.url,'_blank')}catch(e){console.error(e)}}} style={{border:'1px solid rgba(0,229,255,.15)',background:'rgba(0,229,255,.04)',color:'#00E5FF',fontSize:11,cursor:'pointer'}}><span style={{fontSize:14}}></span><div><div>Upgrade to Builder</div><div style={{fontSize:9,color:'rgba(195,200,215,.55)',marginTop:2}}>25 actions/month → $22/mo</div></div></div>
         <div className="flex items-center gap-2 px-2.5 py-2"><div className="flex items-center justify-center" style={{width:28,height:28,border:'1px solid rgba(0,229,255,.15)',fontFamily:UI,fontSize:8,color:'#00E5FF'}}>SD</div><div><div style={{fontSize:11,color:'rgba(195,200,215,.82)'}}>StevieD</div><div style={{fontFamily:UI,fontSize:8,color:'rgba(195,200,215,.55)',letterSpacing:'.1em'}}>OPERATOR</div></div></div>
       </div>}
     </div>
@@ -804,7 +804,7 @@ export default function DashboardPage() {
                 </div>}
               </div>
               {codeOpen&&<div className="flex flex-col" style={{width:340,minWidth:340,background:'rgba(4,6,14,.96)',borderLeft:'1px solid rgba(0,229,255,.07)',animation:'fu .3s ease'}}>
-                <div className="flex items-center justify-between px-3 flex-shrink-0" style={{height:30,borderBottom:'1px solid rgba(0,229,255,.035)'}}><div className="flex gap-0.5">{['FILES','TERMINAL'].map((t,i)=><span key={t} style={{fontFamily:UI,fontSize:8,letterSpacing:'.14em',padding:'4px 8px',color:i===0?'#00E5FF':'rgba(195,200,215,.55)',border:`1px solid ${i===0?'rgba(0,229,255,.15)':'transparent'}`,background:i===0?'rgba(0,229,255,.04)':'transparent'}}>{t}</span>)}</div><span className="cursor-pointer" onClick={()=>setCodeOpen(false)} style={{fontSize:10,color:'rgba(195,200,215,.55)'}}>✕</span></div>
+                <div className="flex items-center justify-between px-3 flex-shrink-0" style={{height:30,borderBottom:'1px solid rgba(0,229,255,.035)'}}><div className="flex gap-0.5">{['FILES','TERMINAL'].map((t,i)=><span key={t} style={{fontFamily:UI,fontSize:8,letterSpacing:'.14em',padding:'4px 8px',color:i===0?'#00E5FF':'rgba(195,200,215,.55)',border:`1px solid ${i===0?'rgba(0,229,255,.15)':'transparent'}`,background:i===0?'rgba(0,229,255,.04)':'transparent'}}>{t}</span>)}</div><span className="cursor-pointer" onClick={()=>setCodeOpen(false)} style={{fontSize:10,color:'rgba(195,200,215,.55)'}}>×</span></div>
                 <div className="flex-1 overflow-auto p-3" style={{fontFamily:MONO,fontSize:10,lineHeight:1.8,color:'rgba(195,200,215,.55)',background:'rgba(4,6,14,.5)'}}>
                   <pre style={{whiteSpace:'pre-wrap',wordBreak:'break-all'}}>{generatedCode||'// Code will appear here after build'}</pre>
                 </div>
@@ -819,7 +819,7 @@ export default function DashboardPage() {
       <div className="fixed z-[66] flex flex-col" onClick={e=>e.stopPropagation()} style={{top:50,right:20,width:340,maxHeight:'80vh',background:'rgba(4,6,14,.98)',border:'1px solid rgba(0,229,255,.15)',backdropFilter:'blur(18px)',animation:'fu .3s ease',overflow:'hidden'}}>
         <div className="flex items-center justify-between px-4 py-3" style={{borderBottom:'1px solid rgba(0,229,255,.07)'}}>
           <span style={{fontFamily:UI,fontSize:9,letterSpacing:'.25em',color:'rgba(0,229,255,.5)'}}>SETTINGS</span>
-          <span className="cursor-pointer" onClick={()=>setSettingsTab(false)} style={{fontSize:14,color:'rgba(0,229,255,.3)'}}>✕</span>
+          <span className="cursor-pointer" onClick={()=>setSettingsTab(false)} style={{fontSize:14,color:'rgba(0,229,255,.3)'}}>×</span>
         </div>
         <div className="flex-1 overflow-y-auto">
           <div style={{padding:'12px 16px',borderBottom:'1px solid rgba(0,229,255,.05)'}}>
@@ -863,7 +863,7 @@ export default function DashboardPage() {
         <div><div style={{fontFamily:UI,fontSize:8,letterSpacing:'.25em',color:'rgba(0,229,255,.5)'}}>THOUGHT SPACE</div><div style={{fontSize:10,color:'rgba(240,240,255,.35)',marginTop:2}}>Draft freely. Nothing here costs an action.</div></div>
         <div style={{display:'flex',alignItems:'center',gap:8}}>
           <span style={{fontFamily:UI,fontSize:7,letterSpacing:'.15em',color:'rgba(0,229,255,.25)'}}>THOUGHTS: {planNotes.trim()?planNotes.trim().split(/\s+/).length:0}</span>
-          <span className="cursor-pointer" onClick={()=>setPlanOpen(false)} style={{fontSize:12,color:'rgba(0,229,255,.3)'}}>✕</span>
+          <span className="cursor-pointer" onClick={()=>setPlanOpen(false)} style={{fontSize:12,color:'rgba(0,229,255,.3)'}}>×</span>
         </div>
       </div>
       <div style={{position:'relative',flex:1}}><canvas ref={planCanvasRef} style={{position:'absolute',inset:0,pointerEvents:'none',zIndex:1}}/><textarea className="w-full bg-transparent outline-none resize-none" placeholder="What are you thinking about building..." value={planNotes} onChange={e=>{setPlanNotes(e.target.value);const lines=e.target.value.split('\n');const last=lines[lines.length-1];const cx=Math.min(14+last.length*8.5,340);const cy=Math.min(14+(lines.length-1)*24+12,180);for(let i=0;i<3;i++)planParticlesRef.current.push({x:cx+(Math.random()-.5)*10,y:cy,vx:(Math.random()-.5)*.8,vy:-(0.4+Math.random()*1.2),life:1,decay:0.015+Math.random()*0.01,size:1+Math.random()*2})}} style={{color:'#F0F0FF',fontSize:14,lineHeight:1.7,padding:14,minHeight:200,border:'none',position:'relative',zIndex:2,background:'transparent',width:'100%'}}/></div>
@@ -876,7 +876,7 @@ export default function DashboardPage() {
       <div style={{width:'90%',maxWidth:900,maxHeight:'85vh',background:'rgba(4,6,14,.98)',border:'1px solid rgba(0,229,255,.15)',overflow:'hidden',display:'flex',flexDirection:'column'}}>
         <div className="flex items-center justify-between px-5 py-3" style={{borderBottom:'1px solid rgba(0,229,255,.07)'}}>
           <div className="flex items-center gap-3"><span className="cursor-pointer" onClick={()=>setProjectsOpen(false)} style={{fontSize:14,color:'rgba(0,229,255,.4)'}}>←</span><span style={{fontFamily:UI,fontSize:10,letterSpacing:'.25em',color:'rgba(0,229,255,.6)'}}>ALL PROJECTS ({savedApps.length})</span></div>
-          <span className="cursor-pointer" onClick={()=>setProjectsOpen(false)} style={{fontSize:14,color:'rgba(0,229,255,.3)'}}>✕</span>
+          <span className="cursor-pointer" onClick={()=>setProjectsOpen(false)} style={{fontSize:14,color:'rgba(0,229,255,.3)'}}>×</span>
         </div>
         <div className="flex-1 overflow-y-auto p-5" style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(260px,1fr))',gap:16}}>
           {savedApps.map(app=><div key={app.id} className="cursor-pointer" onClick={()=>{loadApp(app);setProjectsOpen(false)}} style={{border:'1px solid rgba(0,229,255,.1)',background:'rgba(8,11,22,.7)',overflow:'hidden',transition:'all .15s'}}
@@ -899,7 +899,7 @@ export default function DashboardPage() {
           <div className="flex items-center gap-3">
             <span className="cursor-pointer" onClick={()=>navigator.clipboard.writeText(JSON.stringify(handoffData.handoff,null,2))} style={{fontFamily:UI,fontSize:8,letterSpacing:'.12em',color:'#00E5FF',padding:'4px 10px',border:'1px solid rgba(0,229,255,.15)'}}>COPY</span>
             <span className="cursor-pointer" onClick={()=>{const w=window.open('','_blank');if(w){w.document.write('<html><head><title>'+handoffData.appName+'</title><style>body{background:#000308;color:#F0F0FF;font-family:system-ui;padding:40px;max-width:800px;margin:0 auto}h1{font-size:24px;letter-spacing:.1em}h2{font-size:11px;letter-spacing:.2em;color:#00E5FF;margin:24px 0 8px}p{font-size:13px;color:rgba(195,200,215,.75);line-height:1.6;margin-bottom:8px}.s{font-size:36px;font-weight:900;color:#FFE600}.b{border:1px solid rgba(0,229,255,.1);padding:16px;margin-bottom:12px}</style></head><body><h1>'+handoffData.appName+'</h1><p>SOVREND Handoff Brief</p><div class=b><div class=s>'+handoffData.score+'/100</div></div><h2>SUMMARY</h2><p>'+(handoffData.handoff?.summary||'')+'</p><h2>NEXT STEPS</h2>'+(handoffData.handoff?.nextSteps?handoffData.handoff.nextSteps.map((s:any)=>'<p>'+s.priority+': '+s.task+'</p>').join(''):'')+'<br><p style=color:gray>Generated by SOVREND</p></body></html>');w.document.close()}}} style={{fontFamily:UI,fontSize:8,letterSpacing:'.12em',color:'#F0F0FF',padding:'4px 10px',border:'1px solid rgba(240,240,255,.15)'}}>OPEN REPORT</span>
-            <span className="cursor-pointer" onClick={()=>setHandoffOpen(false)} style={{fontSize:14,color:'rgba(0,229,255,.3)'}}>✕</span>
+            <span className="cursor-pointer" onClick={()=>setHandoffOpen(false)} style={{fontSize:14,color:'rgba(0,229,255,.3)'}}>×</span>
           </div>
         </div>
         <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-4">
@@ -923,7 +923,7 @@ export default function DashboardPage() {
       <div className="relative flex flex-col" style={{maxWidth:480,width:'90%',background:'rgba(4,6,14,.98)',border:'1px solid rgba(255,107,0,.2)',padding:'28px 32px'}} onClick={e=>e.stopPropagation()}>
         <div className="flex items-center justify-between mb-5">
           <span style={{fontFamily:UI,fontSize:8,letterSpacing:'.25em',color:'#FF6B00'}}>CIPHER</span>
-          <span className="cursor-pointer" style={{fontSize:12,color:'rgba(195,200,215,.4)'}} onClick={()=>setShowCipherIntro(false)}>✕</span>
+          <span className="cursor-pointer" style={{fontSize:12,color:'rgba(195,200,215,.4)'}} onClick={()=>setShowCipherIntro(false)}>×</span>
         </div>
         <CipherIntro/>
       </div>
