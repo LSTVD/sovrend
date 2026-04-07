@@ -253,10 +253,13 @@ DESIGN SYSTEM — FOLLOW THE USER PROMPT EXACTLY:
 - PHOTO CONTRACT: Use ONLY the Pexels URLs injected below. Every img tag uses a Pexels URL. Every hero uses the video URL as autoplay muted loop background. Zero broken images. Zero placeholder boxes.
 - ACCESSIBILITY: Every img has descriptive alt text. Every button is a real button element. Every form input has an associated label. Semantic HTML throughout.
 
-LAYOUT ALWAYS:
-- Fixed left sidebar 220-240px — ALWAYS
-- Sidebar: logo top nav middle active state user avatar bottom
-- Main: flex-1 overflow-y-auto p-6 max-w-5xl
+LAYOUT CONTRACT — read the blueprint reference above and follow it exactly:
+- DASHBOARDS and APPS (blueprints 1,2,3,4,6,7,10,11,14,15,19,22,24,26,28,29,30,32,33,34,35,37,39,41,42,43,45,46,49): Fixed left sidebar 220-240px. Logo top, nav middle, avatar bottom. Main flex-1 overflow-y-auto.
+- PHOTO-FORWARD LIFESTYLE (blueprints 5,8,12,13,16,17,18,20,21,23,25,31,36,38,40,44,47,48,50): NO sidebar. Full-width layout. Fixed top nav only. Hero is full-bleed photo with headline overlaid. Sections stack vertically with generous whitespace. This is a website not a dashboard.
+- REAL ESTATE (13): Full-bleed hero photo, horizontal listing cards with large photos, filter bar at top, property modal on click. No sidebar ever.
+- RESTAURANT (12): Full-bleed food photo hero, menu sections with food photography, order flow. No sidebar ever.
+- PORTFOLIO (16): Asymmetric grid, large project photos, minimal nav. No sidebar ever.
+- The sidebar rule ONLY applies to dashboard and app builds. Never to lifestyle, service, or content builds.
 
 5 LAYERS:
 1 FOUNDATION: 4-6 tabs all fully built. App name from prompt.
