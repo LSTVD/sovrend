@@ -514,7 +514,7 @@ export default function DashboardPage() {
   const [handoffOpen,setHandoffOpen]=useState(false)
   const [showCipherIntro,setShowCipherIntro]=useState(false)
   const [activeDevice,setActiveDevice]=useState<'DESKTOP'|'MOBILE'|'TABLET'>('DESKTOP')
-  const [showIntake,setShowIntake]=useState(true)
+  const [showIntake,setShowIntake]=useState(false)
   const [intakeAnswers,setIntakeAnswers]=useState<any>(null)
   const [settingsTab,setSettingsTab]=useState(false)
   const [toolsView,setToolsView]=useState<"glossary"|"prompts"|"patterns">("glossary")
