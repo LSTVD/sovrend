@@ -253,13 +253,79 @@ DESIGN SYSTEM — FOLLOW THE USER PROMPT EXACTLY:
 - PHOTO CONTRACT: Use ONLY the Pexels URLs injected below. Every img tag uses a Pexels URL. DASHBOARD builds use the video URL as autoplay muted loop background in the hero. WEBSITE and LIFESTYLE builds use the first Pexels photo URL as a full-bleed static hero image — NO video background. Zero broken images. Zero placeholder boxes.
 - ACCESSIBILITY: Every img has descriptive alt text. Every button is a real button element. Every form input has an associated label. Semantic HTML throughout.
 
-LAYOUT CONTRACT — read the blueprint reference above and follow it exactly:
-- DASHBOARDS and APPS (blueprints 1,2,3,4,6,7,10,11,14,15,19,22,24,26,28,29,30,32,33,34,35,37,39,41,42,43,45,46,49): Fixed left sidebar 220-240px. Logo top, nav middle, avatar bottom. Main flex-1 overflow-y-auto.
-- PHOTO-FORWARD LIFESTYLE (blueprints 5,8,12,13,16,17,18,20,21,23,25,31,36,38,40,44,47,48,50): NO sidebar. Full-width layout. Fixed top nav only. Hero is full-bleed photo with headline overlaid. Sections stack vertically with generous whitespace. This is a website not a dashboard.
-- REAL ESTATE (13): Full-bleed hero photo, horizontal listing cards with large photos, filter bar at top, property modal on click. No sidebar ever.
-- RESTAURANT (12): Full-bleed food photo hero, menu sections with food photography, order flow. No sidebar ever.
-- PORTFOLIO (16): Asymmetric grid, large project photos, minimal nav. No sidebar ever.
-- The sidebar rule ONLY applies to dashboard and app builds. Never to lifestyle, service, or content builds.
+LAYOUT CONTRACT — mandatory section structure by category. Build EVERY section listed. No exceptions.
+
+DASHBOARDS and APPS (blueprints 1,2,3,4,6,7,10,11,14,15,19,22,24,26,28,29,30,32,33,34,35,37,39,41,42,43,45,46,49):
+Fixed left sidebar 220-240px. Logo top, nav middle, avatar bottom. Main flex-1 overflow-y-auto.
+4-6 fully built tabs. Every tab has real data loaded. Every chart animated. Every table has 6-8 rows of real data.
+
+REAL ESTATE (13) — build ALL of these in order:
+1. Fixed top nav with logo and navigation links
+2. Full-bleed hero photo 100vh with headline overlaid and single CTA
+3. Filter bar — price range, beds, neighborhood, status
+4. Listings grid — 3-4 cards each with large photo, price, address, beds/baths/sqft, status badge, View Property button
+5. Each listing opens full-screen modal — photo left 60%, specs and inquiry form right 40%
+6. Stats band — total volume, properties sold, avg days on market, satisfaction rate. Numbers count up on scroll.
+7. Featured property — one listing gets full-width editorial treatment with large photo and extended description
+8. About the agency — 3 paragraphs, founding story, philosophy, what makes them different
+9. Meet the team — 3 agent cards each with photo, name, title, specialty, bio, contact
+10. Testimonials — 3 client stories with name, outcome, quote, property type
+11. Journal/editorial — 2-3 article cards with photo, headline, excerpt, read more
+12. Contact section — address, phone, email, hours, contact form with confirmation
+13. Footer — logo, address, social links, copyright
+
+RESTAURANT (12) — build ALL of these in order:
+1. Fixed top nav with logo, menu links, reservation button
+2. Full-bleed hero food photo with restaurant name and tagline overlaid
+3. Story section — chef photo left, restaurant story right, 3 paragraphs
+4. Menu — 3-4 sections (starters, mains, desserts, drinks) each with 4-6 items, photo, name, description, price
+5. Each menu item has Add to Order button — builds order in drawer
+6. Order drawer slides from right — items, quantities, subtotal, checkout button
+7. Reservation section — date picker, party size, time slots, contact form, confirmation
+8. Signature dishes — 3 hero dishes with full-bleed photo, story behind each dish
+9. Press and recognition — 3 review quotes with publication, critic name, rating
+10. Meet the team — chef and key staff with photos and bios
+11. Private dining — section about events and private bookings with inquiry form
+12. Visit section — address, hours, map placeholder, parking info
+13. Footer — logo, hours, address, social links
+
+PORTFOLIO (16) — build ALL of these in order:
+1. Fixed minimal top nav — name/logo and 4 links only
+2. Full-bleed hero — name, title, one line philosophy, availability status
+3. Featured work — 2-3 projects shown large with full-bleed photos, role, outcome, view case study button
+4. Work grid — 6-8 projects in asymmetric grid, each with photo, title, category, year
+5. Each project opens detail modal — hero image, challenge, approach, outcome, metrics
+6. About section — professional photo, story in 3 paragraphs, what drives the work
+7. Skills and tools — visual representation not a plain list
+8. Selected clients or collaborators — logos or names with context
+9. Testimonials — 3 client quotes with name, company, project, outcome
+10. Process section — how you work, 3-4 steps with descriptions
+11. Writing or thoughts — 2-3 article cards if applicable
+12. Contact section — availability, preferred contact method, response time, contact form with confirmation
+13. Footer — name, social links, email
+
+MARKETPLACE (21) — build ALL of these:
+1. Top nav with search, categories, sell button, cart, profile
+2. Hero with search bar prominent and category pills
+3. Featured listings grid — 8-12 items with photos, prices, seller info
+4. Category sections — 3-4 categories each with horizontal scroll of items
+5. Each listing opens detail modal — photos, description, seller profile, make offer/buy button
+6. Seller profiles with ratings, listings, reviews
+7. How it works — 3 steps with icons and descriptions
+8. Trending section — most viewed this week
+9. Recent activity feed — live sales and new listings
+10. Trust and safety section
+11. Footer complete
+
+ALL LIFESTYLE BUILDS — mandatory regardless of category:
+- Fixed top nav. Never sidebar.
+- Hero always full-bleed photo minimum 100vh.
+- Minimum 8 distinct sections with real written content in each.
+- Every section has a headline, subheadline, and body content.
+- Every photo section uses Pexels URLs injected above.
+- Stats always count up on scroll with IntersectionObserver.
+- Every form has validation and confirmation screen.
+- Long scroll is the goal. If you can see the footer without scrolling the build has failed.
 
 5 LAYERS:
 1 FOUNDATION: DASHBOARDS get 4-6 tabs all fully built. WEBSITES and SERVICE BUILDS get sections — hero, about, services/listings/menu, testimonials, contact. Never put tabs on a restaurant, real estate site, portfolio, or lifestyle build. App or business name from prompt always.
