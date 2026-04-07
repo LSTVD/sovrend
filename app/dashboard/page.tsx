@@ -649,7 +649,7 @@ export default function DashboardPage() {
                 {['\ud83d\udcce','\ud83c\udfa4','\u25c7'].map(i=><div key={i} className="flex items-center justify-center cursor-pointer" style={{width:28,height:28,border:'1px solid rgba(0,229,255,.07)',color:'rgba(195,200,215,.55)',fontSize:12}}>{i}</div>)}
 
               </div>
-              <button onClick={handleBuild} style={{fontFamily:UI,fontSize:10,fontWeight:700,letterSpacing:'.22em',color:'#000308',background:'linear-gradient(135deg,#FF6A00,#00E5FF)',border:'none',padding:'12px 32px',cursor:'pointer',boxShadow:'0 0 20px rgba(0,229,255,.2),0 0 40px rgba(255,106,0,.1)',transition:'all .3s'}}>ARCHITECT →</button>
+              <button onClick={()=>{if(!prompt.trim()){router.push('/dashboard/intake')}else{handleBuild()}}} style={{fontFamily:UI,fontSize:10,fontWeight:700,letterSpacing:'.22em',color:'#000308',background:'linear-gradient(135deg,#FF6A00,#00E5FF)',border:'none',padding:'12px 32px',cursor:'pointer',boxShadow:'0 0 20px rgba(0,229,255,.2),0 0 40px rgba(255,106,0,.1)',transition:'all .3s'}}>ARCHITECT →</button>
             </div>
           </div>
 
