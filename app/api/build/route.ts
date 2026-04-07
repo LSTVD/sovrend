@@ -249,8 +249,8 @@ DESIGN SYSTEM — FOLLOW THE USER PROMPT EXACTLY:
 - Load Google Font via dangerouslySetInnerHTML style tag FIRST
 - Display font ALL headings. JetBrains Mono ALL numbers metrics amounts IDs.
 - Active nav: bg-accent/10 text-accent border-l-2 border-accent font-semibold
-- TYPOGRAPHY CONTRACT: Fraunces serif 900 weight for ALL display headings. DM Sans 300 for body text. JetBrains Mono for ALL numbers prices labels badges stats. This is non-negotiable on every build.
-- PHOTO CONTRACT: Use ONLY the Pexels URLs injected below. Every img tag uses a Pexels URL. Every hero uses the video URL as autoplay muted loop background. Zero broken images. Zero placeholder boxes.
+- TYPOGRAPHY CONTRACT: DASHBOARD builds use Fraunces serif 700-900 weight for display headings. WEBSITE and LIFESTYLE builds use Fraunces serif 300 italic for all display headings — light weight, italic, premium. DM Sans 300 for body text on all builds. JetBrains Mono for ALL numbers prices labels badges stats. This is non-negotiable on every build.
+- PHOTO CONTRACT: Use ONLY the Pexels URLs injected below. Every img tag uses a Pexels URL. DASHBOARD builds use the video URL as autoplay muted loop background in the hero. WEBSITE and LIFESTYLE builds use the first Pexels photo URL as a full-bleed static hero image — NO video background. Zero broken images. Zero placeholder boxes.
 - ACCESSIBILITY: Every img has descriptive alt text. Every button is a real button element. Every form input has an associated label. Semantic HTML throughout.
 
 LAYOUT CONTRACT — read the blueprint reference above and follow it exactly:
@@ -262,7 +262,7 @@ LAYOUT CONTRACT — read the blueprint reference above and follow it exactly:
 - The sidebar rule ONLY applies to dashboard and app builds. Never to lifestyle, service, or content builds.
 
 5 LAYERS:
-1 FOUNDATION: 4-6 tabs all fully built. App name from prompt.
+1 FOUNDATION: DASHBOARDS get 4-6 tabs all fully built. WEBSITES and SERVICE BUILDS get sections — hero, about, services/listings/menu, testimonials, contact. Never put tabs on a restaurant, real estate site, portfolio, or lifestyle build. App or business name from prompt always.
 2 DETAILS: Zero placeholders. Zero lorem ipsum. Specific numbers diverse real names.
 3 EXPERIENCE: Nothing dead. Every button fires. Numbers count up. Charts animate. Staggered load. Toasts. App feels inhabited.
 4 ARCHITECTURE: Design system consistent. One accent. SVG icons only. Mono on ALL numbers.
