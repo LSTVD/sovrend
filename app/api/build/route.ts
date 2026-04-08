@@ -109,7 +109,22 @@ export async function POST(req: NextRequest) {
     }
     // Detect category from prompt keywords
     const promptLower = prompt.toLowerCase()
+    // Use Gemini's atmospheric query for hero photos
+    // But also detect product category from prompt for product photos
     let searchQuery = incomingPhotoQuery || categoryPhotoQueries.default
+    // If no product query from Gemini, detect from prompt keywords
+    if (!incomingProductQuery) {
+      if (promptLower.match(/billiard|pool.*cue|cue.*stick|snooker|pool.*hall|pocket.*billiard/)) incomingProductQuery = 'billiard pool cue stick dark'
+      else if (promptLower.match(/watch|timepiece|horology|luxury.*watch/)) incomingProductQuery = 'luxury watch timepiece detail'
+      else if (promptLower.match(/coffee|espresso|roast|brew|cafe/)) incomingProductQuery = 'coffee bag espresso product'
+      else if (promptLower.match(/jewelry|ring|necklace|diamond|gold/)) incomingProductQuery = 'luxury jewelry gold diamond'
+      else if (promptLower.match(/shoe|sneaker|footwear|boot/)) incomingProductQuery = 'luxury shoes footwear product'
+      else if (promptLower.match(/bag|handbag|purse|leather.*good/)) incomingProductQuery = 'luxury leather bag handbag'
+      else if (promptLower.match(/whiskey|bourbon|wine|spirit|alcohol/)) incomingProductQuery = 'whiskey bottle luxury spirit'
+      else if (promptLower.match(/knife|blade|cutlery|chef/)) incomingProductQuery = 'chef knife blade cutlery'
+      else if (promptLower.match(/candle|fragrance|scent|perfume/)) incomingProductQuery = 'luxury candle fragrance product'
+      else if (promptLower.match(/supplement|vitamin|health.*product/)) incomingProductQuery = 'supplement bottle health product'
+    }
     if(promptLower.match(/coffee|cafe|espresso|roast|brew/)) searchQuery = categoryPhotoQueries.coffee
     else if(promptLower.match(/billiard|pool.*hall|pool.*cue|cue.*stick|snooker/)) searchQuery = categoryPhotoQueries.billiards
     else if(promptLower.match(/restaurant|food|eat|dining|chef|kitchen|pizza|burger/)) searchQuery = categoryPhotoQueries.restaurant
