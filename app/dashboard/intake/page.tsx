@@ -60,7 +60,11 @@ export default function IntakePage() {
         setStep(6)
         const brief = `${na.q1}. What makes it different: ${na.q2}. Customer: ${na.q3}. Aesthetic: ${na.q4}. Avoid: ${na.q5}.`
         setTimeout(() => {
-          router.push(`/dashboard?brief=${encodeURIComponent(brief)}&intake=${encodeURIComponent(JSON.stringify(na))}`)
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('sovrend_brief', brief)
+            localStorage.setItem('sovrend_intake', JSON.stringify(na))
+          }
+          router.push('/dashboard')
         }, 2200)
       } else {
         setStep(step + 1)
