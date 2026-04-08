@@ -262,6 +262,8 @@ DESIGN SYSTEM — FOLLOW THE USER PROMPT EXACTLY:
 - If the user specifies a mood or palette (dark, warm, minimal), derive all colors from that direction
 - If no colors specified, choose colors that match the brand category — never default to purple or indigo
 - NEVER #6366f1 #4f46e5 or any purple/indigo gradients unless the user explicitly asks for purple
+- NEVER lime green or neon green as a CTA button color on lifestyle, e-commerce, real estate, restaurant, or portfolio builds. Those builds use champagne #E8D5B0 or warm white #F5EDD8 as the CTA accent.
+- NEVER use a bright green button on a dark premium build. Green CTAs are only allowed on athletic and fintech builds where neon is intentional.
 - NEVER Inter Space Grotesk Plus Jakarta Sans Roboto Arial as display font
 - Load Google Font via dangerouslySetInnerHTML style tag FIRST
 - Display font ALL headings. JetBrains Mono ALL numbers metrics amounts IDs.
