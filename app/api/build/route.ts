@@ -354,6 +354,8 @@ MICRO-INTERACTION CONTRACT — every build must include:
 - Toast notifications slide up from bottom and auto-dismiss after 2.8 seconds
 - Nav cart badge springs in with scale animation when items added
 
+CRITICAL — MODAL AND FULLSCREEN RULE: Every modal, drawer, overlay, or full-screen view MUST have a visible close button in the top right corner. Close button is always position:fixed or position:absolute top-right. Never let a user get trapped in a view with no escape. Every custom designer, configurator, or detail view must have an X button that returns to the previous state. No exceptions.
+
 CRITICAL — TEXT VISIBILITY RULE: Never clip or hide text. Every hero headline, subheadline, and body text must be fully visible at all viewport sizes. Never use overflow:hidden on containers that hold text unless paired with explicit min-height that guarantees full text visibility. Hero sections must use min-height not fixed height. All text containers must have padding-bottom of at least 24px. Test every text block — if it could overflow, use overflow:visible or remove the overflow property entirely.
 
 CRITICAL — CHECKOUT RULE: Every build with a cart or booking must include a fully working three step checkout — Step 1 Information (name email address), Step 2 Shipping or confirmation, Step 3 Payment with card fields. After payment submit show a success screen with animated SVG checkmark, order number, and confirmation message personalized with the customer name. The checkout must complete. The order confirmed screen must exist and render.
