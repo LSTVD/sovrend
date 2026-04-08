@@ -559,7 +559,7 @@ export default function DashboardPage() {
   useEffect(()=>{
     const supabase=createClient()
     supabase.auth.getUser().then(({data:{user}})=>{
-      if(user){supabase.from('apps').select('id,name,code,updated_at').eq('user_id',user.id).order('updated_at',{ascending:false}).limit(50).then(({data})=>{if(data)setSavedApps(data)});supabase.from('journal').select('id,app_id,entry_type,title,narration,prompt,created_at').eq('user_id',user.id).order('created_at',{ascending:false}).limit(50).then(({data})=>{if(data)setJournalEntries(data)})}
+      if(user){const savedBrief=localStorage.getItem('sovrend_brief');if(savedBrief){setPrompt(savedBrief);localStorage.removeItem('sovrend_brief');localStorage.removeItem('sovrend_intake')}supabase.from('apps').select('id,name,code,updated_at').eq('user_id',user.id).order('updated_at',{ascending:false}).limit(50).then(({data})=>{if(data)setSavedApps(data)});supabase.from('journal').select('id,app_id,entry_type,title,narration,prompt,created_at').eq('user_id',user.id).order('created_at',{ascending:false}).limit(50).then(({data})=>{if(data)setJournalEntries(data)})}
     })},[])
   useEffect(()=>{if(appState!=='idle')return;const iv=setInterval(()=>setPhIdx(p=>(p+1)%PLACEHOLDERS.length),4000);return()=>clearInterval(iv)},[appState])
   useEffect(()=>{const h=(e:KeyboardEvent)=>{if((e.metaKey||e.ctrlKey)&&e.key==='Enter'&&appState==='idle'&&prompt.trim()){e.preventDefault();handleBuild()}};document.addEventListener('keydown',h);return()=>document.removeEventListener('keydown',h)},[appState,prompt])
