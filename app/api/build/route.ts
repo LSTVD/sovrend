@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
     }
     // Detect category from prompt keywords
     const promptLower = prompt.toLowerCase()
-    let searchQuery = categoryPhotoQueries.default
+    let searchQuery = incomingPhotoQuery || categoryPhotoQueries.default
     if(promptLower.match(/coffee|cafe|espresso|roast|brew/)) searchQuery = categoryPhotoQueries.coffee
     else if(promptLower.match(/billiard|pool.*hall|pool.*cue|cue.*stick|snooker/)) searchQuery = categoryPhotoQueries.billiards
     else if(promptLower.match(/restaurant|food|eat|dining|chef|kitchen|pizza|burger/)) searchQuery = categoryPhotoQueries.restaurant
