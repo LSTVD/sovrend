@@ -109,7 +109,8 @@ Return ONLY valid JSON:
     {"layer": 5, "name": "Philosophy", "status": "strong", "added": "brand voice"}
   ],
   "score": 9,
-  "photoQuery": "5 word atmospheric pexels query"
+  "photoQuery": "5 word atmospheric pexels query for hero and mood",
+  "productQuery": "5 word pexels query for the actual product being sold"
 }` }]
       },
     })
@@ -133,6 +134,7 @@ Return ONLY valid JSON:
       promptScore: parsed.score || 5,
       blueprintId: parsed.blueprintId || 1,
       photoQuery: parsed.photoQuery || null,
+      productQuery: parsed.productQuery || null,
       blueprintName: parsed.blueprintName || 'App',
       productName: parsed.productName || '',
       colorWorld: parsed.colorWorld || '',

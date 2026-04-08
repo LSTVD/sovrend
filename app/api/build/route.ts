@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     const parsed = BuildSchema.safeParse(body)
     if (!parsed.success) { console.log("[PARSE ERROR]", JSON.stringify(parsed.error.issues)); return NextResponse.json({ error: "Invalid request", issues: parsed.error.issues }, { status: 400 }) }
 
-    const { prompt, appId, persona, blueprintId: incomingBlueprintId, photoQuery: incomingPhotoQuery } = parsed.data
+    const { prompt, appId, persona, blueprintId: incomingBlueprintId, photoQuery: incomingPhotoQuery, productQuery: incomingProductQuery } = parsed.data
     const tier = (userData.tier as string) || 'free'
     const limits = TIER_LIMITS[tier] || TIER_LIMITS.free
 
@@ -198,11 +198,12 @@ export async function POST(req: NextRequest) {
     console.log('[PEXELS QUERY]', searchQuery)
     console.log('[BLUEPRINT ID]', incomingBlueprintId)
     console.log('[PROMPT LOWER SAMPLE]', promptLower.slice(0,200))
-    const [photoUrls, videoUrl] = await Promise.all([
+    const [photoUrls, videoUrl, productPhotoUrls] = await Promise.all([
       fetchPexelsPhotos(searchQuery),
       fetchPexelsVideo(searchQuery),
+      incomingProductQuery ? fetchPexelsPhotos(incomingProductQuery) : Promise.resolve([]),
     ])
-    const mediaBlock = `\n\nLIVE MEDIA — use these exact URLs for all images and video in this build. Hero video (autoplay muted loop): ${videoUrl || 'none available, use a photo instead'}. Photos in order — hero, products, sections:\n${photoUrls.length ? photoUrls.join('\n') : 'No photos available, use solid color backgrounds.'}\nNever use placeholder images. Never use Unsplash. Use only these URLs.`
+    const mediaBlock = `\n\nLIVE MEDIA — use these exact URLs for all images and video in this build. Hero video (autoplay muted loop): ${videoUrl || 'none available, use a photo instead'}. ATMOSPHERE photos for hero and section backgrounds:\n${photoUrls.length ? photoUrls.join('\n') : 'No photos available, use solid color backgrounds.'}\n${productPhotoUrls.length ? 'PRODUCT photos for product cards and listings — use these for individual product images:\n' + productPhotoUrls.join('\n') : ''}\nNever use placeholder images. Never use Unsplash. Use only these URLs.`
 
     let rawText = ""; let inputTokens = 0; let outputTokens = 0;
     const stream = await anthropic.messages.stream({
