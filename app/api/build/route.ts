@@ -383,6 +383,11 @@ CRITICAL — TEXT VISIBILITY RULE: Never clip or hide text. Every hero headline,
 
 CRITICAL — CHECKOUT RULE: Every build with a cart or booking must include a fully working three step checkout — Step 1 Information (name email address), Step 2 Shipping or confirmation, Step 3 Payment with card fields. After payment submit show a success screen with animated SVG checkmark, order number, and confirmation message personalized with the customer name. The checkout must complete. The order confirmed screen must exist and render.
 
+CRITICAL — NAVIGATION RULE: Every nav link MUST work. No dead nav items ever. Two options only:
+1. Scroll nav — link uses onClick={()=>document.getElementById('section-id')?.scrollIntoView({behavior:'smooth'})} AND the target section exists with that exact id.
+2. Tab nav — clicking a nav item sets active tab state and shows that tab's content. Every tab must have fully built content.
+NEVER create a nav link that does nothing. NEVER create a nav link that points to a section that does not exist. If you name a nav item "About Us" there must be a section with id="about" that renders real content. Test every nav link mentally before finishing. Dead nav = broken build.
+
 CRITICAL — COMPLETION RULE: You must always close every JSX tag and every function before stopping. If you are approaching the token limit, immediately close all open tags, close all open functions, and return the App component cleanly. A truncated build that crashes is worth zero. A complete simpler build is worth everything. Never leave a tag open. Never leave a function unclosed.
 
 CRITICAL — APOSTROPHE RULE: In ALL JavaScript string literals use double quotes only. Never single quotes for strings containing English text. Write: const msg = "It's ready" not const msg = \'It\'s ready\'. Single quotes inside single-quoted strings crash the Babel sandbox instantly.`,
