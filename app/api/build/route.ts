@@ -251,7 +251,7 @@ BEFORE ANY CODE — RESOLVE THESE INTERNALLY. DO NOT OUTPUT THE RESOLUTION. Go s
 2. REFERENCE — World-class app this resembles and what makes it alive
 ${refComponent}
 3. HERO MOMENT — First thing user sees that stops them
-4. DATA — Sarah Chen Marcos Rivera Priya Nair James Thornton Aisha Okonkwo David Park. $24819 not $25000. 1284 not 1000. Oct/Nov 2025.
+4. DATA — Sarah Chen Marcos Rivera Priya Nair James Thornton Aisha Okonkwo David Park. $24819 not $25000. 1284 not 1000. Oct/Nov 2025. STATS RULE: Generate 4 stats specific to the actual business. Pool cues: cues built, pro players, years operating, ship time. Restaurant: covers served, years open, menu items, avg rating. Real estate: homes sold, avg days on market, total volume, years in business. NEVER use SaaS metrics like MRR churn DAU for non-tech businesses.
 5. SIGNATURE INTERACTION — One animation that makes this alive
 6. USER TRUTH — Who what problem solved in 60 seconds
 
@@ -370,7 +370,13 @@ MICRO-INTERACTION CONTRACT — every build must include:
 - Toast notifications slide up from bottom and auto-dismiss after 2.8 seconds
 - Nav cart badge springs in with scale animation when items added
 
-CRITICAL — MODAL AND FULLSCREEN RULE: Every modal, drawer, overlay, or full-screen view MUST have a visible close button in the top right corner. Close button is always position:fixed or position:absolute top-right. Never let a user get trapped in a view with no escape. Every custom designer, configurator, or detail view must have an X button that returns to the previous state. No exceptions.
+CRITICAL — MODAL AND FULLSCREEN RULE: Every modal drawer overlay or fullscreen view MUST use this exact pattern. No exceptions ever.
+const [activeModal,setActiveModal]=React.useState(null)
+Backdrop: <div onClick={()=>setActiveModal(null)} style={{position:'fixed',inset:0,background:'rgba(0,0,0,.7)',zIndex:998}}/>
+Close button inside every modal: <button onClick={()=>setActiveModal(null)} style={{position:'absolute',top:12,right:12,background:'none',border:'none',color:'rgba(240,240,255,.6)',fontSize:22,cursor:'pointer',zIndex:9999,lineHeight:1}}>x</button>
+Modal content zIndex:999. Close button always visible. Never hidden by overflow:hidden.
+Custom designers configurators product builders fullscreen experiences ALL require visible x top-right returning to previous state.
+A trapped user is a broken build. Non-negotiable.
 
 CRITICAL — TEXT VISIBILITY RULE: Never clip or hide text. Every hero headline, subheadline, and body text must be fully visible at all viewport sizes. Never use overflow:hidden on containers that hold text unless paired with explicit min-height that guarantees full text visibility. Hero sections must use min-height not fixed height. All text containers must have padding-bottom of at least 24px. Test every text block — if it could overflow, use overflow:visible or remove the overflow property entirely.
 
