@@ -56,7 +56,8 @@ export async function POST(req: NextRequest) {
     const parsed = BuildSchema.safeParse(body)
     if (!parsed.success) { console.log("[PARSE ERROR]", JSON.stringify(parsed.error.issues)); return NextResponse.json({ error: "Invalid request", issues: parsed.error.issues }, { status: 400 }) }
 
-    const { prompt, appId, persona, blueprintId: incomingBlueprintId, photoQuery: incomingPhotoQuery, productQuery: incomingProductQuery } = parsed.data
+    const { prompt, appId, persona, blueprintId: incomingBlueprintId, photoQuery: incomingPhotoQuery } = parsed.data
+    let incomingProductQuery: string|null = (parsed.data as any).productQuery || null
     const tier = (userData.tier as string) || 'free'
     const limits = TIER_LIMITS[tier] || TIER_LIMITS.free
 
