@@ -485,6 +485,7 @@ function renderSrcDoc(code) {
 export default function DashboardPage() {
   const [entered,setEntered]=useState(false)
   const router = useRouter()
+  const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null
   const [appState,setAppState]=useState<'idle'|'building'|'complete'|'revealing'>('idle')
   const [prompt,setPrompt]=useState('')
   const [sbCol,setSbCol]=useState(false)
