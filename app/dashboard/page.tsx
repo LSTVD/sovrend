@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
 const UI = "'Orbitron',sans-serif"
@@ -483,6 +484,7 @@ function renderSrcDoc(code) {
 
 export default function DashboardPage() {
   const [entered,setEntered]=useState(false)
+  const router = useRouter()
   const [appState,setAppState]=useState<'idle'|'building'|'complete'|'revealing'>('idle')
   const [prompt,setPrompt]=useState('')
   const [sbCol,setSbCol]=useState(false)
