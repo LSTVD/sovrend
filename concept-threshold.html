@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SOVREND — Threshold Concept</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,200;1,9..144,300;1,9..144,400&family=DM+Sans:wght@200;300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --pre:#0B0D14;
+  --becoming:#141820;
+  --threshold:rgba(255,255,255,0.06);
+  --genesis:#E8E4D8;
+  --signal:rgba(232,228,216,0.55);
+  --signal-dim:rgba(232,228,216,0.25);
+  --signal-ghost:rgba(232,228,216,0.08);
+  --moment:#FFE8A8;
+  --moment-dim:rgba(255,232,168,0.4);
+  --cipher:#00E5FF;
+  --cipher-dim:rgba(0,229,255,0.3);
+  --cipher-ghost:rgba(0,229,255,0.06);
+}
+html,body{width:100%;height:100vh;overflow:hidden;background:var(--pre);color:var(--genesis);font-family:'DM Sans',sans-serif;cursor:none}
+
+#cur{position:fixed;z-index:9999;pointer-events:none}
+.cur-core{position:absolute;width:5px;height:5px;border-radius:50%;background:var(--moment);box-shadow:0 0 12px var(--moment),0 0 24px rgba(255,232,168,0.4);transform:translate(-50%,-50%);transition:transform 0.15s}
+.cur-field{position:absolute;width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,232,168,0.2);transform:translate(-50%,-50%);transition:all 0.4s cubic-bezier(0.16,1,0.3,1)}
+
+#rain{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+.shell{display:flex;width:100%;height:100vh;position:relative;z-index:5}
+
+.sb{width:52px;flex-shrink:0;background:rgba(11,13,20,0.92);border-right:1px solid var(--threshold);backdrop-filter:blur(20px);display:flex;flex-direction:column;align-items:center;padding:18px 0}
+.sb-logo{width:18px;height:18px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-bottom:24px}
+.sb-logo span{width:4px;height:4px;display:block;background:none;border:1px solid rgba(0,229,255,0.4)}
+.sb-logo span:nth-child(5){background:var(--moment);border-color:var(--moment);box-shadow:0 0 6px var(--moment)}
+.sb-nav{flex:1;display:flex;flex-direction:column;gap:6px;width:100%;align-items:center;padding-top:8px}
+.ni{width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:rgba(232,228,216,0.18);transition:all 0.2s;border-left:2px solid transparent}
+.ni:hover{color:var(--cipher)}
+.ni.on{color:var(--cipher);background:var(--cipher-ghost);border-left-color:var(--cipher)}
+.sb-bot{padding-bottom:6px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.usage-ring{width:30px;height:30px;border:1px solid var(--signal-ghost);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--moment-dim)}
+.sb-avatar{width:26px;height:26px;border-radius:50%;border:1px solid var(--cipher-dim);color:var(--cipher);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:8px}
+
+.main{flex:1;height:100vh;position:relative;overflow:hidden}
+
+/* THE THRESHOLD — horizontal line that breathes and rises during build */
+.horizon{position:absolute;left:0;right:0;top:50%;height:1px;background:linear-gradient(90deg,transparent 0%,rgba(255,232,168,0.05) 15%,rgba(255,232,168,0.4) 50%,rgba(255,232,168,0.05) 85%,transparent 100%);box-shadow:0 0 24px rgba(255,232,168,0.15);animation:hbreathe 8s ease-in-out infinite;z-index:2}
+@keyframes hbreathe{0%,100%{opacity:0.5;transform:scaleX(0.7)}50%{opacity:1;transform:scaleX(1)}}
+
+/* Atmosphere field */
+.field{position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 50%,rgba(255,232,168,0.025) 0%,transparent 70%),radial-gradient(ellipse 40% 60% at 20% 40%,rgba(0,229,255,0.018) 0%,transparent 60%),radial-gradient(ellipse 50% 40% at 80% 60%,rgba(255,232,168,0.012) 0%,transparent 60%);animation:field-drift 14s ease-in-out infinite alternate;z-index:1}
+@keyframes field-drift{from{transform:scale(1)}to{transform:scale(1.04)}}
+
+/* Top */
+.top{position:absolute;top:0;left:0;right:0;height:56px;display:flex;align-items:center;padding:0 32px;z-index:20}
+.top-l{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.3em;color:var(--signal-dim);text-transform:uppercase}
+.top-l b{color:var(--genesis);font-weight:400}
+.top-r{margin-left:auto;display:flex;align-items:center;gap:18px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.16em;color:var(--signal-dim);text-transform:uppercase}
+.top-r .live{color:var(--cipher);display:flex;align-items:center;gap:8px}
+.top-r .live::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--cipher);box-shadow:0 0 8px var(--cipher);animation:pulse 2.4s ease infinite}
+
+/* CORNERS */
+.corner{position:absolute;width:32px;height:32px;pointer-events:none;z-index:5}
+.corner.tl{top:32px;left:32px;border-top:1px solid rgba(0,229,255,0.15);border-left:1px solid rgba(0,229,255,0.15)}
+.corner.tr{top:32px;right:32px;border-top:1px solid rgba(255,232,168,0.12);border-right:1px solid rgba(255,232,168,0.12)}
+.corner.bl{bottom:48px;left:32px;border-bottom:1px solid rgba(0,229,255,0.12);border-left:1px solid rgba(0,229,255,0.12)}
+.corner.br{bottom:48px;right:32px;border-bottom:1px solid rgba(255,232,168,0.10);border-right:1px solid rgba(255,232,168,0.10)}
+
+/* Stage */
+.stage{position:absolute;inset:56px 0 32px 0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 48px;z-index:10}
+
+.kicker{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.32em;text-transform:uppercase;color:var(--cipher-dim);margin-bottom:32px;display:flex;align-items:center;gap:14px;opacity:0;animation:fu 1s ease 0.2s forwards}
+.kicker::before,.kicker::after{content:'';width:32px;height:1px;background:var(--cipher-ghost)}
+.kicker-dot{width:5px;height:5px;border-radius:50%;background:var(--cipher);box-shadow:0 0 10px var(--cipher);animation:pulse 2.4s ease infinite}
+
+.heading{font-family:'Fraunces',serif;font-size:clamp(56px,9vw,128px);font-weight:300;line-height:0.9;letter-spacing:-0.04em;text-align:center;max-width:980px;margin-bottom:14px;opacity:0;animation:fu 1.2s ease 0.4s forwards;text-shadow:0 0 60px rgba(232,228,216,0.04)}
+.heading em{font-style:italic;font-weight:200;color:var(--moment);text-shadow:0 0 40px rgba(255,232,168,0.2)}
+
+.sub{font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:var(--signal);line-height:1.6;text-align:center;max-width:480px;margin-bottom:48px;opacity:0;animation:fu 1.2s ease 0.6s forwards;font-weight:300}
+
+.input-frame{width:100%;max-width:680px;background:rgba(11,13,20,0.6);border:1px solid rgba(0,229,255,0.15);border-bottom:1px solid var(--cipher-dim);padding:20px 24px;display:flex;align-items:center;gap:16px;backdrop-filter:blur(20px);opacity:0;animation:fu 1.2s ease 0.8s forwards;box-shadow:0 0 60px rgba(0,229,255,0.06)}
+.input-frame:focus-within{border-color:var(--cipher);box-shadow:0 0 80px rgba(0,229,255,0.12)}
+.input-frame input{flex:1;background:transparent;border:none;outline:none;font-family:'Fraunces',serif;font-style:italic;font-size:22px;color:var(--genesis);font-weight:300}
+.input-frame input::placeholder{color:rgba(232,228,216,0.22)}
+.send-btn{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--pre);background:var(--moment);border:none;cursor:none;padding:12px 22px;display:flex;align-items:center;gap:10px;transition:all 0.3s;box-shadow:0 0 24px rgba(255,232,168,0.25)}
+.send-btn:hover{box-shadow:0 0 40px rgba(255,232,168,0.45);transform:translateY(-1px)}
+
+.hint{margin-top:32px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.18em;color:var(--signal-dim);text-transform:uppercase;opacity:0;animation:fu 1.2s ease 1s forwards;display:flex;align-items:center;gap:18px}
+.hint span{color:var(--moment)}
+
+.scroll-hint{position:absolute;bottom:60px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;animation:fu 1.2s ease 1.4s forwards;z-index:5}
+.scroll-hint-text{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.2em;color:var(--signal-dim);text-transform:uppercase}
+.scroll-line{width:1px;height:32px;background:linear-gradient(var(--cipher),transparent);animation:thread 2.5s ease-in-out infinite}
+@keyframes thread{0%{height:24px;opacity:0.3}50%{height:40px;opacity:0.7}100%{height:24px;opacity:0.3}}
+
+/* Status */
+.status{position:absolute;bottom:0;left:0;right:0;height:32px;background:rgba(11,13,20,0.92);border-top:1px solid var(--threshold);backdrop-filter:blur(20px);display:flex;align-items:center;padding:0 32px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.16em;color:var(--signal-dim);text-transform:uppercase;z-index:20}
+.status-r{margin-left:auto;display:flex;gap:24px}
+.status-r .ok{color:var(--cipher)}
+
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
+@keyframes fu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div id="cur"><div class="cur-core"></div><div class="cur-field"></div></div>
+<canvas id="rain"></canvas>
+
+<div class="shell">
+  <div class="sb">
+    <div class="sb-logo"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="sb-nav">
+      <div class="ni on">⌂</div>
+      <div class="ni">⌕</div>
+      <div class="ni">◇</div>
+      <div class="ni">◈</div>
+    </div>
+    <div class="sb-bot">
+      <div class="usage-ring">24</div>
+      <div class="sb-avatar">SD</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="field"></div>
+    <div class="horizon"></div>
+    <div class="corner tl"></div><div class="corner tr"></div>
+    <div class="corner bl"></div><div class="corner br"></div>
+
+    <div class="top">
+      <div class="top-l">SOVREND <b>· THRESHOLD</b></div>
+      <div class="top-r">
+        <span>OPERATOR</span>
+        <span>BUILD 24/50</span>
+        <span class="live">CIPHER LIVE</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="kicker">
+        <span></span><div class="kicker-dot"></div>The threshold is open<span></span>
+      </div>
+      <h1 class="heading">Let's <em>create</em><br>together.</h1>
+      <p class="sub">"As you think, so shall you become." Tell me what you see and I will bring it across the threshold.</p>
+      <div class="input-frame">
+        <input type="text" placeholder="What are we building today..." autofocus>
+        <button class="send-btn">ARCHITECT →</button>
+      </div>
+      <div class="hint">No code needed · About <span>60 seconds</span> · ⌘ + Enter to begin</div>
+    </div>
+
+    <div class="scroll-hint">
+      <div class="scroll-hint-text">Begin</div>
+      <div class="scroll-line"></div>
+    </div>
+
+    <div class="status">
+      <div>POWERED BY CLAUDE SONNET</div>
+      <div class="status-r">
+        <span>SUPABASE <span class="ok">●</span></span>
+        <span>UNSPLASH <span class="ok">●</span></span>
+        <span>STRIPE ○</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var cur=document.getElementById('cur'),core=cur.querySelector('.cur-core'),field=cur.querySelector('.cur-field')
+var mx=innerWidth/2,my=innerHeight/2,rx=mx,ry=my
+document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;core.style.left=mx+'px';core.style.top=my+'px'})
+function lerp(){rx+=(mx-rx)*0.1;ry+=(my-ry)*0.1;field.style.left=rx+'px';field.style.top=ry+'px';requestAnimationFrame(lerp)}
+lerp()
+document.querySelectorAll('button,input,.ni,.sb-avatar').forEach(function(el){
+  el.addEventListener('mouseenter',function(){core.style.transform='translate(-50%,-50%) scale(2.5)';field.style.transform='translate(-50%,-50%) scale(0.5)';field.style.borderColor='rgba(255,232,168,0.6)'})
+  el.addEventListener('mouseleave',function(){core.style.transform='translate(-50%,-50%) scale(1)';field.style.transform='translate(-50%,-50%) scale(1)';field.style.borderColor='rgba(255,232,168,0.2)'})
+})
+
+// Vertical rain particles
+var c=document.getElementById('rain'),ctx=c.getContext('2d'),W,H,drops=[]
+function rs(){W=c.width=innerWidth;H=c.height=innerHeight}
+rs();addEventListener('resize',rs)
+for(var i=0;i<80;i++)drops.push({x:Math.random()*W,y:Math.random()*H,len:Math.random()*40+20,vy:Math.random()*0.8+0.3,a:Math.random()*0.4+0.1})
+function draw(){
+  ctx.clearRect(0,0,W,H)
+  drops.forEach(function(d){
+    var grad=ctx.createLinearGradient(d.x,d.y,d.x,d.y+d.len)
+    grad.addColorStop(0,'rgba(0,229,255,0)')
+    grad.addColorStop(0.5,'rgba(0,229,255,'+(d.a*0.6)+')')
+    grad.addColorStop(1,'rgba(0,229,255,0)')
+    ctx.beginPath();ctx.moveTo(d.x,d.y);ctx.lineTo(d.x,d.y+d.len)
+    ctx.strokeStyle=grad;ctx.lineWidth=0.6;ctx.stroke()
+    d.y+=d.vy
+    if(d.y>H+50){d.y=-50;d.x=Math.random()*W}
+  })
+  requestAnimationFrame(draw)
+}
+draw()
+</script>
+</body>
+</html>

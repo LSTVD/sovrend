@@ -1,6 +1,5 @@
 'use client'
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
 const UI = "'Orbitron',sans-serif"
@@ -213,7 +212,7 @@ function GlossFab() {
     {open&&<div className="fixed z-[60] flex flex-col" style={{bottom:74,right:10,width:280,maxHeight:380,background:'rgba(4,6,14,.96)',border:'1px solid rgba(255,107,0,.3)',backdropFilter:'blur(18px)'}}>
       <div className="flex items-center justify-between px-3 py-2" style={{borderBottom:'1px solid rgba(255,107,0,.15)'}}>
         <span style={{fontFamily:UI,fontSize:8,letterSpacing:'.25em',color:'rgba(255,107,0,.7)'}}>SOVREN CODE · GLOSSARY</span>
-        <span className="cursor-pointer" style={{fontSize:12,color:'rgba(195,200,215,.55)'}} onClick={()=>setOpen(false)}>×</span>
+        <span className="cursor-pointer" style={{fontSize:12,color:'rgba(195,200,215,.55)'}} onClick={()=>setOpen(false)}>✕</span>
       </div>
       <input className="w-full outline-none" style={{background:'rgba(8,11,22,.7)',border:'none',borderBottom:'1px solid rgba(255,107,0,.15)',color:'#F0F0FF',fontSize:11,padding:'8px 12px'}}
         placeholder="Search any building term..." value={q} onChange={e=>setQ(e.target.value)}/>
@@ -442,50 +441,8 @@ function SignalDecode(){
 }
 
 
-function renderSrcDoc(code) {
-  const trimmed = code.trim();
-  const htmlStart = trimmed.search(/<!DOCTYPE|<html/i);
-  if (htmlStart >= 0) return trimmed.slice(htmlStart);
-  let fixed = trimmed;
-  // Fix adjacent JSX — if style tag sits next to a div in App's return, wrap in fragment
-  if (/return\s*\(\s*<style/.test(fixed)) {
-    fixed = fixed.replace(/return\s*\(\s*<style/, 'return (<><style');
-    const lastClose = fixed.lastIndexOf(');');
-    if (lastClose !== -1) fixed = fixed.slice(0, lastClose) + '</>);' + fixed.slice(lastClose + 2);
-  }
-  // Fix truncated code — balance braces/parens so Babel doesn't crash
-  let opens = 0; let parens = 0;
-  for (let i = 0; i < fixed.length; i++) {
-    if (fixed[i] === '{') opens++;
-    else if (fixed[i] === '}') opens--;
-    else if (fixed[i] === '(') parens++;
-    else if (fixed[i] === ')') parens--;
-  }
-  if (opens > 0 || parens > 0) {
-    // Code was truncated — close any open JSX return, then balance braces
-    fixed += '\nreturn null;\n';
-    while (parens > 0) { fixed += ')'; parens--; }
-    while (opens > 0) { fixed += '}'; opens--; }
-  }
-  return '<!DOCTYPE html><html><head>' +
-    '<script src="https://cdn.tailwindcss.com"><\/script>' +
-    '<script src="https://unpkg.com/react@18/umd/react.development.js"><\/script>' +
-    '<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"><\/script>' +
-    '<script src="https://unpkg.com/@babel/standalone/babel.min.js"><\/script>' +
-    '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>' +
-    '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>' +
-    '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>' +
-    '<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"><\/script>' +
-    '<style>body{margin:0;font-family:system-ui,sans-serif}</style>' +
-    '</head><body><div id="root"></div>' +
-    '<script type="text/babel">' + fixed + '\nReactDOM.createRoot(document.getElementById(\'root\')).render(React.createElement(App||function(){return React.createElement(\'div\',null,\'Loading...\')}))' +
-    '<\/script></body></html>';
-}
-
 export default function DashboardPage() {
   const [entered,setEntered]=useState(false)
-  const router = useRouter()
-  const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null
   const [appState,setAppState]=useState<'idle'|'building'|'complete'|'revealing'>('idle')
   const [prompt,setPrompt]=useState('')
   const [sbCol,setSbCol]=useState(false)
@@ -559,7 +516,7 @@ export default function DashboardPage() {
   useEffect(()=>{
     const supabase=createClient()
     supabase.auth.getUser().then(({data:{user}})=>{
-      if(user){const savedBrief=localStorage.getItem('sovrend_brief');if(savedBrief){setPrompt(savedBrief);localStorage.removeItem('sovrend_brief');localStorage.removeItem('sovrend_intake')}supabase.from('apps').select('id,name,code,updated_at').eq('user_id',user.id).order('updated_at',{ascending:false}).limit(50).then(({data})=>{if(data)setSavedApps(data)});supabase.from('journal').select('id,app_id,entry_type,title,narration,prompt,created_at').eq('user_id',user.id).order('created_at',{ascending:false}).limit(50).then(({data})=>{if(data)setJournalEntries(data)})}
+      if(user){supabase.from('apps').select('id,name,code,updated_at').eq('user_id',user.id).order('updated_at',{ascending:false}).limit(10).then(({data})=>{if(data)setSavedApps(data)});supabase.from('journal').select('id,app_id,entry_type,title,narration,prompt,created_at').eq('user_id',user.id).order('created_at',{ascending:false}).limit(50).then(({data})=>{if(data)setJournalEntries(data)})}
     })},[])
   useEffect(()=>{if(appState!=='idle')return;const iv=setInterval(()=>setPhIdx(p=>(p+1)%PLACEHOLDERS.length),4000);return()=>clearInterval(iv)},[appState])
   useEffect(()=>{const h=(e:KeyboardEvent)=>{if((e.metaKey||e.ctrlKey)&&e.key==='Enter'&&appState==='idle'&&prompt.trim()){e.preventDefault();handleBuild()}};document.addEventListener('keydown',h);return()=>document.removeEventListener('keydown',h)},[appState,prompt])
@@ -568,21 +525,21 @@ export default function DashboardPage() {
     setAppState('building');setProjName('New Architect');setVer('BUILDING...');setShowNarr(true)
     setMsgs([{role:'cipher',text:'I see your vision. Let me bring it to life.'},{role:'user',text:prompt},{role:'cipher',text:'Analyzing your prompt across 5 layers...',type:'building'}])
     let buildPrompt=prompt;let capturedBlueprintId:string|null=null;let capturedPhotoQuery:string|null=null;let capturedProductQuery:string|null=null
-    try{const eRes=await fetch('/api/enhance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,intakeAnswers:(() => { try { const i=localStorage.getItem('sovrend_intake'); return i?JSON.parse(i):null } catch{return null} })()})});const eData=await eRes.json();if(eData.success&&eData.enhanced){buildPrompt=eData.enhanced;capturedBlueprintId=eData.blueprintId||null;capturedPhotoQuery=eData.photoQuery||null;capturedProductQuery=eData.productQuery||null;setPromptAnalysis({original:prompt,enhanced:eData.enhanced,layers:eData.layers||[],score:eData.promptScore||3,blueprintId:capturedBlueprintId});setMsgs(prev=>[...prev.slice(0,-1),{role:'cipher',text:'Prompt strengthened. Building now.',type:'building'}])}}catch(e){}
+    try{const intakeRaw=localStorage.getItem('sovrend_intake');const intakeData=intakeRaw?JSON.parse(intakeRaw):null;const eRes=await fetch('/api/enhance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,intakeAnswers:intakeData})});const eData=await eRes.json();if(eData.success&&eData.enhanced){buildPrompt=eData.enhanced+'\n\nORIGINAL USER PROMPT (preserve all specifics): '+prompt;capturedBlueprintId=eData.blueprintId||null;capturedPhotoQuery=eData.photoQuery||null;capturedProductQuery=eData.productQuery||null;setPromptAnalysis({original:prompt,enhanced:eData.enhanced,layers:eData.layers||[],score:eData.promptScore||3});setMsgs(prev=>[...prev.slice(0,-1),{role:'cipher',text:'Prompt strengthened. Building now.',type:'building'}])}}catch(e){}
     let step=0;setNarrText(STEPS[0][0]);setNarrTeach(STEPS[0][1])
     const ni=setInterval(()=>{step++;if(step>=STEPS.length){clearInterval(ni);return};setNarrText(STEPS[step][0]);setNarrTeach(STEPS[step][1])},800)
     try{
-      const res=await fetch('/api/build',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:buildPrompt,persona:'operator',appId:null,blueprintId:capturedBlueprintId||null,photoQuery:capturedPhotoQuery||null,productQuery:capturedProductQuery||null})})
+      const res=await fetch('/api/build',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:buildPrompt,persona:'operator',appId:null,blueprintId:capturedBlueprintId,photoQuery:capturedPhotoQuery,productQuery:capturedProductQuery})})
       const data=await res.json()
       clearInterval(ni)
       if(data.success){
-        setGeneratedCode(data.code || '')
+        setGeneratedCode((data.code||'').replace('export default function','function').replace('export default ','').replace('const App = () =>','function App()').replace('const App = ()=>','function App()').replace('const App = () =>{','function App(){'))
         setSuggestions(data.suggestions||['What else should this app do?','What would your users want next?','What feels incomplete?'])
         if(data.appId)setAppId(data.appId);setBuildScore(data.score?Number(data.score):Math.floor(40+Math.random()*20));if(data.tokenUsage)setTokenUsage(data.tokenUsage)
         setAppState('revealing');setVer('v1.0');setShowNarr(false);setPubVis(true);setTimeout(()=>setAppState('complete'),2000)
         if(data.narration)setProjName(data.narration.split('.')[0].slice(0,30))
         setMsgs(prev=>[...prev,{role:'cipher',text:data.narration||'Your app is live. Here\'s what I\'d suggest next:',type:'summary'},{role:'cipher',text:'Cipher is here. Architect your next refine using the layers below.',type:'suggestion'}])
-        setTimeout(()=>setShowStrip(true),400);setTimeout(()=>setShowModes(true),1000);setTimeout(()=>{const sb=createClient();sb.auth.getUser().then(({data:{user:u}})=>{if(u)sb.from('apps').select('id,name,code,updated_at').eq('user_id',u.id).order('updated_at',{ascending:false}).limit(50).then(({data:a})=>{if(a)setSavedApps(a)})})},2000)
+        setTimeout(()=>setShowStrip(true),400);setTimeout(()=>setShowModes(true),1000);setTimeout(()=>{const sb=createClient();sb.auth.getUser().then(({data:{user:u}})=>{if(u)sb.from('apps').select('id,name,code,updated_at').eq('user_id',u.id).order('updated_at',{ascending:false}).limit(10).then(({data:a})=>{if(a)setSavedApps(a)})})},2000)
       }else{
         setAppState('idle');setVer('NEW');setShowNarr(false)
         setMsgs(prev=>[...prev,{role:'cipher',text:data.message||'Something went wrong. Try again.'}])
@@ -605,20 +562,20 @@ export default function DashboardPage() {
       <div className="flex items-center gap-2.5 px-4 py-3.5 flex-shrink-0" style={{borderBottom:'1px solid rgba(0,229,255,.035)'}}><GI s={20}/>{!sbCol&&<span style={{fontFamily:UI,fontSize:9,fontWeight:700,letterSpacing:'.2em',color:'rgba(0,229,255,.7)'}}>SOVREND</span>}<span className="ml-auto cursor-pointer" onClick={()=>setSbCol(!sbCol)} style={{fontSize:10,color:'rgba(195,200,215,.55)'}}>{sbCol?'▷':'◁'}</span></div>
       <div className="flex-1 overflow-y-auto px-2 py-2.5">
         {[{i:'⌂',l:'Home',a:appState==='idle',click:()=>{setAppState('idle');setPrompt('');setProjName('New Build');setVer('NEW');setPubVis(false);setShowStrip(false);setShowModes(false);setMsgs([]);setGeneratedCode('');setSuggestions([]);setBuildScore(0);setShowRevCalc(false);setPromptAnalysis(null)}},{i:'⌕',l:'Search',r:'⌘K'}].map(x=><div key={x.l} className="flex items-center gap-2.5 cursor-pointer mb-px" title={sbCol?x.l:undefined} onClick={()=>{if((x as any).click)(x as any).click()}} style={{padding:sbCol?0:'8px 10px',width:sbCol?44:undefined,height:sbCol?44:undefined,margin:sbCol?'0 auto 3px':undefined,justifyContent:sbCol?'center':undefined,display:'flex',flexDirection:sbCol?'column' as any:undefined,alignItems:sbCol?'center':undefined,gap:sbCol?2:undefined,fontSize:12,color:(x as any).a?'#00E5FF':'rgba(195,200,215,.75)',background:x.a?'rgba(0,229,255,.04)':'transparent',border:`1px solid ${x.a?'rgba(0,229,255,.15)':'transparent'}`}}><span style={{fontSize:14,width:20,textAlign:'center'}}>{x.i}</span>{sbCol&&<span style={{fontSize:8,color:'rgba(195,200,215,.6)',fontFamily:UI}}>{x.l}</span>}{!sbCol&&<span className="flex-1">{x.l}</span>}{!sbCol&&x.r&&<span style={{fontSize:8,color:'rgba(195,200,215,.55)',fontFamily:MONO}}>{x.r}</span>}</div>)}
-        {!sbCol&&<div className="flex items-center justify-center gap-2 cursor-pointer my-1 py-2" onClick={()=>router.push('/dashboard/intake')} style={{border:'1px solid rgba(0,229,255,.15)',background:'rgba(0,229,255,.04)',color:'#00E5FF',fontFamily:UI,fontSize:9,letterSpacing:'.14em',fontWeight:600}}>+&nbsp;NEW BUILD</div>}
+        {!sbCol&&<div className="flex items-center justify-center gap-2 cursor-pointer my-1 py-2" onClick={()=>{setAppState('idle');setPrompt('');setProjName('New Build');setVer('NEW');setPubVis(false);setShowStrip(false);setShowModes(false);setMsgs([]);setGeneratedCode('');setSuggestions([])}} style={{border:'1px solid rgba(0,229,255,.15)',background:'rgba(0,229,255,.04)',color:'#00E5FF',fontFamily:UI,fontSize:9,letterSpacing:'.14em',fontWeight:600}}>+&nbsp;NEW BUILD</div>}
         {sbCol&&<div className="flex flex-col items-center justify-center cursor-pointer mb-px" onClick={()=>{setAppState('idle');setPrompt('');setProjName('New Build');setVer('NEW')}} style={{width:44,height:44,margin:'4px auto',color:'#00E5FF',border:'1px solid rgba(0,229,255,.15)',background:'rgba(0,229,255,.06)',fontSize:14,borderRadius:8,gap:1}}><span>+</span><span style={{fontSize:7,fontFamily:UI,color:'rgba(0,229,255,.5)'}}>NEW</span></div>}
         {!sbCol&&<div className="flex items-center gap-2.5 cursor-pointer mb-px" onClick={()=>setPlanOpen(!planOpen)} style={{padding:'8px 10px',fontSize:13,color:'rgba(195,200,215,.8)',border:'1px solid transparent'}}><span style={{fontSize:12,width:20,textAlign:'center',color:'#00E5FF',animation:'slowpulse 11s ease infinite'}}>◉</span><span className="flex-1">Plan & Notes</span><span style={{fontSize:7,color:'rgba(0,229,255,.4)',fontFamily:UI,letterSpacing:'.1em'}}>FREE</span></div>}
         {!sbCol&&<div className="flex items-center gap-2.5 cursor-pointer mb-px" onClick={()=>{if(appState!=='idle')setPanelTab('journal')}} style={{padding:'8px 10px',fontSize:13,color:'rgba(195,200,215,.8)',border:'1px solid transparent'}}><span style={{fontSize:12,width:20,textAlign:'center',color:'rgba(255,107,0,.5)'}}>◎</span><span className="flex-1">Build Journal</span><span style={{fontSize:7,color:'rgba(255,107,0,.3)',fontFamily:UI,letterSpacing:'.1em'}}>{journalEntries.length||''}</span></div>}
         {!sbCol&&<div style={{fontFamily:UI,fontSize:8,letterSpacing:'.2em',color:'rgba(0,229,255,.4)',padding:'10px 10px 4px'}}>PROJECTS</div>}
         {[{i:'◫',l:'All projects',c:String(savedApps.length||0),click:()=>setProjectsOpen(true)},{i:'◷',l:'Recent'}].map(x=><div key={x.l} className="flex items-center gap-2.5 cursor-pointer mb-px" title={sbCol?x.l:undefined} onClick={()=>{if((x as any).click)(x as any).click()}} style={{padding:sbCol?0:'8px 10px',width:sbCol?44:undefined,height:sbCol?44:undefined,margin:sbCol?'0 auto 3px':undefined,justifyContent:sbCol?'center':undefined,display:'flex',flexDirection:sbCol?'column' as any:undefined,alignItems:sbCol?'center':undefined,gap:sbCol?2:undefined,fontSize:13,color:'rgba(195,200,215,.8)',borderRadius:sbCol?8:undefined,border:'1px solid transparent'}}><span style={{fontSize:14,width:20,textAlign:'center'}}>{x.i}</span>{sbCol&&<span style={{fontSize:8,color:'rgba(195,200,215,.6)',fontFamily:UI}}>{x.l}</span>}{!sbCol&&<span className="flex-1">{x.l}</span>}{!sbCol&&x.c&&<span style={{fontSize:9,color:'rgba(195,200,215,.55)',background:'rgba(0,229,255,.04)',padding:'1px 6px',border:'1px solid rgba(0,229,255,.07)'}}>{x.c}</span>}</div>)}
-        {!sbCol&&savedApps.length>0&&<div className="overflow-y-auto" style={{maxHeight:120}}>{savedApps.slice(0,10).map(a=><div key={a.id} className="flex items-center gap-2.5 cursor-pointer mb-px" onClick={()=>loadApp(a)} style={{padding:'4px 10px',fontSize:12,color:'rgba(195,200,215,.65)',border:'1px solid transparent'}}><span style={{fontSize:10,width:20,textAlign:'center',color:'rgba(0,229,255,.3)'}}>◈</span><span className="flex-1" style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{a.name}</span></div>)}</div>}
+        {!sbCol&&savedApps.length>0&&<div className="overflow-y-auto" style={{maxHeight:120}}>{savedApps.slice(0,5).map(a=><div key={a.id} className="flex items-center gap-2.5 cursor-pointer mb-px" onClick={()=>loadApp(a)} style={{padding:'4px 10px',fontSize:12,color:'rgba(195,200,215,.65)',border:'1px solid transparent'}}><span style={{fontSize:10,width:20,textAlign:'center',color:'rgba(0,229,255,.3)'}}>◈</span><span className="flex-1" style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{a.name}</span></div>)}</div>}
         {!sbCol&&<div style={{height:1,background:'rgba(0,229,255,.035)',margin:'6px 10px'}}/>}
 
       </div>
       {!sbCol&&<div className="flex flex-col gap-1 p-2" style={{borderTop:'1px solid rgba(0,229,255,.035)'}}>
-        <div className="flex items-center gap-2.5 cursor-pointer mb-1" onClick={()=>setSettingsTab(!settingsTab)} style={{padding:'8px 10px',fontSize:13,color:'rgba(195,200,215,.8)',border:'1px solid transparent'}}><span style={{fontSize:14,width:20,textAlign:'center'}}></span><span className="flex-1">Settings</span></div>
-        <div className="flex items-center gap-2 p-2.5 cursor-pointer" onClick={()=>{navigator.clipboard.writeText('https://sovrend.com?ref=operator');const el=document.createElement('div');el.textContent='Link copied!';el.style.cssText='position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:rgba(0,229,255,.15);color:#00E5FF;padding:8px 16px;font-size:11px;z-index:999;border:1px solid rgba(0,229,255,.2)';document.body.appendChild(el);setTimeout(()=>el.remove(),2000)}} style={{border:'1px solid rgba(0,229,255,.15)',color:'rgba(0,229,255,.7)',fontSize:11,cursor:'pointer'}}><span style={{fontSize:14}}></span><div><div>Share SOVREND</div><div style={{fontSize:9,color:'rgba(195,200,215,.55)',marginTop:2}}>Earn for every referral</div></div></div>
-        <div className="flex items-center gap-2 p-2.5 cursor-pointer" onClick={async()=>{try{const res=await fetch('/api/stripe/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:'builder'})});const data=await res.json();if(data.url)window.open(data.url,'_blank')}catch(e){console.error(e)}}} style={{border:'1px solid rgba(0,229,255,.15)',background:'rgba(0,229,255,.04)',color:'#00E5FF',fontSize:11,cursor:'pointer'}}><span style={{fontSize:14}}></span><div><div>Upgrade to Builder</div><div style={{fontSize:9,color:'rgba(195,200,215,.55)',marginTop:2}}>25 actions/month → $22/mo</div></div></div>
+        <div className="flex items-center gap-2.5 cursor-pointer mb-1" onClick={()=>setSettingsTab(!settingsTab)} style={{padding:'8px 10px',fontSize:13,color:'rgba(195,200,215,.8)',border:'1px solid transparent'}}><span style={{fontSize:14,width:20,textAlign:'center'}}>⚙</span><span className="flex-1">Settings</span></div>
+        <div className="flex items-center gap-2 p-2.5 cursor-pointer" onClick={()=>{navigator.clipboard.writeText('https://sovrend.com?ref=operator');const el=document.createElement('div');el.textContent='Link copied!';el.style.cssText='position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:rgba(0,229,255,.15);color:#00E5FF;padding:8px 16px;font-size:11px;z-index:999;border:1px solid rgba(0,229,255,.2)';document.body.appendChild(el);setTimeout(()=>el.remove(),2000)}} style={{border:'1px solid rgba(0,229,255,.15)',color:'rgba(0,229,255,.7)',fontSize:11,cursor:'pointer'}}><span style={{fontSize:14}}>★</span><div><div>Share SOVREND</div><div style={{fontSize:9,color:'rgba(195,200,215,.55)',marginTop:2}}>Earn for every referral</div></div></div>
+        <div className="flex items-center gap-2 p-2.5 cursor-pointer" onClick={async()=>{try{const res=await fetch('/api/stripe/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:'builder'})});const data=await res.json();if(data.url)window.open(data.url,'_blank')}catch(e){console.error(e)}}} style={{border:'1px solid rgba(0,229,255,.15)',background:'rgba(0,229,255,.04)',color:'#00E5FF',fontSize:11,cursor:'pointer'}}><span style={{fontSize:14}}>⚡</span><div><div>Upgrade to Builder</div><div style={{fontSize:9,color:'rgba(195,200,215,.55)',marginTop:2}}>25 actions/month → $22/mo</div></div></div>
         <div className="flex items-center gap-2 px-2.5 py-2"><div className="flex items-center justify-center" style={{width:28,height:28,border:'1px solid rgba(0,229,255,.15)',fontFamily:UI,fontSize:8,color:'#00E5FF'}}>SD</div><div><div style={{fontSize:11,color:'rgba(195,200,215,.82)'}}>StevieD</div><div style={{fontFamily:UI,fontSize:8,color:'rgba(195,200,215,.55)',letterSpacing:'.1em'}}>OPERATOR</div></div></div>
       </div>}
     </div>
@@ -646,13 +603,13 @@ export default function DashboardPage() {
           <h2 style={{fontFamily:UI,fontSize:'clamp(18px,3vw,30px)',fontWeight:900,letterSpacing:'.08em',background:'linear-gradient(135deg,#FF6A00,#00E5FF)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',marginBottom:8,textShadow:'none'}}>What are you ready to create?</h2>
           <p style={{fontSize:13.5,color:'rgba(195,200,215,.55)',marginBottom:26}}>No code needed. Takes about 60 seconds.</p>
           <div className="w-full max-w-lg" style={{background:'rgba(4,6,14,.96)',border:'1px solid rgba(0,229,255,.15)',borderBottom:'2px solid rgba(0,229,255,.3)',padding:16,backdropFilter:'blur(18px)'}}>
-            <div style={{position:'relative'}}><canvas ref={buildCanvasRef} style={{position:'absolute',inset:0,pointerEvents:'none',zIndex:1}}/><textarea value={prompt} onChange={e=>{setPrompt(e.target.value);const ls=e.target.value.split('\n');const la=ls[ls.length-1];const cx=Math.min(14+la.length*8.5,480);const cy=Math.min(14+(ls.length-1)*24+12,50);for(let j=0;j<2;j++)buildParticlesRef.current.push({x:cx+(Math.random()-.5)*14,y:cy,vx:(Math.random()-.5)*.3,vy:-(0.3+Math.random()*0.6),life:1,decay:0.006+Math.random()*0.004,size:0.8+Math.random()*1.5})}} onKeyDown={e=>{if(e.key==='Enter'&&!e.shiftKey&&appState==='idle'&&prompt.trim()){e.preventDefault();handleBuild()}}} placeholder={PLACEHOLDERS[phIdx]} className="w-full bg-transparent outline-none resize-none" style={{color:'#F0F0FF',fontSize:17,height:60,lineHeight:'1.55',position:'relative',zIndex:2,background:'transparent'}}/></div>
+            <div style={{position:'relative'}}><canvas ref={buildCanvasRef} style={{position:'absolute',inset:0,pointerEvents:'none',zIndex:1}}/><textarea value={prompt} onChange={e=>{setPrompt(e.target.value);const ls=e.target.value.split('\n');const la=ls[ls.length-1];const cx=Math.min(14+la.length*8.5,480);const cy=Math.min(14+(ls.length-1)*24+12,50);for(let j=0;j<2;j++)buildParticlesRef.current.push({x:cx+(Math.random()-.5)*14,y:cy,vx:(Math.random()-.5)*.3,vy:-(0.3+Math.random()*0.6),life:1,decay:0.006+Math.random()*0.004,size:0.8+Math.random()*1.5})}} placeholder={PLACEHOLDERS[phIdx]} className="w-full bg-transparent outline-none resize-none" style={{color:'#F0F0FF',fontSize:17,height:60,lineHeight:'1.55',position:'relative',zIndex:2,background:'transparent'}}/></div>
             <div className="flex items-center justify-between mt-3">
               <div className="flex gap-1.5 items-center">
                 {['\ud83d\udcce','\ud83c\udfa4','\u25c7'].map(i=><div key={i} className="flex items-center justify-center cursor-pointer" style={{width:28,height:28,border:'1px solid rgba(0,229,255,.07)',color:'rgba(195,200,215,.55)',fontSize:12}}>{i}</div>)}
 
               </div>
-              <button onClick={()=>{if(!prompt.trim()){router.push('/dashboard/intake')}else{handleBuild()}}} style={{fontFamily:UI,fontSize:10,fontWeight:700,letterSpacing:'.22em',color:'#000308',background:'linear-gradient(135deg,#FF6A00,#00E5FF)',border:'none',padding:'12px 32px',cursor:'pointer',boxShadow:'0 0 20px rgba(0,229,255,.2),0 0 40px rgba(255,106,0,.1)',transition:'all .3s'}}>ARCHITECT →</button>
+              <button onClick={handleBuild} style={{fontFamily:UI,fontSize:10,fontWeight:700,letterSpacing:'.22em',color:'#000308',background:'linear-gradient(135deg,#FF6A00,#00E5FF)',border:'none',padding:'12px 32px',cursor:'pointer',boxShadow:'0 0 20px rgba(0,229,255,.2),0 0 40px rgba(255,106,0,.1)',transition:'all .3s'}}>ARCHITECT →</button>
             </div>
           </div>
 
@@ -788,11 +745,11 @@ export default function DashboardPage() {
           </div>
           <div className="flex-1 flex flex-col overflow-hidden">
             <div className="flex items-center px-3 flex-shrink-0 overflow-hidden transition-all duration-300" style={{height:showNarr?28:0,background:'rgba(8,11,22,.93)',borderBottom:'1px solid rgba(0,229,255,.035)',fontFamily:MONO,fontSize:10,color:'rgba(0,229,255,.5)'}}><div style={{width:6,height:6,borderRadius:'50%',background:'#00E5FF',marginRight:8,animation:'pulse 1.5s ease infinite'}}/>{narrText}<span style={{color:'rgba(0,229,255,.3)',fontStyle:'italic',marginLeft:4}}> — {narrTeach}</span></div>
-            <div className="flex items-center justify-between px-3 flex-shrink-0" style={{height:30,background:'rgba(8,11,22,.93)',borderBottom:'1px solid rgba(0,229,255,.035)'}}><span style={{fontSize:10,color:'rgba(195,200,215,.55)',background:'rgba(0,229,255,.04)',border:'1px solid rgba(0,229,255,.07)',padding:'2px 10px'}}><b style={{color:'#00E5FF',fontWeight:500}}>{projName.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'myapp'}</b>.sovrend.com</span><div className="flex gap-1">{['History','Visual Edit','View Code'].map(a=><span key={a} className="cursor-pointer" onClick={()=>{if(a==='View Code')setCodeOpen(!codeOpen);if(a==='Visual Edit'){setMsgs(prev=>[...prev,{role:'cipher',text:'Visual Edit mode coming soon. For now, describe what you want to change and I\'ll handle it.'}])};if(a==='History'){setMsgs(prev=>[...prev,{role:'cipher',text:'Version history coming soon. Each refine is saved automatically.'}]);}}} style={{fontSize:9,color:a==='View Code'&&codeOpen?'#00E5FF':'rgba(195,200,215,.55)',padding:'3px 6px',border:'1px solid rgba(0,229,255,.035)'}}>{a}</span>)}<a href={generatedCode?URL.createObjectURL(new Blob([renderSrcDoc(generatedCode)],{type:'text/html;charset=utf-8'})):undefined} target="_blank" rel="noopener" className="cursor-pointer" style={{fontSize:9,color:'rgba(195,200,215,.55)',padding:'3px 6px',border:'1px solid rgba(0,229,255,.035)',textDecoration:'none'}}>{'\u2197 New Tab'}</a><span className='cursor-pointer' style={{fontSize:9,color:'rgba(195,200,215,.55)',padding:'3px 6px',border:'1px solid rgba(0,229,255,.035)'}} onClick={()=>{if(generatedCode){const w=window.open('','_blank');if(w){w.document.open();w.document.write(renderSrcDoc(generatedCode));w.document.close()}}}}>↗ Full View</span></div></div>
+            <div className="flex items-center justify-between px-3 flex-shrink-0" style={{height:30,background:'rgba(8,11,22,.93)',borderBottom:'1px solid rgba(0,229,255,.035)'}}><span style={{fontSize:10,color:'rgba(195,200,215,.55)',background:'rgba(0,229,255,.04)',border:'1px solid rgba(0,229,255,.07)',padding:'2px 10px'}}><b style={{color:'#00E5FF',fontWeight:500}}>{projName.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'myapp'}</b>.sovrend.com</span><div className="flex gap-1">{['History','Visual Edit','View Code','\u2197 New Tab'].map(a=><span key={a} className="cursor-pointer" onClick={()=>{if(a==='View Code')setCodeOpen(!codeOpen);if(a==='Visual Edit'){setMsgs(prev=>[...prev,{role:'cipher',text:'Visual Edit mode coming soon. For now, describe what you want to change and I\'ll handle it.'}])};if(a==='History'){setMsgs(prev=>[...prev,{role:'cipher',text:'Version history coming soon. Each refine is saved automatically.'}])};if(a==='\u2197 New Tab'&&generatedCode){const w=window.open('','_blank');if(w){w.document.write('<!DOCTYPE html><html><head><script src="https://cdn.tailwindcss.com"><\/script><script src="https://unpkg.com/react@18/umd/react.production.min.js"><\/script><script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"><\/script><script src="https://unpkg.com/@babel/standalone/babel.min.js"><\/script><style>body{margin:0;font-family:system-ui,sans-serif}</style></head><body><div id="root"></div><script type="text/babel">'+generatedCode+'\nReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App||function(){return React.createElement("div","Loading...")}))<\/script></body></html>');w.document.close()}}}} style={{fontSize:9,color:a==='View Code'&&codeOpen?'#00E5FF':'rgba(195,200,215,.55)',padding:'3px 6px',border:'1px solid rgba(0,229,255,.035)'}}>{a}</span>)}</div></div>
             <div className="flex-1 flex overflow-hidden">
               <div className="flex-1 flex flex-col" style={{background:'rgba(10,14,24,.5)'}}>
                 {appState==='building'?<SignalDecode/>:appState==='revealing'?<div className="flex-1 relative" style={{background:'#000308',overflow:'hidden'}}>
-                      {generatedCode&&<iframe key={appId||generatedCode.slice(0,50)} srcDoc={renderSrcDoc(generatedCode)} style={{width:'100%',height:'100%',border:'none',background:'#fff'}} sandbox="allow-scripts allow-same-origin" onClick={e=>e.stopPropagation()}/>}
+                      {generatedCode&&<iframe key={appId||generatedCode.slice(0,50)} srcDoc={`<!DOCTYPE html><html><head><script src="https://cdn.tailwindcss.com"><\/script><script src="https://unpkg.com/react@18/umd/react.production.min.js"><\/script><script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"><\/script><script src="https://unpkg.com/@babel/standalone/babel.min.js"><\/script><style>body{margin:0;font-family:system-ui,sans-serif}</style></head><body><div id="root"></div><script type="text/babel">${generatedCode}\nReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App||function(){return React.createElement('div','Loading...')}))<\/script></body></html>`} style={{width:'100%',height:'100%',border:'none',background:'#fff'}} sandbox="allow-scripts allow-same-origin"/>}
                       <div style={{position:'absolute',inset:0,pointerEvents:'none',animation:'revealFlash 2s ease-out forwards',zIndex:10}}/>
                       <div style={{position:'absolute',top:'50%',left:'50%',width:80,height:80,marginLeft:-40,marginTop:-40,borderRadius:'50%',border:'2px solid rgba(0,229,255,.4)',animation:'revealPulse 1.5s ease-out forwards',zIndex:11}}/>
                       <div style={{position:'absolute',top:'50%',left:'50%',width:40,height:40,marginLeft:-20,marginTop:-20,borderRadius:'50%',border:'1px solid rgba(240,240,255,.3)',animation:'revealPulse 1.5s ease-out 0.3s forwards',zIndex:11}}/>
@@ -801,13 +758,13 @@ export default function DashboardPage() {
                   <div className="flex items-center px-3 gap-1 flex-shrink-0" style={{height:28,background:'rgba(0,229,255,.04)',borderBottom:'1px solid rgba(0,229,255,.035)'}}>{[0,1,2].map(i=><div key={i} style={{width:6,height:6,borderRadius:'50%',border:'1px solid rgba(45,50,68,.14)'}}/>)}<span style={{fontSize:9,color:'rgba(195,200,215,.55)',marginLeft:5}}>Preview</span></div>
                   <div className="flex-1 overflow-hidden flex justify-center" style={{background:'rgba(3,5,12,.9)'}}>
                   <div style={{width:activeDevice==='MOBILE'?375:activeDevice==='TABLET'?768:'100%',height:'100%',background:'#fff',transition:'width .3s ease'}}>
-                    {generatedCode?<iframe key={appId||generatedCode.slice(0,50)} srcDoc={renderSrcDoc(generatedCode)} style={{width:'100%',height:'100%',border:'none',background:'#fff'}} sandbox="allow-scripts allow-same-origin" onClick={e=>e.stopPropagation()}/>
+                    {generatedCode?<iframe key={appId||generatedCode.slice(0,50)} srcDoc={`<!DOCTYPE html><html><head><script src="https://cdn.tailwindcss.com"><\/script><script src="https://unpkg.com/react@18/umd/react.production.min.js"><\/script><script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"><\/script><script src="https://unpkg.com/@babel/standalone/babel.min.js"><\/script><style>body{margin:0;font-family:system-ui,sans-serif}</style></head><body><div id="root"></div><script type="text/babel">${generatedCode}\nReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App||function(){return React.createElement('div','Loading...')}))<\/script></body></html>`} style={{width:'100%',height:'100%',border:'none',background:'#fff'}} sandbox="allow-scripts allow-same-origin"/>
                     :<div className="flex items-center justify-center h-full" style={{background:'rgba(3,5,12,.9)'}}><span style={{fontFamily:UI,fontSize:9,letterSpacing:'.2em',color:'rgba(0,229,255,.3)'}}>YOUR APP WILL APPEAR HERE</span></div>}
                   </div></div>
                 </div>}
               </div>
               {codeOpen&&<div className="flex flex-col" style={{width:340,minWidth:340,background:'rgba(4,6,14,.96)',borderLeft:'1px solid rgba(0,229,255,.07)',animation:'fu .3s ease'}}>
-                <div className="flex items-center justify-between px-3 flex-shrink-0" style={{height:30,borderBottom:'1px solid rgba(0,229,255,.035)'}}><div className="flex gap-0.5">{['FILES','TERMINAL'].map((t,i)=><span key={t} style={{fontFamily:UI,fontSize:8,letterSpacing:'.14em',padding:'4px 8px',color:i===0?'#00E5FF':'rgba(195,200,215,.55)',border:`1px solid ${i===0?'rgba(0,229,255,.15)':'transparent'}`,background:i===0?'rgba(0,229,255,.04)':'transparent'}}>{t}</span>)}</div><span className="cursor-pointer" onClick={()=>setCodeOpen(false)} style={{fontSize:10,color:'rgba(195,200,215,.55)'}}>×</span></div>
+                <div className="flex items-center justify-between px-3 flex-shrink-0" style={{height:30,borderBottom:'1px solid rgba(0,229,255,.035)'}}><div className="flex gap-0.5">{['FILES','TERMINAL'].map((t,i)=><span key={t} style={{fontFamily:UI,fontSize:8,letterSpacing:'.14em',padding:'4px 8px',color:i===0?'#00E5FF':'rgba(195,200,215,.55)',border:`1px solid ${i===0?'rgba(0,229,255,.15)':'transparent'}`,background:i===0?'rgba(0,229,255,.04)':'transparent'}}>{t}</span>)}</div><span className="cursor-pointer" onClick={()=>setCodeOpen(false)} style={{fontSize:10,color:'rgba(195,200,215,.55)'}}>✕</span></div>
                 <div className="flex-1 overflow-auto p-3" style={{fontFamily:MONO,fontSize:10,lineHeight:1.8,color:'rgba(195,200,215,.55)',background:'rgba(4,6,14,.5)'}}>
                   <pre style={{whiteSpace:'pre-wrap',wordBreak:'break-all'}}>{generatedCode||'// Code will appear here after build'}</pre>
                 </div>
@@ -822,7 +779,7 @@ export default function DashboardPage() {
       <div className="fixed z-[66] flex flex-col" onClick={e=>e.stopPropagation()} style={{top:50,right:20,width:340,maxHeight:'80vh',background:'rgba(4,6,14,.98)',border:'1px solid rgba(0,229,255,.15)',backdropFilter:'blur(18px)',animation:'fu .3s ease',overflow:'hidden'}}>
         <div className="flex items-center justify-between px-4 py-3" style={{borderBottom:'1px solid rgba(0,229,255,.07)'}}>
           <span style={{fontFamily:UI,fontSize:9,letterSpacing:'.25em',color:'rgba(0,229,255,.5)'}}>SETTINGS</span>
-          <span className="cursor-pointer" onClick={()=>setSettingsTab(false)} style={{fontSize:14,color:'rgba(0,229,255,.3)'}}>×</span>
+          <span className="cursor-pointer" onClick={()=>setSettingsTab(false)} style={{fontSize:14,color:'rgba(0,229,255,.3)'}}>✕</span>
         </div>
         <div className="flex-1 overflow-y-auto">
           <div style={{padding:'12px 16px',borderBottom:'1px solid rgba(0,229,255,.05)'}}>
@@ -836,7 +793,6 @@ export default function DashboardPage() {
             <div className="flex gap-2">
               <span className="cursor-pointer" onClick={()=>{const n=window.prompt('Rename project:',projName);if(n){setProjName(n);if(appId){const sb=createClient();sb.from('apps').update({name:n}).eq('id',appId)}}}} style={{fontSize:10,color:'rgba(195,200,215,.55)',padding:'4px 8px',border:'1px solid rgba(0,229,255,.07)'}}>Rename</span>
               <span className="cursor-pointer" onClick={()=>{if(generatedCode){const b=new Blob([generatedCode],{type:'text/plain'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=projName.replace(/[^a-z0-9]/gi,'-')+'.tsx';a.click()}}} style={{fontSize:10,color:'rgba(195,200,215,.55)',padding:'4px 8px',border:'1px solid rgba(0,229,255,.07)'}}>Download Code</span>
-              {appId&&<span className="cursor-pointer" onClick={()=>window.location.href='/dashboard/deploy/'+appId} style={{fontSize:10,fontWeight:600,color:'#3DD68C',padding:'4px 8px',border:'1px solid rgba(61,214,140,.3)',background:'rgba(61,214,140,.06)',letterSpacing:'.04em'}}>Take it live →</span>}
               <span className="cursor-pointer" onClick={()=>{if(appId&&window.confirm('Delete this project?')){const sb=createClient();sb.from('apps').delete().eq('id',appId).then(()=>{setSavedApps(prev=>prev.filter(a=>a.id!==appId));setAppState('idle');setGeneratedCode('');setSettingsTab(false)})}}} style={{fontSize:10,color:'rgba(255,106,0,.5)',padding:'4px 8px',border:'1px solid rgba(255,106,0,.1)'}}>Delete</span>
             </div>
           </div>}
@@ -866,7 +822,7 @@ export default function DashboardPage() {
         <div><div style={{fontFamily:UI,fontSize:8,letterSpacing:'.25em',color:'rgba(0,229,255,.5)'}}>THOUGHT SPACE</div><div style={{fontSize:10,color:'rgba(240,240,255,.35)',marginTop:2}}>Draft freely. Nothing here costs an action.</div></div>
         <div style={{display:'flex',alignItems:'center',gap:8}}>
           <span style={{fontFamily:UI,fontSize:7,letterSpacing:'.15em',color:'rgba(0,229,255,.25)'}}>THOUGHTS: {planNotes.trim()?planNotes.trim().split(/\s+/).length:0}</span>
-          <span className="cursor-pointer" onClick={()=>setPlanOpen(false)} style={{fontSize:12,color:'rgba(0,229,255,.3)'}}>×</span>
+          <span className="cursor-pointer" onClick={()=>setPlanOpen(false)} style={{fontSize:12,color:'rgba(0,229,255,.3)'}}>✕</span>
         </div>
       </div>
       <div style={{position:'relative',flex:1}}><canvas ref={planCanvasRef} style={{position:'absolute',inset:0,pointerEvents:'none',zIndex:1}}/><textarea className="w-full bg-transparent outline-none resize-none" placeholder="What are you thinking about building..." value={planNotes} onChange={e=>{setPlanNotes(e.target.value);const lines=e.target.value.split('\n');const last=lines[lines.length-1];const cx=Math.min(14+last.length*8.5,340);const cy=Math.min(14+(lines.length-1)*24+12,180);for(let i=0;i<3;i++)planParticlesRef.current.push({x:cx+(Math.random()-.5)*10,y:cy,vx:(Math.random()-.5)*.8,vy:-(0.4+Math.random()*1.2),life:1,decay:0.015+Math.random()*0.01,size:1+Math.random()*2})}} style={{color:'#F0F0FF',fontSize:14,lineHeight:1.7,padding:14,minHeight:200,border:'none',position:'relative',zIndex:2,background:'transparent',width:'100%'}}/></div>
@@ -879,13 +835,13 @@ export default function DashboardPage() {
       <div style={{width:'90%',maxWidth:900,maxHeight:'85vh',background:'rgba(4,6,14,.98)',border:'1px solid rgba(0,229,255,.15)',overflow:'hidden',display:'flex',flexDirection:'column'}}>
         <div className="flex items-center justify-between px-5 py-3" style={{borderBottom:'1px solid rgba(0,229,255,.07)'}}>
           <div className="flex items-center gap-3"><span className="cursor-pointer" onClick={()=>setProjectsOpen(false)} style={{fontSize:14,color:'rgba(0,229,255,.4)'}}>←</span><span style={{fontFamily:UI,fontSize:10,letterSpacing:'.25em',color:'rgba(0,229,255,.6)'}}>ALL PROJECTS ({savedApps.length})</span></div>
-          <span className="cursor-pointer" onClick={()=>setProjectsOpen(false)} style={{fontSize:14,color:'rgba(0,229,255,.3)'}}>×</span>
+          <span className="cursor-pointer" onClick={()=>setProjectsOpen(false)} style={{fontSize:14,color:'rgba(0,229,255,.3)'}}>✕</span>
         </div>
         <div className="flex-1 overflow-y-auto p-5" style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(260px,1fr))',gap:16}}>
           {savedApps.map(app=><div key={app.id} className="cursor-pointer" onClick={()=>{loadApp(app);setProjectsOpen(false)}} style={{border:'1px solid rgba(0,229,255,.1)',background:'rgba(8,11,22,.7)',overflow:'hidden',transition:'all .15s'}}
             onMouseEnter={e=>(e.currentTarget.style.borderColor='rgba(0,229,255,.3)')} onMouseLeave={e=>(e.currentTarget.style.borderColor='rgba(0,229,255,.1)')}>
             <div style={{height:160,background:'#fff',overflow:'hidden',position:'relative'}}>
-              {app.code&&<iframe srcDoc={renderSrcDoc(app.code||"")} style={{width:'200%',height:'200%',border:'none',transform:'scale(0.5)',transformOrigin:'top left',pointerEvents:'none'}} sandbox="allow-scripts"/>}
+              {app.code&&<iframe srcDoc={'<!DOCTYPE html><html><head><script src="https://cdn.tailwindcss.com"><\/script><script src="https://unpkg.com/react@18/umd/react.production.min.js"><\/script><script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"><\/script><script src="https://unpkg.com/@babel/standalone/babel.min.js"><\/script><style>body{margin:0;font-family:system-ui,sans-serif}</style></head><body><div id="root"></div><script type="text/babel">'+app.code.replace('export default function','function').replace('export default ','')+'\nReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App||function(){return React.createElement("div","Loading...")}))<\/script></body></html>'} style={{width:'200%',height:'200%',border:'none',transform:'scale(0.5)',transformOrigin:'top left',pointerEvents:'none'}} sandbox="allow-scripts"/>}
             </div>
             <div style={{padding:'10px 12px',borderTop:'1px solid rgba(0,229,255,.07)'}}>
               <div style={{fontSize:12,color:'rgba(240,240,255,.8)',fontWeight:500,marginBottom:2}}>{app.name}</div>
@@ -902,7 +858,7 @@ export default function DashboardPage() {
           <div className="flex items-center gap-3">
             <span className="cursor-pointer" onClick={()=>navigator.clipboard.writeText(JSON.stringify(handoffData.handoff,null,2))} style={{fontFamily:UI,fontSize:8,letterSpacing:'.12em',color:'#00E5FF',padding:'4px 10px',border:'1px solid rgba(0,229,255,.15)'}}>COPY</span>
             <span className="cursor-pointer" onClick={()=>{const w=window.open('','_blank');if(w){w.document.write('<html><head><title>'+handoffData.appName+'</title><style>body{background:#000308;color:#F0F0FF;font-family:system-ui;padding:40px;max-width:800px;margin:0 auto}h1{font-size:24px;letter-spacing:.1em}h2{font-size:11px;letter-spacing:.2em;color:#00E5FF;margin:24px 0 8px}p{font-size:13px;color:rgba(195,200,215,.75);line-height:1.6;margin-bottom:8px}.s{font-size:36px;font-weight:900;color:#FFE600}.b{border:1px solid rgba(0,229,255,.1);padding:16px;margin-bottom:12px}</style></head><body><h1>'+handoffData.appName+'</h1><p>SOVREND Handoff Brief</p><div class=b><div class=s>'+handoffData.score+'/100</div></div><h2>SUMMARY</h2><p>'+(handoffData.handoff?.summary||'')+'</p><h2>NEXT STEPS</h2>'+(handoffData.handoff?.nextSteps?handoffData.handoff.nextSteps.map((s:any)=>'<p>'+s.priority+': '+s.task+'</p>').join(''):'')+'<br><p style=color:gray>Generated by SOVREND</p></body></html>');w.document.close()}}} style={{fontFamily:UI,fontSize:8,letterSpacing:'.12em',color:'#F0F0FF',padding:'4px 10px',border:'1px solid rgba(240,240,255,.15)'}}>OPEN REPORT</span>
-            <span className="cursor-pointer" onClick={()=>setHandoffOpen(false)} style={{fontSize:14,color:'rgba(0,229,255,.3)'}}>×</span>
+            <span className="cursor-pointer" onClick={()=>setHandoffOpen(false)} style={{fontSize:14,color:'rgba(0,229,255,.3)'}}>✕</span>
           </div>
         </div>
         <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-4">
@@ -926,7 +882,7 @@ export default function DashboardPage() {
       <div className="relative flex flex-col" style={{maxWidth:480,width:'90%',background:'rgba(4,6,14,.98)',border:'1px solid rgba(255,107,0,.2)',padding:'28px 32px'}} onClick={e=>e.stopPropagation()}>
         <div className="flex items-center justify-between mb-5">
           <span style={{fontFamily:UI,fontSize:8,letterSpacing:'.25em',color:'#FF6B00'}}>CIPHER</span>
-          <span className="cursor-pointer" style={{fontSize:12,color:'rgba(195,200,215,.4)'}} onClick={()=>setShowCipherIntro(false)}>×</span>
+          <span className="cursor-pointer" style={{fontSize:12,color:'rgba(195,200,215,.4)'}} onClick={()=>setShowCipherIntro(false)}>✕</span>
         </div>
         <CipherIntro/>
       </div>

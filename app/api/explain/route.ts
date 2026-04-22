@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     if (!element) return NextResponse.json({ error: 'No element' }, { status: 400 })
 
     const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY!)
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite', generationConfig: { maxOutputTokens: 150 } })
 
     const result = await model.generateContent({
       contents: [{ role: 'user', parts: [{ text: `Element: <${element.tag}> with classes "${element.classes}" and text "${element.text}"\n\nContext: This element is inside a user-built web app. ${context || ''}` }] }],

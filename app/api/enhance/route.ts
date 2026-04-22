@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     if (!prompt) return NextResponse.json({ error: 'No prompt' }, { status: 400 })
 
     const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY!)
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite', generationConfig: { maxOutputTokens: 500 } })
 
     const intakeContext = intakeAnswers ? `
 INTAKE — what the user told Cipher before building:

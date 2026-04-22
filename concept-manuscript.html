@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SOVREND — Manuscript Concept</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=DM+Sans:wght@300;400&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --paper:#F4ECD8;
+  --paper-dark:#E8DFC5;
+  --ink:#2C2416;
+  --ink-soft:rgba(44,36,22,0.55);
+  --ink-ghost:rgba(44,36,22,0.25);
+  --line:rgba(44,36,22,0.15);
+  --wax:#722F37;
+  --gold:#A87E3F;
+}
+html,body{width:100%;height:100vh;overflow:hidden;background:var(--paper);font-family:'DM Sans',sans-serif;color:var(--ink);cursor:none}
+
+/* Paper texture */
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;opacity:0.08;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");mix-blend-mode:multiply}
+
+#cur{position:fixed;z-index:9999;pointer-events:none}
+.cur-dot{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--ink);transform:translate(-50%,-50%);transition:transform 0.15s}
+.cur-ring{position:absolute;width:32px;height:32px;border-radius:50%;border:1px solid rgba(44,36,22,0.3);transform:translate(-50%,-50%);transition:all 0.4s cubic-bezier(0.16,1,0.3,1)}
+
+.shell{display:flex;width:100%;height:100vh;position:relative;z-index:5}
+
+/* LEATHER SPINE */
+.spine{width:64px;flex-shrink:0;background:linear-gradient(90deg,#3A2818 0%,#5C3D24 30%,#3A2818 100%);display:flex;flex-direction:column;align-items:center;padding:24px 0;box-shadow:inset -8px 0 12px rgba(0,0,0,0.4),4px 0 12px rgba(0,0,0,0.3)}
+.spine-emblem{width:32px;height:32px;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;font-style:italic;margin-bottom:32px}
+.spine-nav{flex:1;display:flex;flex-direction:column;gap:12px;align-items:center}
+.sni{width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(168,126,63,0.5);font-size:12px;transition:color 0.2s}
+.sni:hover,.sni.on{color:var(--gold)}
+.sni.on{border-left:2px solid var(--gold);padding-left:8px}
+.spine-bot{padding-bottom:8px}
+.spine-avatar{width:32px;height:32px;border-radius:50%;border:1px solid var(--gold);color:var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:12px;font-style:italic}
+
+.book{flex:1;height:100vh;position:relative;overflow:hidden}
+
+/* TWO PAGE SPREAD */
+.spread{display:flex;width:100%;height:100%;position:relative}
+.spread::before{content:'';position:absolute;top:0;bottom:0;left:50%;width:1px;background:var(--line);transform:translateX(-50%)}
+.spread::after{content:'';position:absolute;top:0;bottom:0;left:50%;width:40px;background:radial-gradient(ellipse at center,rgba(44,36,22,0.1),transparent);transform:translateX(-50%);pointer-events:none}
+
+.page{width:50%;height:100%;padding:64px 80px;position:relative;display:flex;flex-direction:column}
+
+/* LEFT PAGE — invocation */
+.page-l{justify-content:space-between}
+.page-num{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--ink-ghost);position:absolute;top:32px;left:80px}
+.page-num-r{left:auto;right:80px;text-align:right}
+
+.invocation{flex:1;display:flex;flex-direction:column;justify-content:center}
+.date-line{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.18em;color:var(--ink-soft);text-transform:uppercase;display:flex;align-items:center;gap:14px;margin-bottom:32px}
+.date-line::before,.date-line::after{content:'';flex:1;height:1px;background:var(--line)}
+
+.script{font-family:'Cormorant Garamond',serif;font-size:64px;font-weight:300;font-style:italic;line-height:1.05;letter-spacing:-0.02em;color:var(--ink);margin-bottom:24px}
+.script .underline{text-decoration:underline;text-decoration-style:wavy;text-decoration-color:var(--gold);text-underline-offset:8px}
+
+.invocation-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:var(--ink-soft);line-height:1.5;max-width:380px;margin-bottom:40px}
+
+.quill-input{width:100%;background:transparent;border:none;border-bottom:1px solid var(--ink);padding:14px 0;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:22px;font-weight:400;color:var(--ink);outline:none}
+.quill-input::placeholder{color:var(--ink-ghost)}
+
+.invoke-btn{margin-top:24px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--ink);background:none;border:none;cursor:none;display:flex;align-items:center;gap:10px;padding:0}
+.invoke-btn::after{content:'→';font-size:20px;transition:transform 0.3s}
+.invoke-btn:hover::after{transform:translateX(6px)}
+
+.page-l-bot{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:var(--ink-ghost);text-transform:uppercase}
+
+/* RIGHT PAGE — manuscript ledger */
+.page-r{justify-content:flex-start;padding-top:80px}
+
+.ledger-h{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:24px;color:var(--ink);margin-bottom:6px;font-weight:400}
+.ledger-sub{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:var(--ink-ghost);text-transform:uppercase;margin-bottom:36px;display:flex;align-items:center;gap:12px}
+.ledger-sub::after{content:'';flex:1;height:1px;background:var(--line)}
+
+.entry{padding:18px 0;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;gap:24px;cursor:pointer;transition:padding 0.3s}
+.entry:hover{padding-left:8px}
+.entry-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-ghost);letter-spacing:0.1em;padding-top:4px}
+.entry-body{flex:1}
+.entry-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.entry-meta{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:var(--ink-soft);line-height:1.5}
+.entry-seal{width:32px;height:32px;border-radius:50%;background:var(--wax);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:11px;color:var(--paper);font-style:italic;font-weight:500;flex-shrink:0;box-shadow:0 1px 3px rgba(114,47,55,0.4)}
+.entry-seal.score-92{background:#3D5A3E}
+.entry-seal.score-87{background:var(--gold)}
+.entry-seal.score-78{background:var(--wax)}
+
+.ledger-bot{margin-top:auto;padding-top:24px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:var(--ink-soft);text-align:center}
+
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+</style>
+</head>
+<body>
+<div id="cur"><div class="cur-dot"></div><div class="cur-ring"></div></div>
+
+<div class="shell">
+  <div class="spine">
+    <div class="spine-emblem">S</div>
+    <div class="spine-nav">
+      <div class="sni on">⌂</div>
+      <div class="sni">⌕</div>
+      <div class="sni">◇</div>
+      <div class="sni">◈</div>
+    </div>
+    <div class="spine-bot"><div class="spine-avatar">SD</div></div>
+  </div>
+
+  <div class="book">
+    <div class="spread">
+      <div class="page page-l">
+        <div class="page-num">vol. I — page xxiv</div>
+        <div class="invocation">
+          <div class="date-line">Friday · April 10, 2026</div>
+          <h1 class="script">Today<br>I will <span class="underline">build</span><br><em>something that lasts.</em></h1>
+          <p class="invocation-sub">"As you think, so shall you become." Tell me what you see and I will set the ink to the page.</p>
+          <input class="quill-input" placeholder="A craft, a brand, a tool, a vision..." autofocus>
+          <button class="invoke-btn">Invoke Cipher</button>
+        </div>
+        <div class="page-l-bot">
+          <div>VOL. I · 24 ENTRIES</div>
+          <div>OPERATOR · STEPHEN D.</div>
+        </div>
+      </div>
+
+      <div class="page page-r">
+        <div class="page-num page-num-r">vol. I — page xxv</div>
+        <h2 class="ledger-h">Ledger of Renderings</h2>
+        <div class="ledger-sub">Recent Entries</div>
+
+        <div class="entry">
+          <div class="entry-num">XXIV</div>
+          <div class="entry-body">
+            <div class="entry-title">Thornton Cues</div>
+            <div class="entry-meta">Custom handcrafted billiard cues. Heritage craftsmanship since 1987. Walnut and brass aesthetic.</div>
+          </div>
+          <div class="entry-seal score-92">92</div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-num">XXIII</div>
+          <div class="entry-body">
+            <div class="entry-title">KURO Denim</div>
+            <div class="entry-meta">Premium Japanese denim brand. Raw selvedge jeans, dark cinematic feel.</div>
+          </div>
+          <div class="entry-seal score-87">87</div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-num">XXII</div>
+          <div class="entry-body">
+            <div class="entry-title">Still Waters Spa</div>
+            <div class="entry-meta">Float spa and sensory deprivation studio. Desert minimal aesthetic.</div>
+          </div>
+          <div class="entry-seal score-92">92</div>
+        </div>
+
+        <div class="entry">
+          <div class="entry-num">XXI</div>
+          <div class="entry-body">
+            <div class="entry-title">Cenere Pizzeria</div>
+            <div class="entry-meta">Wood-fired Neapolitan pizzeria. Chef-owned, 12 seat counter, Brooklyn.</div>
+          </div>
+          <div class="entry-seal score-78">78</div>
+        </div>
+
+        <div class="ledger-bot">— turn the page to begin —</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var cur=document.getElementById('cur'),dot=cur.querySelector('.cur-dot'),ring=cur.querySelector('.cur-ring')
+var mx=innerWidth/2,my=innerHeight/2,rx=mx,ry=my
+document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px'})
+function lerp(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(lerp)}
+lerp()
+document.querySelectorAll('button,input,.sni,.entry').forEach(function(el){
+  el.addEventListener('mouseenter',function(){dot.style.transform='translate(-50%,-50%) scale(2.5)';ring.style.transform='translate(-50%,-50%) scale(0.4)';ring.style.borderColor='var(--gold)'})
+  el.addEventListener('mouseleave',function(){dot.style.transform='translate(-50%,-50%) scale(1)';ring.style.transform='translate(-50%,-50%) scale(1)';ring.style.borderColor='rgba(44,36,22,0.3)'})
+})
+</script>
+</body>
+</html>

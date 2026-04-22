@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sandbox · Weave</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,200;1,9..144,300;1,9..144,400&family=DM+Sans:wght@200;300&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--pre:#0B0D14;--genesis:#E8E4D8;--signal-dim:rgba(232,228,216,0.25);--moment:#FFE8A8;--cipher:#00E5FF;--threshold:rgba(255,255,255,0.06)}
+html,body{width:100%;height:100vh;overflow:hidden;background:var(--pre);color:var(--genesis);font-family:'DM Sans',sans-serif;cursor:none}
+
+#weave{position:fixed;inset:0;z-index:0}
+
+.narration{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;max-width:680px;padding:0 48px;z-index:15}
+.cipher-status{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.32em;text-transform:uppercase;color:rgba(0,229,255,0.5);margin-bottom:24px;display:flex;align-items:center;justify-content:center;gap:14px}
+.cipher-status::before,.cipher-status::after{content:'';width:32px;height:1px;background:rgba(0,229,255,0.3)}
+.cipher-status .dot{width:5px;height:5px;border-radius:50%;background:var(--cipher);box-shadow:0 0 10px var(--cipher);animation:pulse 1.4s ease infinite}
+
+.script{font-family:'Fraunces',serif;font-style:italic;font-size:clamp(36px,5vw,56px);font-weight:300;line-height:1.15;color:var(--genesis);margin-bottom:14px;text-shadow:0 0 80px rgba(232,228,216,0.15);min-height:1.2em;transition:opacity 0.5s}
+.script .gold{color:var(--moment);text-shadow:0 0 40px rgba(255,232,168,0.4)}
+.teach{font-family:'Fraunces',serif;font-style:italic;font-size:15px;color:rgba(232,228,216,0.55);min-height:1.6em;transition:opacity 0.5s}
+
+.top-status{position:absolute;top:32px;left:50%;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--signal-dim);z-index:20;display:flex;gap:14px}
+.top-status .live{color:var(--cipher);display:flex;align-items:center;gap:6px}
+.top-status .live::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--cipher);box-shadow:0 0 8px var(--cipher);animation:pulse 1.4s ease infinite}
+.echo{position:absolute;top:80px;left:50%;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--signal-dim);z-index:15;font-style:italic;letter-spacing:0.06em}
+.echo span{color:var(--moment)}
+
+.corner{position:absolute;width:48px;height:48px;pointer-events:none;z-index:5}
+.corner.tl{top:32px;left:32px;border-top:1px solid rgba(0,229,255,0.18);border-left:1px solid rgba(0,229,255,0.18)}
+.corner.tr{top:32px;right:32px;border-top:1px solid rgba(255,232,168,0.16);border-right:1px solid rgba(255,232,168,0.16)}
+.corner.bl{bottom:32px;left:32px;border-bottom:1px solid rgba(0,229,255,0.16);border-left:1px solid rgba(0,229,255,0.16)}
+.corner.br{bottom:32px;right:32px;border-bottom:1px solid rgba(255,232,168,0.14);border-right:1px solid rgba(255,232,168,0.14)}
+
+.demo{position:absolute;bottom:24px;right:24px;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--signal-dim);z-index:100;letter-spacing:0.1em;background:rgba(11,13,20,0.85);border:1px solid var(--threshold);padding:8px 12px}
+.demo button{background:var(--moment);color:var(--pre);border:none;padding:4px 10px;font-family:inherit;font-size:9px;cursor:none;margin-left:8px;font-weight:500;letter-spacing:0.1em}
+
+#cur{position:fixed;z-index:9999;pointer-events:none}
+.cur-core{position:absolute;width:5px;height:5px;border-radius:50%;background:var(--moment);box-shadow:0 0 12px var(--moment);transform:translate(-50%,-50%)}
+.cur-field{position:absolute;width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,232,168,0.2);transform:translate(-50%,-50%);transition:all 0.4s cubic-bezier(0.16,1,0.3,1)}
+
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.6)}}
+</style>
+</head>
+<body>
+<div id="cur"><div class="cur-core"></div><div class="cur-field"></div></div>
+<canvas id="weave"></canvas>
+
+<div class="top-status"><span>SOVREND · CIPHER WEAVING</span><span class="live">REACTOR ENGAGED</span></div>
+<div class="echo">building → <span>Custom handcrafted billiard cues by Thornton Cues...</span></div>
+<div class="corner tl"></div><div class="corner tr"></div>
+<div class="corner bl"></div><div class="corner br"></div>
+
+<div class="narration">
+  <div class="cipher-status"><div class="dot"></div>Cipher is weaving the threshold</div>
+  <div class="script" id="script">I see your <span class="gold">vision.</span></div>
+  <div class="teach" id="teach">Let me bring it across.</div>
+</div>
+
+<div class="demo">SANDBOX · WEAVE <button onclick="restart()">RESTART</button></div>
+
+<script>
+var cur=document.getElementById('cur'),core=cur.querySelector('.cur-core'),field=cur.querySelector('.cur-field')
+var mx=innerWidth/2,my=innerHeight/2,rx=mx,ry=my
+document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;core.style.left=mx+'px';core.style.top=my+'px'})
+function lerp(){rx+=(mx-rx)*0.1;ry+=(my-ry)*0.1;field.style.left=rx+'px';field.style.top=ry+'px';requestAnimationFrame(lerp)}
+lerp()
+
+// THREADS WEAVING from screen edges toward center
+var c=document.getElementById('weave'),ctx=c.getContext('2d'),W,H,threads=[]
+function rs(){W=c.width=innerWidth;H=c.height=innerHeight}
+rs();addEventListener('resize',rs)
+
+function spawnThread(){
+  var side=Math.floor(Math.random()*4)
+  var sx,sy,ex,ey
+  var cx=W/2+(Math.random()-0.5)*180
+  var cy=H/2+(Math.random()-0.5)*120
+  if(side===0){sx=Math.random()*W;sy=-20;ex=cx;ey=cy}
+  else if(side===1){sx=W+20;sy=Math.random()*H;ex=cx;ey=cy}
+  else if(side===2){sx=Math.random()*W;sy=H+20;ex=cx;ey=cy}
+  else{sx=-20;sy=Math.random()*H;ex=cx;ey=cy}
+  threads.push({sx:sx,sy:sy,ex:ex,ey:ey,t:0,speed:0.006+Math.random()*0.008,color:Math.random()<0.3?'gold':'cyan'})
+}
+
+function draw(){
+  ctx.fillStyle='rgba(11,13,20,0.06)'
+  ctx.fillRect(0,0,W,H)
+
+  if(Math.random()<0.4)spawnThread()
+
+  for(var i=threads.length-1;i>=0;i--){
+    var t=threads[i]
+    t.t+=t.speed
+    if(t.t>=1){threads.splice(i,1);continue}
+    var x=t.sx+(t.ex-t.sx)*t.t
+    var y=t.sy+(t.ey-t.sy)*t.t
+    var headLen=80
+    var tailX=t.sx+(t.ex-t.sx)*Math.max(0,t.t-0.05)
+    var tailY=t.sy+(t.ey-t.sy)*Math.max(0,t.t-0.05)
+    var grad=ctx.createLinearGradient(tailX,tailY,x,y)
+    if(t.color==='gold'){
+      grad.addColorStop(0,'rgba(255,232,168,0)')
+      grad.addColorStop(1,'rgba(255,232,168,'+(0.7*(1-t.t))+')')
+    }else{
+      grad.addColorStop(0,'rgba(0,229,255,0)')
+      grad.addColorStop(1,'rgba(0,229,255,'+(0.6*(1-t.t))+')')
+    }
+    ctx.beginPath()
+    ctx.moveTo(tailX,tailY)
+    ctx.lineTo(x,y)
+    ctx.strokeStyle=grad
+    ctx.lineWidth=t.color==='gold'?1.4:0.9
+    ctx.stroke()
+
+    // Draw bright tip
+    ctx.beginPath()
+    ctx.arc(x,y,t.color==='gold'?2:1.4,0,Math.PI*2)
+    ctx.fillStyle=t.color==='gold'?'rgba(255,232,168,0.9)':'rgba(0,229,255,0.85)'
+    ctx.fill()
+  }
+  requestAnimationFrame(draw)
+}
+draw()
+
+var script=document.getElementById('script'),teach=document.getElementById('teach')
+var seq=[
+  {d:0,s:'I see your <span class="gold">vision.</span>',t:'Let me bring it across.'},
+  {d:1800,s:'Weaving the <span class="gold">foundation.</span>',t:'Every section earns its place.'},
+  {d:3600,s:'Threading the <span class="gold">details.</span>',t:'Real data. Real names. Real numbers.'},
+  {d:5400,s:'Letting it <span class="gold">breathe.</span>',t:'Every interaction wired with care.'},
+  {d:7200,s:'Setting the <span class="gold">architecture.</span>',t:'Color, type, rhythm — locked.'},
+  {d:9000,s:'The <span class="gold">moment of delight.</span>',t:'One thing they will not forget.'},
+  {d:10800,s:'It <span class="gold">exists.</span>',t:'Your idea, made real.'},
+]
+function run(){seq.forEach(function(x){setTimeout(function(){script.style.opacity=0;teach.style.opacity=0;setTimeout(function(){script.innerHTML=x.s;teach.innerHTML=x.t;script.style.opacity=1;teach.style.opacity=1},300)},x.d)})}
+function restart(){script.innerHTML=seq[0].s;teach.innerHTML=seq[0].t;setTimeout(run,200)}
+run()
+</script>
+</body>
+</html>

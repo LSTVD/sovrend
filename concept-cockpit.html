@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SOVREND — Cockpit Concept</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=JetBrains+Mono:wght@300;400;500&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#000308;
+  --bg2:#04060E;
+  --bg3:#0A0E1A;
+  --tron:#00E5FF;
+  --org:#FF6B00;
+  --cream:#F0F0FF;
+  --c40:rgba(240,240,255,0.4);
+  --c20:rgba(240,240,255,0.2);
+  --c08:rgba(240,240,255,0.08);
+  --t40:rgba(0,229,255,0.4);
+  --t15:rgba(0,229,255,0.15);
+  --t06:rgba(0,229,255,0.06);
+}
+html,body{width:100%;height:100vh;overflow:hidden;background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--cream);cursor:none}
+
+#cur{position:fixed;z-index:9999;pointer-events:none}
+.cur-dot{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--tron);box-shadow:0 0 12px var(--tron);transform:translate(-50%,-50%);transition:transform 0.15s}
+.cur-ring{position:absolute;width:40px;height:40px;border-radius:50%;border:1px solid var(--t40);transform:translate(-50%,-50%);transition:all 0.4s cubic-bezier(0.16,1,0.3,1)}
+
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+.shell{display:flex;width:100%;height:100vh;position:relative;z-index:5}
+.sb{width:56px;flex-shrink:0;background:rgba(4,6,14,0.92);border-right:1px solid var(--t15);backdrop-filter:blur(20px);display:flex;flex-direction:column;align-items:center;padding:16px 0}
+.sb-logo{width:20px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-bottom:24px}
+.sb-logo span{width:5px;height:5px;display:block;background:var(--tron);box-shadow:0 0 6px var(--tron)}
+.sb-logo span:nth-child(5){background:var(--org);box-shadow:0 0 8px var(--org)}
+.sb-nav{flex:1;display:flex;flex-direction:column;gap:4px;width:100%;align-items:center;padding-top:12px}
+.ni{width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:var(--c20);border-left:2px solid transparent;transition:all 0.2s}
+.ni:hover{color:var(--tron);background:var(--t06)}
+.ni.on{color:var(--tron);background:var(--t06);border-left-color:var(--tron)}
+
+.main{flex:1;height:100vh;position:relative;overflow:hidden}
+
+.top{position:absolute;top:0;left:0;right:0;height:48px;background:rgba(4,6,14,0.92);border-bottom:1px solid var(--t15);backdrop-filter:blur(20px);display:flex;align-items:center;padding:0 24px;z-index:20}
+.top-l{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.3em;color:var(--tron)}
+.top-r{margin-left:auto;display:flex;align-items:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:var(--c40);text-transform:uppercase}
+.top-r .live{color:var(--tron);display:flex;align-items:center;gap:6px}
+.top-r .live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--tron);box-shadow:0 0 8px var(--tron);animation:pulse 2s ease infinite}
+
+/* THE REACTOR CORE */
+.stage{position:absolute;inset:48px 0 32px 0;display:flex;align-items:center;justify-content:center;padding:0 80px}
+.reactor{position:relative;width:640px;height:640px;display:flex;align-items:center;justify-content:center}
+
+.ring{position:absolute;border-radius:50%;border:1px solid var(--t15);pointer-events:none}
+.ring.r1{inset:0;animation:spin 80s linear infinite}
+.ring.r2{inset:60px;animation:spin 50s linear infinite reverse;border-color:var(--t40)}
+.ring.r3{inset:120px;border:1px dashed var(--t15);animation:spin 30s linear infinite}
+.ring.r4{inset:180px;border-color:rgba(255,107,0,0.15)}
+
+.ring-tick{position:absolute;width:8px;height:1px;background:var(--tron);box-shadow:0 0 6px var(--tron)}
+.r1 .ring-tick:nth-child(1){top:0;left:50%}
+.r1 .ring-tick:nth-child(2){bottom:0;left:50%}
+.r1 .ring-tick:nth-child(3){left:0;top:50%}
+.r1 .ring-tick:nth-child(4){right:0;top:50%}
+
+.core{position:relative;width:380px;background:rgba(4,6,14,0.85);border:1px solid var(--t40);backdrop-filter:blur(20px);padding:32px 28px;text-align:center;box-shadow:0 0 40px rgba(0,229,255,0.1),inset 0 1px 0 rgba(0,229,255,0.2)}
+.core::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,var(--tron),transparent);box-shadow:0 0 8px var(--tron)}
+.core::after{content:'';position:absolute;bottom:-1px;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,var(--tron),transparent)}
+
+.core-label{font-family:'Orbitron',sans-serif;font-size:8px;font-weight:500;letter-spacing:0.32em;color:var(--tron);margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:10px}
+.core-label::before,.core-label::after{content:'';width:14px;height:1px;background:var(--t40)}
+
+.core-h{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:700;letter-spacing:0.06em;color:var(--cream);margin-bottom:6px;text-transform:uppercase}
+.core-sub{font-size:11px;color:var(--c40);margin-bottom:24px;font-family:'JetBrains Mono',monospace;letter-spacing:0.08em}
+
+.core-input{width:100%;background:rgba(0,229,255,0.04);border:1px solid var(--t15);border-bottom:2px solid var(--t40);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:13px;padding:12px 14px;outline:none;text-align:left;margin-bottom:12px}
+.core-input::placeholder{color:rgba(240,240,255,0.25)}
+.core-input:focus{border-color:var(--t40);box-shadow:0 0 12px rgba(0,229,255,0.2)}
+
+.core-btn{width:100%;background:var(--tron);color:var(--bg);font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.22em;padding:14px;border:none;cursor:none;text-transform:uppercase;box-shadow:0 0 24px rgba(0,229,255,0.3);transition:all 0.3s}
+.core-btn:hover{box-shadow:0 0 36px rgba(0,229,255,0.5);transform:translateY(-1px)}
+
+/* PERIPHERAL READOUTS */
+.readout{position:absolute;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:var(--c40);text-transform:uppercase}
+.readout.tl{top:60px;left:80px;text-align:left}
+.readout.tr{top:60px;right:80px;text-align:right}
+.readout.bl{bottom:50px;left:80px}
+.readout.br{bottom:50px;right:80px;text-align:right}
+.readout-h{color:var(--tron);font-weight:500;margin-bottom:4px;font-size:8px;letter-spacing:0.2em}
+.readout-v{color:var(--cream);font-size:18px;font-weight:300;margin-bottom:2px;letter-spacing:0.04em}
+
+/* LAYER CHANNELS */
+.channels{position:absolute;left:50%;bottom:50px;transform:translateX(-50%);display:flex;gap:8px;font-family:'Orbitron',sans-serif;font-size:7px;font-weight:500;letter-spacing:0.2em;color:var(--c20)}
+.channel{display:flex;align-items:center;gap:6px;padding:4px 10px;border:1px solid var(--c08)}
+.channel.ready{color:var(--tron);border-color:var(--t40)}
+.channel-dot{width:4px;height:4px;border-radius:50%;background:var(--c08)}
+.channel.ready .channel-dot{background:var(--tron);box-shadow:0 0 6px var(--tron)}
+
+.status{position:absolute;bottom:0;left:0;right:0;height:32px;background:rgba(4,6,14,0.92);border-top:1px solid var(--t15);display:flex;align-items:center;padding:0 24px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:var(--c40);text-transform:uppercase;z-index:20}
+.status-r{margin-left:auto;display:flex;gap:24px}
+
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div id="cur"><div class="cur-dot"></div><div class="cur-ring"></div></div>
+<canvas id="bg-canvas"></canvas>
+
+<div class="shell">
+  <div class="sb">
+    <div class="sb-logo"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="sb-nav">
+      <div class="ni on">⌂</div>
+      <div class="ni">⌕</div>
+      <div class="ni">◇</div>
+      <div class="ni">◈</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="top">
+      <div class="top-l">SOVREND · COCKPIT</div>
+      <div class="top-r">
+        <span>OPERATOR</span>
+        <span>BUILD 24/50</span>
+        <span class="live">REACTOR ARMED</span>
+      </div>
+    </div>
+
+    <div class="readout tl">
+      <div class="readout-h">// SESSION</div>
+      <div class="readout-v">04:17:28</div>
+      <div>UPTIME</div>
+    </div>
+    <div class="readout tr">
+      <div class="readout-h">// TOKENS</div>
+      <div class="readout-v">847,229</div>
+      <div>USED THIS MONTH</div>
+    </div>
+    <div class="readout bl">
+      <div class="readout-h">// LAST BUILD</div>
+      <div class="readout-v">02:14</div>
+      <div>THORNTON CUES</div>
+    </div>
+    <div class="readout br">
+      <div class="readout-h">// SCORE AVG</div>
+      <div class="readout-v">87.4</div>
+      <div>LAST 10 BUILDS</div>
+    </div>
+
+    <div class="stage">
+      <div class="reactor">
+        <div class="ring r1"><div class="ring-tick"></div><div class="ring-tick"></div><div class="ring-tick"></div><div class="ring-tick"></div></div>
+        <div class="ring r2"></div>
+        <div class="ring r3"></div>
+        <div class="ring r4"></div>
+
+        <div class="core">
+          <div class="core-label">CIPHER · LIVE</div>
+          <h1 class="core-h">REACTOR ARMED</h1>
+          <p class="core-sub">// describe the build sequence</p>
+          <input class="core-input" placeholder="Tell me what you see..." autofocus>
+          <button class="core-btn">⚡ ENGAGE</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="channels">
+      <div class="channel ready"><div class="channel-dot"></div>FOUNDATION</div>
+      <div class="channel ready"><div class="channel-dot"></div>DETAILS</div>
+      <div class="channel ready"><div class="channel-dot"></div>EXPERIENCE</div>
+      <div class="channel ready"><div class="channel-dot"></div>ARCHITECTURE</div>
+      <div class="channel ready"><div class="channel-dot"></div>PHILOSOPHY</div>
+    </div>
+
+    <div class="status">
+      <div>POWERED BY CLAUDE SONNET</div>
+      <div class="status-r">
+        <div>SUPABASE ●</div>
+        <div>STRIPE ○</div>
+        <div>UNSPLASH ●</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var cur=document.getElementById('cur'),dot=cur.querySelector('.cur-dot'),ring=cur.querySelector('.cur-ring')
+var mx=innerWidth/2,my=innerHeight/2,rx=mx,ry=my
+document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px'})
+function lerp(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(lerp)}
+lerp()
+document.querySelectorAll('button,input,.ni').forEach(function(el){
+  el.addEventListener('mouseenter',function(){dot.style.transform='translate(-50%,-50%) scale(2.5)';ring.style.transform='translate(-50%,-50%) scale(0.5)';ring.style.borderColor='rgba(0,229,255,1)';ring.style.boxShadow='0 0 20px rgba(0,229,255,0.5)'})
+  el.addEventListener('mouseleave',function(){dot.style.transform='translate(-50%,-50%) scale(1)';ring.style.transform='translate(-50%,-50%) scale(1)';ring.style.borderColor='rgba(0,229,255,0.4)';ring.style.boxShadow='none'})
+})
+
+// Particle background
+var c=document.getElementById('bg-canvas'),ctx=c.getContext('2d'),W,H,parts=[]
+function rs(){W=c.width=innerWidth;H=c.height=innerHeight}
+rs();addEventListener('resize',rs)
+for(var i=0;i<60;i++)parts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-0.5)*0.2,vy:(Math.random()-0.5)*0.2,r:Math.random()*1.2+0.3,a:Math.random()*0.4+0.1})
+function draw(){
+  ctx.clearRect(0,0,W,H)
+  parts.forEach(function(p){
+    p.x+=p.vx;p.y+=p.vy
+    if(p.x<0||p.x>W)p.vx*=-1
+    if(p.y<0||p.y>H)p.vy*=-1
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2)
+    ctx.fillStyle='rgba(0,229,255,'+p.a+')';ctx.fill()
+  })
+  requestAnimationFrame(draw)
+}
+draw()
+</script>
+</body>
+</html>
